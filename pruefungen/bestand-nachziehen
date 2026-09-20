@@ -1,0 +1,53 @@
+#!/usr/bin/env python3
+"""Zieht die aus dem Bestand abgeleiteten Dateien nach und schreibt app/data/qi-master/BESTAND.json.
+
+  pruefungen/bestand-nachziehen            # Trockenlauf: zeigt, was sich aendern wuerde
+  pruefungen/bestand-nachziehen --schreiben
+
+Exit 0 = nichts zu tun bzw. geschrieben, 2 = Trockenlauf mit Abweichungen, 4 = Messausfall.
+Vorher `git -C <qiblanco-storefront> fetch origin`, sonst zieht man gegen einen alten Stand nach.
+"""
+import os
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import bestand as B  # noqa: E402
+
+
+def main(argv):
+    schreiben = "--schreiben" in argv
+    try:
+        commit = B.git_rev()
+        soll = B.soll_ableiten()
+    except B.Messausfall as e:
+        print(f"EXIT4 MESSAUSFALL: {e}")
+        return 4
+    abw = []
+    for lok, b in sorted(soll.items()):
+        ist = B.ist_lokal(lok)
+        if ist != b:
+            abw.append(lok)
+            if schreiben:
+                p = os.path.join(B.STOREFRONT, lok)
+                os.makedirs(os.path.dirname(p), exist_ok=True)
+                with open(p, "wb") as f:
+                    f.write(b)
+    mani = B.manifest_bauen(soll, commit)
+    import json
+    mani_bytes = (json.dumps(mani, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
+    if B.ist_lokal(os.path.relpath(B.MANIFEST, B.STOREFRONT)) != mani_bytes:
+        abw.append("app/data/qi-master/BESTAND.json")
+        if schreiben:
+            with open(B.MANIFEST, "wb") as f:
+                f.write(mani_bytes)
+    print(f"Quelle {B.QB_REF} = {commit}")
+    for lok in sorted(soll):
+        print(f"  {'NACHGEZOGEN' if (schreiben and lok in abw) else ('ABWEICHUNG' if lok in abw else 'gleich    ')}  {lok}")
+    if abw and not schreiben:
+        print(f"{len(abw)} Abweichung(en) -- mit --schreiben nachziehen")
+        return 2
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

@@ -13,6 +13,7 @@ import favicon from '~/assets/favicon.svg';
 import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
 import resetStyles from '~/styles/reset.css?url';
 import appStyles from '~/styles/app.css?url';
+import qiMasterStyles from '~/styles/qi-master.css?url';
 import {PageLayout} from './components/PageLayout';
 
 /**
@@ -146,12 +147,14 @@ export function Layout({children}) {
   const nonce = useNonce();
 
   return (
-    <html lang="en">
+    <html lang="de">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <link rel="stylesheet" href={resetStyles}></link>
         <link rel="stylesheet" href={appStyles}></link>
+        {/* Token-Schicht von qi-master.de -- beide Seiten, Kopf und Fuss (app/styles/qi-master.css). */}
+        <link rel="stylesheet" href={qiMasterStyles}></link>
         <Meta />
         <Links />
       </head>

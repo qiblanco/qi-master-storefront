@@ -1,0 +1,56 @@
+{
+ "engine": "design-meister webdesign-rubrik v1 (deterministisch, offline)",
+ "zeit": "2026-09-20T22:09:44Z",
+ "target": "http://127.0.0.1:3341/",
+ "seite": "qi-master-frontseite",
+ "score": 99,
+ "schwelle": 80,
+ "bestanden": true,
+ "dimensionen": {
+  "technisch": 100,
+  "harmonisch_farbe": 100,
+  "durchdacht_layout": 100,
+  "stimmig_typo": 96,
+  "liebevoll_detail": 100,
+  "ruhig_weissraum": 100
+ },
+ "gewichte": {
+  "technisch": 0.25,
+  "harmonisch_farbe": 0.2,
+  "durchdacht_layout": 0.2,
+  "stimmig_typo": 0.15,
+  "liebevoll_detail": 0.1,
+  "ruhig_weissraum": 0.1
+ },
+ "befunde": [
+  "stimmig: Body-Groesse uneinheitlich (haeufigste Groesse traegt nur 43%).",
+  "hinweis: 1 von 29 Textbloecken stehen in der geteilten Huelle (Kopf/Fuss/Navigation) und zaehlen nicht gegen die Body-Groesse dieser Seite."
+ ],
+ "render_plausibel": {
+  "plausibel": true,
+  "viewports": {
+   "desktop": {
+    "befunde": [],
+    "plausibel": true,
+    "docHeight": 5009,
+    "viewportHoehe": 900,
+    "elemente": 55,
+    "dominanteSchrift": "system-ui",
+    "kachelnIdentisch": false
+   },
+   "mobile": {
+    "befunde": [],
+    "plausibel": true,
+    "docHeight": 10054,
+    "viewportHoehe": 844,
+    "elemente": 55,
+    "dominanteSchrift": "system-ui",
+    "kachelnIdentisch": false
+   }
+  },
+  "blinde_viewports": [],
+  "befunde": []
+ },
+ "requests_client_abgebrochen": [],
+ "pageerrors_fremd": []
+}

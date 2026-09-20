@@ -43,8 +43,11 @@ export async function createHydrogenRouterContext(
       cache,
       waitUntil,
       session,
-      // Or detect from URL path based on locale subpath, cookies, or any other strategy
-      i18n: {language: 'EN', country: 'US'},
+      // qi-master.de ist ein deutscher Laden mit EINEM Markt. Das Geruest stand auf
+      // EN/US und lieferte damit den US-Marktpreis des gemeinsamen Shops (gemessen
+      // 2026-09-20: 10.998,32 statt 8.940,34 netto -- angezeigt 13.088,- statt
+      // 10.639,- EUR). DE/DE ist der Kontext, in dem qiblanco.com dieselbe Variante liest.
+      i18n: {language: 'DE', country: 'DE'},
       cart: {
         queryFragment: CART_QUERY_FRAGMENT,
       },

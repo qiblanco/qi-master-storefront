@@ -1,0 +1,69 @@
+{
+  "schema": 1,
+  "upstream_repo": "qiblanco/qiblanco-storefront",
+  "upstream_ref": "origin/main",
+  "upstream_commit": "4349b782bcff616cbaaeea2ba0b29121e9d28f57",
+  "erzeuger": "pruefungen/bestand-nachziehen (Ableitung in pruefungen/bestand.py)",
+  "dateien": [
+    {
+      "lokal": "app/data/qi-master/qi-master-diamantbilder.js",
+      "klasse": "K1",
+      "quelle": "app/data/qi-master-diamantbilder.js",
+      "sha256": "e53603fb3d72b0cb8a3d37c5a26a6366a1bf5be1f9234890638c7c79876a67b2"
+    },
+    {
+      "lokal": "app/data/qi-master/qi-master-faq.js",
+      "klasse": "K3",
+      "quelle": "app/data/product-faqs.js",
+      "sha256": "31df7c0631dcaa0b917743560e1d61ba63466b2342a706c9fd9f781d80be26ff"
+    },
+    {
+      "lokal": "app/data/qi-master/qi-master-guetezeichen.js",
+      "klasse": "K1",
+      "quelle": "app/data/qi-master-guetezeichen.js",
+      "sha256": "e3338e5a1eb07027ea7d7c46129433373bb8e97d4c979364511c25bee252360d"
+    },
+    {
+      "lokal": "app/data/qi-master/qi-master-literaturbilder.js",
+      "klasse": "K1",
+      "quelle": "app/data/qi-master-literaturbilder.js",
+      "sha256": "bc07a394d5cb7699a3dbeec4fe28c1cca4da8fd90d532eeb115d2905cce930ac"
+    },
+    {
+      "lokal": "app/data/qi-master/qi-master-preisstufen.json",
+      "klasse": "K1",
+      "quelle": "app/data/qi-master-preisstufen.json",
+      "sha256": "4dd863e363131847ece873fe777375bf9ed5f9705e3557413bde655559f2c44d"
+    },
+    {
+      "lokal": "app/data/qi-master/qi-master-studien.js",
+      "klasse": "K3",
+      "quelle": "app/data/studien/e0001..e0005.json",
+      "sha256": "79979d0ef2537eb9c2880feebf3623d3f6ddc1c2f89b9e34d93ca958538c8da5"
+    },
+    {
+      "lokal": "app/data/qi-master/qi-master-texte.js",
+      "klasse": "K1",
+      "quelle": "app/data/qi-master-texte.js",
+      "sha256": "d07ae9248aec0c1fefa6c3df45da5bb73990fab8cb73f1dc1a939fa93afcf713"
+    },
+    {
+      "lokal": "app/lib/qi-master-kopfsymbole.js",
+      "klasse": "K1",
+      "quelle": "app/lib/qi-master-kopfsymbole.js",
+      "sha256": "3b5b9cdd2001bdc5d051a958cb52023cde16fee69f1ea7e8cdbff88ed99a72aa"
+    },
+    {
+      "lokal": "app/lib/qi-master-preisstufen.js",
+      "klasse": "K1",
+      "quelle": "app/lib/qi-master-preisstufen.js",
+      "sha256": "cb4c79aee2bdb35e0ba4b021f8a8148d6a020d82eac7e6b70268e25b52161cf9"
+    },
+    {
+      "lokal": "app/lib/qi-master-symbole.generated.js",
+      "klasse": "K1",
+      "quelle": "app/lib/qi-master-symbole.generated.js",
+      "sha256": "eb91c3e4051f6b1bc8570b7d4af43c6e1538ae974b7d5a0799add2b0ccf92622"
+    }
+  ]
+}

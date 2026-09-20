@@ -1,0 +1,309 @@
+/*
+ * qi-master.de -- die Token-Schicht beider Seiten.
+ *
+ * Design-Meister-Soll (design-meister/db/webdesign/web-soll.yaml v2): EINE ruhige Sans,
+ * modulare Typo-Skala 1.25 mit hoechstens neun Stufen (hier sieben), 8-pt-Raster,
+ * Sektionstakt 96/64, genau ZWEI Radien (8/16), warmes Neutral-Kontinuum und EIN Gold-Akzent,
+ * der nur auf Handlung und Beweis liegt. Keine freien Werte: jede Groesse, jeder Abstand und
+ * jede Farbe unten ist ein Token aus :root.
+ *
+ * Referenz-Rezept: tiefer-schlaf-v3 (94/100) bzw. app/styles/schlaf-zellen-schutz.css im
+ * DACH-Laden -- dieselbe Ordnung, eigener Praefix qm-.
+ */
+
+:root {
+  /* Typo-Skala, Ratio 1.25, fluid */
+  --qm-fs-0: clamp(0.8rem, 0.78rem + 0.1vw, 0.85rem);      /* 12.8-13.6  Quellen, Labels */
+  --qm-fs-1: clamp(1rem, 0.96rem + 0.2vw, 1.0625rem);      /* 16-17      Fliesstext */
+  --qm-fs-2: clamp(1.125rem, 1.05rem + 0.35vw, 1.25rem);   /* 18-20      Lead, h3 */
+  --qm-fs-3: clamp(1.375rem, 1.2rem + 0.8vw, 1.5625rem);   /* 22-25      grosse h3, Preis klein */
+  --qm-fs-4: clamp(1.625rem, 1.35rem + 1.3vw, 1.953rem);   /* 26-31      h2 */
+  --qm-fs-5: clamp(2rem, 1.6rem + 1.9vw, 2.441rem);        /* 32-39      Preis, h1 mobil */
+  --qm-fs-6: clamp(2.375rem, 1.8rem + 2.7vw, 3.052rem);    /* 38-49      h1 */
+
+  /* 8-pt-Raster */
+  --qm-s-1: 0.5rem;   /* 8  */
+  --qm-s-2: 1rem;     /* 16 */
+  --qm-s-3: 1.5rem;   /* 24 */
+  --qm-s-4: 2rem;     /* 32 */
+  --qm-s-6: 3rem;     /* 48 */
+  --qm-s-8: 4rem;     /* 64 */
+  --qm-s-12: 6rem;    /* 96 */
+  --qm-takt: var(--qm-s-12);
+  --qm-takt-mobil: var(--qm-s-8);
+
+  /* Radien */
+  --qm-r-1: 8px;
+  --qm-r-2: 16px;
+
+  /* Palette: warmes Neutral + ein Gold */
+  --qm-grund: #faf9f5;
+  --qm-flaeche: #f8f4ee;
+  --qm-dunkel: #1a1a1a;
+  --qm-text: #2c2a26;
+  --qm-muted: #6b665d;
+  --qm-linie: #e6e0d6;
+  --qm-akzent: #c9a14b;
+  --qm-akzent-text: #1a1a1a;
+
+  --qm-breite: 72rem;      /* 1152 */
+  --qm-satz: 70ch;
+  --qm-font: 'Open Sans', 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif;
+}
+
+html {
+  background: var(--qm-grund);
+  color: var(--qm-text);
+  font-family: var(--qm-font);
+  font-size: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-size: var(--qm-fs-1);
+  line-height: 1.6;
+}
+
+.qm a { color: inherit; }
+.qm p { margin: 0 0 var(--qm-s-2); max-width: var(--qm-satz); }
+.qm ul, .qm ol { margin: 0; padding: 0; list-style: none; }
+.qm img { display: block; max-width: 100%; height: auto; }
+.qm h1, .qm h2, .qm h3 { margin: 0; font-weight: 600; line-height: 1.2; color: var(--qm-dunkel); letter-spacing: -0.01em; }
+.qm h3 { font-size: var(--qm-fs-2); margin-bottom: var(--qm-s-1); }
+
+/* EIN h2-Stil fuer die ganze Seite */
+.qm .qm-h2 {
+  font-size: var(--qm-fs-4);
+  text-align: center;
+  margin: 0 auto var(--qm-s-4);
+  max-width: 24ch;
+  /* "Persönlichkeitsentwicklung" ist laenger als ein Telefon breit ist: ohne Trennung
+     bricht das Wort aus dem Viewport (gemessen 2026-09-20, 390 px: docWidth 446). */
+  overflow-wrap: anywhere;
+  hyphens: auto;
+}
+
+/* Sektionstakt: jede Sektion traegt denselben Rhythmus */
+.qm > section, .qm .qm-sektion {
+  padding: var(--qm-takt) var(--qm-s-3);
+  margin: 0 auto;
+  max-width: var(--qm-breite);
+  box-sizing: border-box;
+}
+.qm .qm-sektion--flaeche, .qm .qm-abschluss {
+  max-width: none;
+  background: var(--qm-flaeche);
+}
+.qm .qm-sektion--flaeche > .qm-sektion__inner, .qm .qm-abschluss > .qm-abschluss__inner {
+  max-width: var(--qm-breite);
+  margin: 0 auto;
+}
+.qm .qm-sektion__inner { max-width: var(--qm-satz); margin: 0 auto; }
+.qm .qm-sektion__inner p { max-width: none; }
+
+/* Knoepfe: genau zwei Stile */
+.qm-btn {
+  display: inline-block;
+  padding: var(--qm-s-2) var(--qm-s-4);
+  border-radius: var(--qm-r-1);
+  font-size: var(--qm-fs-1);
+  font-weight: 600;
+  line-height: 1.25;
+  text-decoration: none;
+  text-align: center;
+  border: 2px solid var(--qm-akzent);
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+.qm-btn--primary { background: var(--qm-akzent); color: var(--qm-akzent-text); }
+.qm-btn--primary:hover, .qm-btn--primary:focus-visible { background: var(--qm-dunkel); border-color: var(--qm-dunkel); color: var(--qm-grund); }
+.qm-btn--sekundaer { background: transparent; color: var(--qm-dunkel); }
+.qm-btn--sekundaer:hover, .qm-btn--sekundaer:focus-visible { background: var(--qm-akzent); color: var(--qm-akzent-text); }
+
+.qm-nur-sr {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+
+.qm-steuerhinweis { font-size: var(--qm-fs-0); color: var(--qm-muted); margin-left: var(--qm-s-1); }
+
+/* Kopf und Rahmen der Seite */
+.qm-kopf {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--qm-s-3);
+  max-width: var(--qm-breite); margin: 0 auto; padding: var(--qm-s-2) var(--qm-s-3);
+  box-sizing: border-box;
+}
+.qm-kopf__marke { font-weight: 600; font-size: var(--qm-fs-2); color: var(--qm-dunkel); text-decoration: none; }
+.qm-kopf__nav { display: flex; gap: var(--qm-s-3); font-size: var(--qm-fs-1); }
+.qm-kopf__nav a { color: var(--qm-text); text-decoration: none; }
+.qm-kopf__nav a:hover, .qm-kopf__nav a:focus-visible { color: var(--qm-dunkel); text-decoration: underline; text-underline-offset: 0.2em; }
+.qm-kopf__nav a[aria-current='page'] { color: var(--qm-dunkel); font-weight: 600; }
+
+.qm-fuss {
+  background: var(--qm-dunkel); color: var(--qm-grund);
+  padding: var(--qm-s-6) var(--qm-s-3);
+}
+.qm-fuss__inner { max-width: var(--qm-breite); margin: 0 auto; display: grid; gap: var(--qm-s-3); }
+.qm-fuss__nav { display: flex; flex-wrap: wrap; gap: var(--qm-s-2) var(--qm-s-3); font-size: var(--qm-fs-0); }
+.qm-fuss a { color: var(--qm-grund); text-decoration: none; }
+.qm-fuss a:hover, .qm-fuss a:focus-visible { text-decoration: underline; text-underline-offset: 0.2em; }
+.qm-fuss__zeile { font-size: var(--qm-fs-0); color: #cfc8bb; margin: 0; }
+
+/* Hero der Landingpage */
+.qm-hero { display: grid; gap: var(--qm-s-6); align-items: center; }
+.qm-hero__titel { font-size: var(--qm-fs-6); margin-bottom: var(--qm-s-3); }
+.qm-hero__kopf .p1 { font-size: var(--qm-fs-2); color: var(--qm-dunkel); }
+.qm-hero__preis { display: flex; align-items: baseline; flex-wrap: wrap; margin: var(--qm-s-3) 0; }
+.qm-hero__betrag { font-size: var(--qm-fs-5); font-weight: 600; color: var(--qm-dunkel); }
+.qm-hero__wege { display: flex; flex-wrap: wrap; gap: var(--qm-s-2); margin-bottom: var(--qm-s-2); }
+.qm-hero__hinweis { font-size: var(--qm-fs-0); color: var(--qm-muted); }
+.qm-hero__bild .qm-diamantbilder { padding: 0; }
+@media (min-width: 60em) {
+  .qm-hero { grid-template-columns: 1.1fr 1fr; }
+}
+
+/* Kopfblock aus der Shopify-Beschreibung (fremdes HTML, vier Zeilen mit Symbol) */
+.qm-beschreibung ul { display: grid; gap: var(--qm-s-1); margin: var(--qm-s-2) 0; }
+.qm-beschreibung li { display: flex; align-items: flex-start; gap: var(--qm-s-1); }
+.qm-beschreibung .qm-kopfsymbol { flex: 0 0 auto; color: var(--qm-akzent); font-size: var(--qm-fs-2); margin-top: 0.15em; }
+
+/* Kaufbox */
+.qm-buybox { display: grid; gap: var(--qm-s-6); align-items: start; }
+.qm-buybox__titel { font-size: var(--qm-fs-5); margin-bottom: var(--qm-s-2); }
+.qm-buybox__preis { display: flex; align-items: baseline; flex-wrap: wrap; margin: 0 0 var(--qm-s-3); }
+.qm-buybox__betrag { font-size: var(--qm-fs-5); font-weight: 600; color: var(--qm-dunkel); }
+.qm-buybox__bild .qm-diamantbilder { padding: 0; }
+.qm-buybox__bild img { border-radius: var(--qm-r-2); }
+@media (min-width: 60em) {
+  .qm-buybox { grid-template-columns: 1fr 1fr; }
+  .qm-buybox__bild { position: sticky; top: var(--qm-s-3); }
+}
+
+.qm-kaufknopf { margin: 0 0 var(--qm-s-3); }
+.qm-kaufknopf .qm-btn { width: 100%; max-width: 24rem; box-sizing: border-box; }
+.qm-kaufknopf__hinweis { font-size: var(--qm-fs-0); color: var(--qm-muted); margin: var(--qm-s-1) 0 0; }
+.qm-kaufknopf--kompakt .qm-btn { width: auto; }
+
+/* Nutzen-Liste */
+.qm-benefits ul { display: grid; gap: var(--qm-s-1); margin: var(--qm-s-3) 0 0; }
+.qm-benefits li { display: flex; align-items: flex-start; gap: var(--qm-s-1); font-size: var(--qm-fs-1); }
+.qm-benefits svg { flex: 0 0 auto; color: var(--qm-akzent); font-size: var(--qm-fs-2); margin-top: 0.15em; }
+.qm-gwl summary { cursor: pointer; list-style: none; }
+.qm-gwl summary::-webkit-details-marker { display: none; }
+.qm-gwl summary b { text-decoration: underline; text-underline-offset: 0.2em; text-decoration-color: var(--qm-akzent); }
+.qm-gwl__bild { margin-top: var(--qm-s-2); max-width: 22rem; border-radius: var(--qm-r-1); border: 1px solid var(--qm-linie); }
+
+/* Vorverkaufstreppe */
+.qm-treppe { margin: var(--qm-s-3) 0; }
+.qm-treppe__titel { font-size: var(--qm-fs-3); margin-bottom: var(--qm-s-2); }
+.qm-treppe__grund, .qm-treppe__angebot { max-width: var(--qm-satz); }
+.qm-treppe__herkunft { font-weight: 600; color: var(--qm-dunkel); }
+.qm-treppe__vorlauf { color: var(--qm-muted); }
+.qm-treppe__tabelle { width: 100%; border-collapse: collapse; margin: var(--qm-s-2) 0 var(--qm-s-3); font-size: var(--qm-fs-1); }
+.qm-treppe__tabelle th, .qm-treppe__tabelle td { text-align: left; padding: var(--qm-s-1) var(--qm-s-2); border-bottom: 1px solid var(--qm-linie); }
+.qm-treppe__tabelle thead th { font-size: var(--qm-fs-0); color: var(--qm-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+.qm-treppe__tabelle tbody th { font-weight: 400; }
+.qm-treppe__zeile--aktiv { background: var(--qm-flaeche); }
+.qm-treppe__zeile--aktiv .qm-treppe__preis { font-weight: 600; color: var(--qm-dunkel); }
+.qm-treppe__marke { display: inline-block; margin-left: var(--qm-s-1); padding: 0 var(--qm-s-1); border-radius: var(--qm-r-1); background: var(--qm-akzent); color: var(--qm-akzent-text); font-size: var(--qm-fs-0); font-weight: 600; }
+.qm-treppe__versand { font-size: var(--qm-fs-0); color: var(--qm-muted); }
+.qm-treppe--kompakt .qm-treppe__grund { font-size: var(--qm-fs-0); }
+@media (max-width: 40em) {
+  .qm-treppe__tabelle thead { display: none; }
+  .qm-treppe__tabelle tr { display: grid; grid-template-columns: 1fr 1fr; padding: var(--qm-s-1) 0; border-bottom: 1px solid var(--qm-linie); }
+  .qm-treppe__tabelle th, .qm-treppe__tabelle td { border: 0; padding: 0 var(--qm-s-1); }
+  .qm-treppe__tabelle tbody th { grid-column: 1 / -1; font-weight: 600; }
+  .qm-treppe__tabelle td::before { content: attr(data-spalte) ': '; color: var(--qm-muted); font-size: var(--qm-fs-0); }
+}
+
+/* Drei Spalten "Eine bisher unerreichte Liga" */
+.qm-features__spalten { display: grid; gap: var(--qm-s-4); }
+.qm-features__spalte h3 { font-size: var(--qm-fs-2); }
+@media (min-width: 60em) { .qm-features__spalten { grid-template-columns: repeat(3, 1fr); } }
+
+/* Guetezeichen */
+.qm-guete { padding-top: 0 !important; }
+.qm-guete__liste { display: grid; gap: var(--qm-s-3); text-align: center; }
+.qm-guete__punkt { display: grid; justify-items: center; gap: var(--qm-s-1); font-size: var(--qm-fs-3); font-weight: 600; color: var(--qm-dunkel); }
+.qm-guete__symbol { font-size: var(--qm-fs-5); color: var(--qm-akzent); }
+@media (min-width: 48em) { .qm-guete__liste { grid-template-columns: repeat(3, 1fr); } }
+
+/* The One Eye -- Bildpaar */
+.qm-diamantbilder__paar { display: grid; gap: var(--qm-s-3); max-width: 60rem; margin: 0 auto; }
+.qm-diamantbild { margin: 0; }
+.qm-diamantbild__bild { border-radius: var(--qm-r-2); width: 100%; }
+.qm-diamantbild__unterschrift { text-align: center; margin-top: var(--qm-s-1); font-size: var(--qm-fs-0); color: var(--qm-muted); }
+@media (min-width: 40em) { .qm-diamantbilder__paar { grid-template-columns: 1fr 1fr; } }
+.qm-diamantbilder--klein .qm-diamantbilder__paar { gap: var(--qm-s-2); }
+
+/* Literatur / 6G / Persoenlichkeit */
+.qm-befund { margin-top: var(--qm-s-4); }
+/* Auf breiten Schirmen steht die Zeichnung neben dem Block statt darunter -- die vier
+   Bloecke werden sonst zu einer 4.800 px hohen Sektion (Rubrik: Sektions-Ausreisser). */
+@media (min-width: 60em) {
+  .qm-sektion__inner { max-width: 62rem; }
+  .qm-befund { display: grid; grid-template-columns: minmax(0, var(--qm-satz)) 16rem; column-gap: var(--qm-s-4); align-items: start; }
+  .qm-befund > h3, .qm-befund > p, .qm-befund > .qm-zitat, .qm-befund > .qm-label, .qm-befund > .qm-quelle { grid-column: 1; }
+  .qm-befund > .qm-literaturbild { grid-column: 2; grid-row: 1 / span 6; margin: 0; }
+  .qm-literatur-einstieg, #literatur > .qm-sektion__inner > p { max-width: var(--qm-satz); }
+}
+.qm-label { display: inline-block; font-size: var(--qm-fs-0); text-transform: uppercase; letter-spacing: 0.08em; color: var(--qm-muted); margin-bottom: var(--qm-s-1); }
+.qm-label--beleg { color: var(--qm-akzent-text); border-bottom: 2px solid var(--qm-akzent); }
+.qm-zitat { margin: var(--qm-s-2) 0; padding: var(--qm-s-2) var(--qm-s-3); border-left: 3px solid var(--qm-akzent); background: var(--qm-flaeche); border-radius: 0 var(--qm-r-1) var(--qm-r-1) 0; }
+.qm-zitat p { font-style: italic; margin-bottom: var(--qm-s-1); }
+.qm-quelle { display: block; font-size: var(--qm-fs-0); color: var(--qm-muted); }
+.qm-literaturbild { margin: var(--qm-s-3) auto 0; max-width: 28rem; border-radius: var(--qm-r-2); }
+.qm-schluss { text-align: center; margin-top: var(--qm-s-6); }
+.qm-schluss p { margin: 0 auto; font-size: var(--qm-fs-3); font-weight: 600; color: var(--qm-dunkel); }
+.qm-quellen { margin-top: var(--qm-s-3); display: grid; gap: var(--qm-s-1); }
+.qm-quellen li { font-size: var(--qm-fs-0); color: var(--qm-muted); padding-left: 2.2em; text-indent: -2.2em; }
+.qm-zweispalt { display: grid; gap: var(--qm-s-4); max-width: var(--qm-breite); margin: var(--qm-s-4) auto 0; }
+.qm-spalte h3 { font-size: var(--qm-fs-3); margin-bottom: var(--qm-s-2); }
+@media (min-width: 60em) { .qm-zweispalt { grid-template-columns: 1fr 1fr; } }
+
+/* Zwei Fragen (Landingpage) */
+.qm-zweifragen__raster { display: grid; gap: var(--qm-s-3); }
+.qm-zweifragen__karte { background: var(--qm-flaeche); border-radius: var(--qm-r-2); padding: var(--qm-s-4); }
+.qm-zweifragen__karte h3 { font-size: var(--qm-fs-3); margin-bottom: var(--qm-s-2); }
+.qm-zweifragen__karte p { max-width: none; }
+@media (min-width: 60em) { .qm-zweifragen__raster { grid-template-columns: 1fr 1fr; } }
+
+/* Studien */
+.qm-studien__raster { display: grid; gap: var(--qm-s-3); }
+.qm-studie__link { display: grid; gap: var(--qm-s-1); text-decoration: none; color: inherit; }
+.qm-studie__deckblatt { display: block; overflow: hidden; border-radius: var(--qm-r-1); border: 1px solid var(--qm-linie); background: var(--qm-flaeche); aspect-ratio: 957 / 1024; }
+.qm-studie__deckblatt img { width: 100%; height: 100%; object-fit: cover; }
+.qm-studie__titel { font-weight: 600; color: var(--qm-dunkel); font-size: var(--qm-fs-1); line-height: 1.35; }
+.qm-studie__quelle { font-size: var(--qm-fs-0); color: var(--qm-muted); }
+.qm-studie__link:hover .qm-studie__titel, .qm-studie__link:focus-visible .qm-studie__titel { text-decoration: underline; text-underline-offset: 0.2em; text-decoration-color: var(--qm-akzent); }
+@media (min-width: 40em) { .qm-studien__raster { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 60em) { .qm-studien__raster { grid-template-columns: repeat(5, 1fr); } }
+
+/* Fertigung */
+.qm-fertigung__spalten { display: grid; gap: var(--qm-s-4); max-width: 60rem; margin: 0 auto; }
+.qm-fertigung__spalte h3 { display: flex; align-items: center; gap: var(--qm-s-1); font-size: var(--qm-fs-2); margin-top: var(--qm-s-3); }
+.qm-fertigung__spalte h3 svg { color: var(--qm-akzent); }
+@media (min-width: 48em) { .qm-fertigung__spalten { grid-template-columns: 1fr 1fr; } }
+
+/* Begleiter-Banner */
+.qm .qm-begleiter { max-width: none; background: var(--qm-dunkel); color: var(--qm-grund); text-align: center; }
+.qm-begleiter__inner { max-width: var(--qm-satz); margin: 0 auto; display: grid; justify-items: center; gap: var(--qm-s-2); }
+.qm .qm-begleiter__titel { color: var(--qm-grund); margin-bottom: 0; }
+.qm-begleiter__unterzeile { color: #cfc8bb; margin: 0 0 var(--qm-s-2); }
+
+/* FAQ */
+.qm-faq__liste { max-width: var(--qm-satz); margin: 0 auto; display: grid; gap: var(--qm-s-1); }
+.qm-faq__eintrag { border-bottom: 1px solid var(--qm-linie); padding: var(--qm-s-2) 0; }
+.qm-faq__frage { cursor: pointer; font-weight: 600; color: var(--qm-dunkel); font-size: var(--qm-fs-2); list-style: none; display: flex; justify-content: space-between; gap: var(--qm-s-2); }
+.qm-faq__frage::-webkit-details-marker { display: none; }
+.qm-faq__frage::after { content: '+'; color: var(--qm-akzent); flex: 0 0 auto; }
+.qm-faq__eintrag[open] .qm-faq__frage::after { content: '–'; }
+.qm-faq__antwort { padding-top: var(--qm-s-2); }
+.qm-faq__antwort p { max-width: none; }
+
+/* Abschluss der Landingpage */
+.qm-abschluss__wege { display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--qm-s-3); margin-top: var(--qm-s-4); }
+
+@media (max-width: 48em) {
+  .qm > section, .qm .qm-sektion { padding-top: var(--qm-takt-mobil); padding-bottom: var(--qm-takt-mobil); }
+}

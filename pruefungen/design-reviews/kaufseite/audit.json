@@ -1,0 +1,2291 @@
+{
+ "target": "http://127.0.0.1:3341/products/qi-master",
+ "viewports": {
+  "desktop": {
+   "docHeight": 10537,
+   "clientWidth": 1440,
+   "overflowX": false,
+   "fontFamilies": {
+    "system-ui": 161
+   },
+   "fontSizes": {
+    "16": 37,
+    "17": 42,
+    "20": 21,
+    "25": 8,
+    "39": 2,
+    "13.5": 42,
+    "31.25": 9
+   },
+   "colorsText": {
+    "rgb(26, 26, 26)": 49,
+    "rgb(44, 42, 38)": 70,
+    "rgb(107, 102, 93)": 32,
+    "rgb(250, 249, 245)": 8,
+    "rgb(207, 200, 187)": 2
+   },
+   "colorsBg": {
+    "rgb(201, 161, 75)": 2,
+    "rgb(248, 244, 238)": 11,
+    "rgb(26, 26, 26)": 2
+   },
+   "colorsTextHuelle": {
+    "rgb(26, 26, 26)": 2,
+    "rgb(44, 42, 38)": 1,
+    "rgb(250, 249, 245)": 6,
+    "rgb(207, 200, 187)": 1
+   },
+   "colorsBgHuelle": {
+    "rgb(26, 26, 26)": 1
+   },
+   "fontSizesHuelle": {
+    "17": 2,
+    "20": 1,
+    "13.5": 7
+   },
+   "textBlocks": [
+    {
+     "tag": "P",
+     "fontSize": 13.6,
+     "lineHeight": "19.04px",
+     "widthPx": 528,
+     "chars": 78,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 13.6,
+     "lineHeight": "19.04px",
+     "widthPx": 528,
+     "chars": 476,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 528,
+     "chars": 197,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 13.6,
+     "lineHeight": "19.04px",
+     "widthPx": 528,
+     "chars": 89,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 528,
+     "chars": 73,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "LI",
+     "fontSize": 17,
+     "lineHeight": "27.2px",
+     "widthPx": 528,
+     "chars": 49,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "LI",
+     "fontSize": 17,
+     "lineHeight": "27.2px",
+     "widthPx": 528,
+     "chars": 49,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 347,
+     "chars": 309,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 347,
+     "chars": 339,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 347,
+     "chars": 250,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 713,
+     "chars": 209,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 469,
+     "chars": 191,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 418,
+     "chars": 243,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "SPAN",
+     "fontSize": 13.6,
+     "lineHeight": "21.76px",
+     "widthPx": 418,
+     "chars": 77,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 469,
+     "chars": 533,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 418,
+     "chars": 145,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "SPAN",
+     "fontSize": 13.6,
+     "lineHeight": "21.76px",
+     "widthPx": 418,
+     "chars": 77,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 469,
+     "chars": 498,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "SPAN",
+     "fontSize": 13.6,
+     "lineHeight": "21.76px",
+     "widthPx": 469,
+     "chars": 227,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 469,
+     "chars": 573,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "SPAN",
+     "fontSize": 13.6,
+     "lineHeight": "21.76px",
+     "widthPx": 469,
+     "chars": 339,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 1152,
+     "chars": 311,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 1152,
+     "chars": 615,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 1152,
+     "chars": 562,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "LI",
+     "fontSize": 13.6,
+     "lineHeight": "21.76px",
+     "widthPx": 1152,
+     "chars": 248,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "LI",
+     "fontSize": 13.6,
+     "lineHeight": "21.76px",
+     "widthPx": 1152,
+     "chars": 253,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "LI",
+     "fontSize": 13.6,
+     "lineHeight": "21.76px",
+     "widthPx": 1152,
+     "chars": 207,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "LI",
+     "fontSize": 13.6,
+     "lineHeight": "21.76px",
+     "widthPx": 1152,
+     "chars": 281,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "LI",
+     "fontSize": 13.6,
+     "lineHeight": "21.76px",
+     "widthPx": 1152,
+     "chars": 176,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "LI",
+     "fontSize": 13.6,
+     "lineHeight": "21.76px",
+     "widthPx": 1152,
+     "chars": 122,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "LI",
+     "fontSize": 13.6,
+     "lineHeight": "21.76px",
+     "widthPx": 1152,
+     "chars": 188,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "LI",
+     "fontSize": 13.6,
+     "lineHeight": "21.76px",
+     "widthPx": 1152,
+     "chars": 168,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "LI",
+     "fontSize": 13.6,
+     "lineHeight": "21.76px",
+     "widthPx": 1152,
+     "chars": 184,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 757,
+     "chars": 88,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 757,
+     "chars": 71,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 536,
+     "chars": 250,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 485,
+     "chars": 278,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "SPAN",
+     "fontSize": 13.6,
+     "lineHeight": "21.76px",
+     "widthPx": 485,
+     "chars": 89,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 485,
+     "chars": 458,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "SPAN",
+     "fontSize": 13.6,
+     "lineHeight": "21.76px",
+     "widthPx": 485,
+     "chars": 47,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 536,
+     "chars": 225,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 536,
+     "chars": 161,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "SPAN",
+     "fontSize": 17,
+     "lineHeight": "22.95px",
+     "widthPx": 199,
+     "chars": 44,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "SPAN",
+     "fontSize": 13.6,
+     "lineHeight": "21.76px",
+     "widthPx": 199,
+     "chars": 61,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "SPAN",
+     "fontSize": 17,
+     "lineHeight": "22.95px",
+     "widthPx": 199,
+     "chars": 50,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "SPAN",
+     "fontSize": 13.6,
+     "lineHeight": "21.76px",
+     "widthPx": 199,
+     "chars": 43,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "SPAN",
+     "fontSize": 17,
+     "lineHeight": "22.95px",
+     "widthPx": 199,
+     "chars": 62,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "SPAN",
+     "fontSize": 13.6,
+     "lineHeight": "21.76px",
+     "widthPx": 199,
+     "chars": 57,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "SPAN",
+     "fontSize": 17,
+     "lineHeight": "22.95px",
+     "widthPx": 214,
+     "chars": 56,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "SPAN",
+     "fontSize": 13.6,
+     "lineHeight": "21.76px",
+     "widthPx": 214,
+     "chars": 59,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "SPAN",
+     "fontSize": 17,
+     "lineHeight": "22.95px",
+     "widthPx": 199,
+     "chars": 50,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "SPAN",
+     "fontSize": 13.6,
+     "lineHeight": "21.76px",
+     "widthPx": 199,
+     "chars": 81,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 464,
+     "chars": 68,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 464,
+     "chars": 62,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 464,
+     "chars": 61,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 464,
+     "chars": 119,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 13.6,
+     "lineHeight": "19.04px",
+     "widthPx": 1152,
+     "chars": 97,
+     "align": "start",
+     "shell": true
+    }
+   ],
+   "headings": [
+    {
+     "tag": "H1",
+     "text": "Qi Master®",
+     "size": 39.056,
+     "weight": "600",
+     "family": "system-ui",
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "H3",
+     "text": "Hole dir jetzt ein einmaliges Angebot, das es danach nie wie",
+     "size": 20,
+     "weight": "600",
+     "family": "system-ui",
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "H2",
+     "text": "Qi Master® - Eine bisher unerreichte Liga",
+     "size": 31.248,
+     "weight": "600",
+     "family": "system-ui",
+     "align": "center",
+     "shell": false
+    },
+    {
+     "tag": "H3",
+     "text": "Der Gitterchip™ der ultimativen Generation",
+     "size": 20,
+     "weight": "600",
+     "family": "system-ui",
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "H3",
+     "text": "\"The One Eye\" - Hochreiner Natur Diamant",
+     "size": 20,
+     "weight": "600",
+     "family": "system-ui",
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "H3",
+     "text": "Pure Leistung. Pure Entspannung.",
+     "size": 20,
+     "weight": "600",
+     "family": "system-ui",
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "H2",
+     "text": "The One Eye",
+     "size": 31.248,
+     "weight": "600",
+     "family": "system-ui",
+     "align": "center",
+     "shell": false
+    },
+    {
+     "tag": "H2",
+     "text": "Literatur",
+     "size": 31.248,
+     "weight": "600",
+     "family": "system-ui",
+     "align": "center",
+     "shell": false
+    },
+    {
+     "tag": "H3",
+     "text": "1. Diamant = Kohlenstoff",
+     "size": 20,
+     "weight": "600",
+     "family": "system-ui",
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "H3",
+     "text": "2. Licht im Kristallgitter",
+     "size": 20,
+     "weight": "600",
+     "family": "system-ui",
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "H3",
+     "text": "3. Kohärenz",
+     "size": 20,
+     "weight": "600",
+     "family": "system-ui",
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "H3",
+     "text": "4. Zellen und Licht",
+     "size": 20,
+     "weight": "600",
+     "family": "system-ui",
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "H2",
+     "text": "6G-Protection: Die Zukunft kommt.",
+     "size": 31.248,
+     "weight": "600",
+     "family": "system-ui",
+     "align": "center",
+     "shell": false
+    },
+    {
+     "tag": "H2",
+     "text": "Persönlichkeitsentwicklung durch erhöhte Zellschwingung",
+     "size": 31.248,
+     "weight": "600",
+     "family": "system-ui",
+     "align": "center",
+     "shell": false
+    },
+    {
+     "tag": "H3",
+     "text": "Das Bild von der Glühbirne",
+     "size": 25,
+     "weight": "600",
+     "family": "system-ui",
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "H3",
+     "text": "Das Fundament:",
+     "size": 25,
+     "weight": "600",
+     "family": "system-ui",
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "H2",
+     "text": "Dein Qi Master® begleitet dich\nTag und Nacht.",
+     "size": 31.248,
+     "weight": "600",
+     "family": "system-ui",
+     "align": "center",
+     "shell": false
+    },
+    {
+     "tag": "H2",
+     "text": "Publizierte Zellstudien zum Gitterchip™",
+     "size": 31.248,
+     "weight": "600",
+     "family": "system-ui",
+     "align": "center",
+     "shell": false
+    },
+    {
+     "tag": "H2",
+     "text": "Ein Stück, kein Serienteil.",
+     "size": 31.248,
+     "weight": "600",
+     "family": "system-ui",
+     "align": "center",
+     "shell": false
+    },
+    {
+     "tag": "H3",
+     "text": "Eigene Seriennummer",
+     "size": 20,
+     "weight": "600",
+     "family": "system-ui",
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "H3",
+     "text": "750er Gold",
+     "size": 20,
+     "weight": "600",
+     "family": "system-ui",
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "H3",
+     "text": "Diamanten",
+     "size": 20,
+     "weight": "600",
+     "family": "system-ui",
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "H3",
+     "text": "Die Iris: 108 Striche",
+     "size": 20,
+     "weight": "600",
+     "family": "system-ui",
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "H2",
+     "text": "Häufig gestellte Fragen (FAQ)",
+     "size": 31.248,
+     "weight": "600",
+     "family": "system-ui",
+     "align": "center",
+     "shell": false
+    }
+   ],
+   "buttons": [
+    {
+     "text": "In den Warenkorb",
+     "bg": "rgb(201, 161, 75)",
+     "color": "rgb(44, 42, 38)",
+     "radius": "8px",
+     "fontSize": 17,
+     "h": 57,
+     "label": "In den Warenkorb",
+     "href": "https://qiblanco.com/cart/62077673767180:1",
+     "shell": false
+    },
+    {
+     "text": "Hole dir deinen Qi Master®",
+     "bg": "rgb(201, 161, 75)",
+     "color": "rgb(250, 249, 245)",
+     "radius": "8px",
+     "fontSize": 17,
+     "h": 57,
+     "label": "Hole dir deinen Qi Master®",
+     "href": "#qm-buybox",
+     "shell": false
+    }
+   ],
+   "images": [
+    {
+     "radius": "16px",
+     "w": 256,
+     "h": 256,
+     "broken": false,
+     "brokenDom": false,
+     "lazyOffen": false,
+     "shell": false,
+     "hasCaption": true
+    },
+    {
+     "radius": "16px",
+     "w": 256,
+     "h": 256,
+     "broken": false,
+     "brokenDom": false,
+     "lazyOffen": false,
+     "shell": false,
+     "hasCaption": true
+    },
+    {
+     "radius": "16px",
+     "w": 468,
+     "h": 468,
+     "broken": false,
+     "brokenDom": false,
+     "lazyOffen": false,
+     "shell": false,
+     "hasCaption": true
+    },
+    {
+     "radius": "16px",
+     "w": 468,
+     "h": 468,
+     "broken": false,
+     "brokenDom": false,
+     "lazyOffen": false,
+     "shell": false,
+     "hasCaption": true
+    },
+    {
+     "radius": "16px",
+     "w": 256,
+     "h": 256,
+     "broken": false,
+     "brokenDom": false,
+     "lazyOffen": false,
+     "shell": false,
+     "hasCaption": false
+    },
+    {
+     "radius": "16px",
+     "w": 256,
+     "h": 256,
+     "broken": false,
+     "brokenDom": false,
+     "lazyOffen": false,
+     "shell": false,
+     "hasCaption": false
+    },
+    {
+     "radius": "16px",
+     "w": 256,
+     "h": 256,
+     "broken": false,
+     "brokenDom": false,
+     "lazyOffen": false,
+     "shell": false,
+     "hasCaption": false
+    },
+    {
+     "radius": "16px",
+     "w": 256,
+     "h": 256,
+     "broken": false,
+     "brokenDom": false,
+     "lazyOffen": false,
+     "shell": false,
+     "hasCaption": false
+    },
+    {
+     "radius": "4px",
+     "w": 197,
+     "h": 210,
+     "broken": false,
+     "brokenDom": false,
+     "lazyOffen": false,
+     "shell": false,
+     "hasCaption": false
+    },
+    {
+     "radius": "4px",
+     "w": 197,
+     "h": 210,
+     "broken": false,
+     "brokenDom": false,
+     "lazyOffen": false,
+     "shell": false,
+     "hasCaption": false
+    },
+    {
+     "radius": "4px",
+     "w": 197,
+     "h": 210,
+     "broken": false,
+     "brokenDom": false,
+     "lazyOffen": false,
+     "shell": false,
+     "hasCaption": false
+    },
+    {
+     "radius": "4px",
+     "w": 212,
+     "h": 226,
+     "broken": false,
+     "brokenDom": false,
+     "lazyOffen": false,
+     "shell": false,
+     "hasCaption": false
+    },
+    {
+     "radius": "4px",
+     "w": 197,
+     "h": 210,
+     "broken": false,
+     "brokenDom": false,
+     "lazyOffen": false,
+     "shell": false,
+     "hasCaption": false
+    }
+   ],
+   "ctaKnoepfe": [
+    {
+     "text": "In den Warenkorb",
+     "bg": "rgb(201, 161, 75)",
+     "color": "rgb(44, 42, 38)",
+     "radius": "8px",
+     "fontSize": 17,
+     "h": 57,
+     "label": "In den Warenkorb",
+     "href": "https://qiblanco.com/cart/62077673767180:1",
+     "shell": false
+    },
+    {
+     "text": "Hole dir deinen Qi Master®",
+     "bg": "rgb(201, 161, 75)",
+     "color": "rgb(250, 249, 245)",
+     "radius": "8px",
+     "fontSize": 17,
+     "h": 57,
+     "label": "Hole dir deinen Qi Master®",
+     "href": "#qm-buybox",
+     "shell": false
+    }
+   ],
+   "ctaKnoepfeGedeckelt": false,
+   "ctaHuelle": 0,
+   "sections": [
+    {
+     "name": "qm-kopf",
+     "h": 64,
+     "bg": "rgba(0, 0, 0, 0)",
+     "padTop": 16,
+     "padBottom": 16,
+     "marTop": 0,
+     "marBottom": 0
+    },
+    {
+     "name": "qm-buybox",
+     "h": 1786,
+     "bg": "rgba(0, 0, 0, 0)",
+     "padTop": 96,
+     "padBottom": 96,
+     "marTop": 0,
+     "marBottom": 0
+    },
+    {
+     "name": "qm-diamantbilder",
+     "h": 286,
+     "bg": "rgba(0, 0, 0, 0)",
+     "padTop": 0,
+     "padBottom": 0,
+     "marTop": 0,
+     "marBottom": 0
+    },
+    {
+     "name": "qm-treppe",
+     "h": 805,
+     "bg": "rgba(0, 0, 0, 0)",
+     "padTop": 32,
+     "padBottom": 32,
+     "marTop": 24,
+     "marBottom": 24
+    },
+    {
+     "name": "qm-features",
+     "h": 573,
+     "bg": "rgba(0, 0, 0, 0)",
+     "padTop": 96,
+     "padBottom": 96,
+     "marTop": 0,
+     "marBottom": 0
+    },
+    {
+     "name": "qm-guete",
+     "h": 231,
+     "bg": "rgba(0, 0, 0, 0)",
+     "padTop": 0,
+     "padBottom": 96,
+     "marTop": 0,
+     "marBottom": 0
+    },
+    {
+     "name": "qm-diamantbilder",
+     "h": 759,
+     "bg": "rgba(0, 0, 0, 0)",
+     "padTop": 96,
+     "padBottom": 96,
+     "marTop": 0,
+     "marBottom": 0
+    },
+    {
+     "name": "qm-literatur",
+     "h": 2258,
+     "bg": "rgba(0, 0, 0, 0)",
+     "padTop": 96,
+     "padBottom": 96,
+     "marTop": 0,
+     "marBottom": 0
+    },
+    {
+     "name": "qm-6g",
+     "h": 1122,
+     "bg": "rgb(248, 244, 238)",
+     "padTop": 96,
+     "padBottom": 96,
+     "marTop": 0,
+     "marBottom": 0
+    },
+    {
+     "name": "qm-persoenlichkeit",
+     "h": 1105,
+     "bg": "rgba(0, 0, 0, 0)",
+     "padTop": 96,
+     "padBottom": 96,
+     "marTop": 0,
+     "marBottom": 0
+    },
+    {
+     "name": "qm-begleiter",
+     "h": 432,
+     "bg": "rgb(26, 26, 26)",
+     "padTop": 96,
+     "padBottom": 96,
+     "marTop": 0,
+     "marBottom": 0
+    },
+    {
+     "name": "qm-studien",
+     "h": 691,
+     "bg": "rgba(0, 0, 0, 0)",
+     "padTop": 96,
+     "padBottom": 96,
+     "marTop": 0,
+     "marBottom": 0
+    },
+    {
+     "name": "qm-fertigung",
+     "h": 501,
+     "bg": "rgba(0, 0, 0, 0)",
+     "padTop": 96,
+     "padBottom": 96,
+     "marTop": 0,
+     "marBottom": 0
+    },
+    {
+     "name": "qm-faq",
+     "h": 838,
+     "bg": "rgba(0, 0, 0, 0)",
+     "padTop": 96,
+     "padBottom": 96,
+     "marTop": 0,
+     "marBottom": 0
+    },
+    {
+     "name": "qm-fuss",
+     "h": 161,
+     "bg": "rgb(26, 26, 26)",
+     "padTop": 48,
+     "padBottom": 48,
+     "marTop": 0,
+     "marBottom": 0
+    }
+   ],
+   "maxZ": 0,
+   "huelleDefinition": "hauptbereich",
+   "hauptBereich": {
+    "top": 64,
+    "bottom": 10360
+   },
+   "consentEntfernt": [],
+   "pageerrors": [],
+   "pageerrorsFremd": [],
+   "requestsFailed": [],
+   "requestsClientAbgebrochen": [],
+   "requestsFailedDetail": [],
+   "requestsSelbstAbgebrochen": [],
+   "tiles": [
+    "shot-desktop-tile0.png",
+    "shot-desktop-tile1.png",
+    "shot-desktop-tile2.png",
+    "shot-desktop-tile3.png",
+    "shot-desktop-tile4.png"
+   ],
+   "tilesInhalt": [
+    {
+     "datei": "shot-desktop-tile0.png",
+     "top": 64,
+     "bottom": 900
+    },
+    {
+     "datei": "shot-desktop-tile1.png",
+     "top": 0,
+     "bottom": 900
+    },
+    {
+     "datei": "shot-desktop-tile2.png",
+     "top": 0,
+     "bottom": 900
+    },
+    {
+     "datei": "shot-desktop-tile3.png",
+     "top": 0,
+     "bottom": 900
+    },
+    {
+     "datei": "shot-desktop-tile4.png",
+     "top": 0,
+     "bottom": 900
+    }
+   ],
+   "consentKacheln": 0
+  },
+  "mobile": {
+   "docHeight": 19059,
+   "clientWidth": 390,
+   "overflowX": false,
+   "fontFamilies": {
+    "system-ui": 161
+   },
+   "fontSizes": {
+    "16": 37,
+    "33": 2,
+    "18.25": 21,
+    "16.25": 42,
+    "12.75": 42,
+    "26.75": 9,
+    "22.25": 8
+   },
+   "colorsText": {
+    "rgb(26, 26, 26)": 49,
+    "rgb(44, 42, 38)": 70,
+    "rgb(107, 102, 93)": 32,
+    "rgb(250, 249, 245)": 8,
+    "rgb(207, 200, 187)": 2
+   },
+   "colorsBg": {
+    "rgb(201, 161, 75)": 2,
+    "rgb(248, 244, 238)": 11,
+    "rgb(26, 26, 26)": 2
+   },
+   "colorsTextHuelle": {
+    "rgb(26, 26, 26)": 2,
+    "rgb(44, 42, 38)": 1,
+    "rgb(250, 249, 245)": 6,
+    "rgb(207, 200, 187)": 1
+   },
+   "colorsBgHuelle": {
+    "rgb(26, 26, 26)": 1
+   },
+   "fontSizesHuelle": {
+    "18.25": 1,
+    "16.25": 2,
+    "12.75": 7
+   },
+   "textBlocks": [
+    {
+     "tag": "P",
+     "fontSize": 12.87,
+     "lineHeight": "18.018px",
+     "widthPx": 310,
+     "chars": 78,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 12.87,
+     "lineHeight": "18.018px",
+     "widthPx": 310,
+     "chars": 476,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 310,
+     "chars": 197,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 12.87,
+     "lineHeight": "18.018px",
+     "widthPx": 310,
+     "chars": 89,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 310,
+     "chars": 73,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "LI",
+     "fontSize": 16.14,
+     "lineHeight": "25.824px",
+     "widthPx": 310,
+     "chars": 49,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "LI",
+     "fontSize": 16.14,
+     "lineHeight": "25.824px",
+     "widthPx": 310,
+     "chars": 49,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 310,
+     "chars": 309,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 310,
+     "chars": 339,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 310,
+     "chars": 250,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 310,
+     "chars": 209,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 310,
+     "chars": 191,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 259,
+     "chars": 243,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "SPAN",
+     "fontSize": 12.87,
+     "lineHeight": "20.592px",
+     "widthPx": 259,
+     "chars": 77,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 310,
+     "chars": 533,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 259,
+     "chars": 145,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "SPAN",
+     "fontSize": 12.87,
+     "lineHeight": "20.592px",
+     "widthPx": 259,
+     "chars": 77,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 310,
+     "chars": 498,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "SPAN",
+     "fontSize": 12.87,
+     "lineHeight": "20.592px",
+     "widthPx": 310,
+     "chars": 227,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 310,
+     "chars": 573,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "SPAN",
+     "fontSize": 12.87,
+     "lineHeight": "20.592px",
+     "widthPx": 310,
+     "chars": 339,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 310,
+     "chars": 311,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 310,
+     "chars": 615,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 310,
+     "chars": 562,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "LI",
+     "fontSize": 12.87,
+     "lineHeight": "20.592px",
+     "widthPx": 310,
+     "chars": 248,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "LI",
+     "fontSize": 12.87,
+     "lineHeight": "20.592px",
+     "widthPx": 310,
+     "chars": 253,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "LI",
+     "fontSize": 12.87,
+     "lineHeight": "20.592px",
+     "widthPx": 310,
+     "chars": 207,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "LI",
+     "fontSize": 12.87,
+     "lineHeight": "20.592px",
+     "widthPx": 310,
+     "chars": 281,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "LI",
+     "fontSize": 12.87,
+     "lineHeight": "20.592px",
+     "widthPx": 310,
+     "chars": 176,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "LI",
+     "fontSize": 12.87,
+     "lineHeight": "20.592px",
+     "widthPx": 310,
+     "chars": 122,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "LI",
+     "fontSize": 12.87,
+     "lineHeight": "20.592px",
+     "widthPx": 310,
+     "chars": 188,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "LI",
+     "fontSize": 12.87,
+     "lineHeight": "20.592px",
+     "widthPx": 310,
+     "chars": 168,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "LI",
+     "fontSize": 12.87,
+     "lineHeight": "20.592px",
+     "widthPx": 310,
+     "chars": 184,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 310,
+     "chars": 88,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 310,
+     "chars": 71,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 310,
+     "chars": 250,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 259,
+     "chars": 278,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "SPAN",
+     "fontSize": 12.87,
+     "lineHeight": "20.592px",
+     "widthPx": 259,
+     "chars": 89,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 259,
+     "chars": 458,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "SPAN",
+     "fontSize": 12.87,
+     "lineHeight": "20.592px",
+     "widthPx": 259,
+     "chars": 47,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 310,
+     "chars": 225,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 310,
+     "chars": 161,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "SPAN",
+     "fontSize": 16.14,
+     "lineHeight": "21.789px",
+     "widthPx": 310,
+     "chars": 44,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "SPAN",
+     "fontSize": 12.87,
+     "lineHeight": "20.592px",
+     "widthPx": 310,
+     "chars": 61,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "SPAN",
+     "fontSize": 16.14,
+     "lineHeight": "21.789px",
+     "widthPx": 310,
+     "chars": 50,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "SPAN",
+     "fontSize": 12.87,
+     "lineHeight": "20.592px",
+     "widthPx": 310,
+     "chars": 43,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "SPAN",
+     "fontSize": 16.14,
+     "lineHeight": "21.789px",
+     "widthPx": 310,
+     "chars": 62,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "SPAN",
+     "fontSize": 12.87,
+     "lineHeight": "20.592px",
+     "widthPx": 310,
+     "chars": 57,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "SPAN",
+     "fontSize": 16.14,
+     "lineHeight": "21.789px",
+     "widthPx": 310,
+     "chars": 56,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "SPAN",
+     "fontSize": 12.87,
+     "lineHeight": "20.592px",
+     "widthPx": 310,
+     "chars": 59,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "SPAN",
+     "fontSize": 16.14,
+     "lineHeight": "21.789px",
+     "widthPx": 310,
+     "chars": 50,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "SPAN",
+     "fontSize": 12.87,
+     "lineHeight": "20.592px",
+     "widthPx": 310,
+     "chars": 81,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 310,
+     "chars": 68,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 310,
+     "chars": 62,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 310,
+     "chars": 61,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 310,
+     "chars": 119,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 12.87,
+     "lineHeight": "18.018px",
+     "widthPx": 342,
+     "chars": 97,
+     "align": "start",
+     "shell": true
+    }
+   ],
+   "headings": [
+    {
+     "tag": "H1",
+     "text": "Qi Master®",
+     "size": 33.01,
+     "weight": "600",
+     "family": "system-ui",
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "H3",
+     "text": "Hole dir jetzt ein einmaliges Angebot, das es danach nie wie",
+     "size": 18.165,
+     "weight": "600",
+     "family": "system-ui",
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "H2",
+     "text": "Qi Master® - Eine bisher unerreichte Liga",
+     "size": 26.67,
+     "weight": "600",
+     "family": "system-ui",
+     "align": "center",
+     "shell": false
+    },
+    {
+     "tag": "H3",
+     "text": "Der Gitterchip™ der ultimativen Generation",
+     "size": 18.165,
+     "weight": "600",
+     "family": "system-ui",
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "H3",
+     "text": "\"The One Eye\" - Hochreiner Natur Diamant",
+     "size": 18.165,
+     "weight": "600",
+     "family": "system-ui",
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "H3",
+     "text": "Pure Leistung. Pure Entspannung.",
+     "size": 18.165,
+     "weight": "600",
+     "family": "system-ui",
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "H2",
+     "text": "The One Eye",
+     "size": 26.67,
+     "weight": "600",
+     "family": "system-ui",
+     "align": "center",
+     "shell": false
+    },
+    {
+     "tag": "H2",
+     "text": "Literatur",
+     "size": 26.67,
+     "weight": "600",
+     "family": "system-ui",
+     "align": "center",
+     "shell": false
+    },
+    {
+     "tag": "H3",
+     "text": "1. Diamant = Kohlenstoff",
+     "size": 18.165,
+     "weight": "600",
+     "family": "system-ui",
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "H3",
+     "text": "2. Licht im Kristallgitter",
+     "size": 18.165,
+     "weight": "600",
+     "family": "system-ui",
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "H3",
+     "text": "3. Kohärenz",
+     "size": 18.165,
+     "weight": "600",
+     "family": "system-ui",
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "H3",
+     "text": "4. Zellen und Licht",
+     "size": 18.165,
+     "weight": "600",
+     "family": "system-ui",
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "H2",
+     "text": "6G-Protection: Die Zukunft kommt.",
+     "size": 26.67,
+     "weight": "600",
+     "family": "system-ui",
+     "align": "center",
+     "shell": false
+    },
+    {
+     "tag": "H2",
+     "text": "Persönlichkeitsentwicklung durch erhöhte Zellschwingung",
+     "size": 26.67,
+     "weight": "600",
+     "family": "system-ui",
+     "align": "center",
+     "shell": false
+    },
+    {
+     "tag": "H3",
+     "text": "Das Bild von der Glühbirne",
+     "size": 22.32,
+     "weight": "600",
+     "family": "system-ui",
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "H3",
+     "text": "Das Fundament:",
+     "size": 22.32,
+     "weight": "600",
+     "family": "system-ui",
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "H2",
+     "text": "Dein Qi Master® begleitet dich\nTag und Nacht.",
+     "size": 26.67,
+     "weight": "600",
+     "family": "system-ui",
+     "align": "center",
+     "shell": false
+    },
+    {
+     "tag": "H2",
+     "text": "Publizierte Zellstudien zum Gitterchip™",
+     "size": 26.67,
+     "weight": "600",
+     "family": "system-ui",
+     "align": "center",
+     "shell": false
+    },
+    {
+     "tag": "H2",
+     "text": "Ein Stück, kein Serienteil.",
+     "size": 26.67,
+     "weight": "600",
+     "family": "system-ui",
+     "align": "center",
+     "shell": false
+    },
+    {
+     "tag": "H3",
+     "text": "Eigene Seriennummer",
+     "size": 18.165,
+     "weight": "600",
+     "family": "system-ui",
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "H3",
+     "text": "750er Gold",
+     "size": 18.165,
+     "weight": "600",
+     "family": "system-ui",
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "H3",
+     "text": "Diamanten",
+     "size": 18.165,
+     "weight": "600",
+     "family": "system-ui",
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "H3",
+     "text": "Die Iris: 108 Striche",
+     "size": 18.165,
+     "weight": "600",
+     "family": "system-ui",
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "H2",
+     "text": "Häufig gestellte Fragen (FAQ)",
+     "size": 26.67,
+     "weight": "600",
+     "family": "system-ui",
+     "align": "center",
+     "shell": false
+    }
+   ],
+   "buttons": [
+    {
+     "text": "In den Warenkorb",
+     "bg": "rgb(201, 161, 75)",
+     "color": "rgb(44, 42, 38)",
+     "radius": "8px",
+     "fontSize": 16.14,
+     "h": 56,
+     "label": "In den Warenkorb",
+     "href": "https://qiblanco.com/cart/62077673767180:1",
+     "shell": false
+    },
+    {
+     "text": "Hole dir deinen Qi Master®",
+     "bg": "rgb(201, 161, 75)",
+     "color": "rgb(250, 249, 245)",
+     "radius": "8px",
+     "fontSize": 16.14,
+     "h": 76,
+     "label": "Hole dir deinen Qi Master®",
+     "href": "#qm-buybox",
+     "shell": false
+    }
+   ],
+   "images": [
+    {
+     "radius": "16px",
+     "w": 310,
+     "h": 310,
+     "broken": false,
+     "brokenDom": false,
+     "lazyOffen": false,
+     "shell": false,
+     "hasCaption": true
+    },
+    {
+     "radius": "16px",
+     "w": 310,
+     "h": 310,
+     "broken": false,
+     "brokenDom": false,
+     "lazyOffen": false,
+     "shell": false,
+     "hasCaption": true
+    },
+    {
+     "radius": "16px",
+     "w": 310,
+     "h": 310,
+     "broken": false,
+     "brokenDom": false,
+     "lazyOffen": false,
+     "shell": false,
+     "hasCaption": true
+    },
+    {
+     "radius": "16px",
+     "w": 310,
+     "h": 310,
+     "broken": false,
+     "brokenDom": false,
+     "lazyOffen": false,
+     "shell": false,
+     "hasCaption": true
+    },
+    {
+     "radius": "16px",
+     "w": 310,
+     "h": 310,
+     "broken": false,
+     "brokenDom": false,
+     "lazyOffen": false,
+     "shell": false,
+     "hasCaption": false
+    },
+    {
+     "radius": "16px",
+     "w": 310,
+     "h": 310,
+     "broken": false,
+     "brokenDom": false,
+     "lazyOffen": false,
+     "shell": false,
+     "hasCaption": false
+    },
+    {
+     "radius": "16px",
+     "w": 310,
+     "h": 310,
+     "broken": false,
+     "brokenDom": false,
+     "lazyOffen": false,
+     "shell": false,
+     "hasCaption": false
+    },
+    {
+     "radius": "16px",
+     "w": 310,
+     "h": 310,
+     "broken": false,
+     "brokenDom": false,
+     "lazyOffen": false,
+     "shell": false,
+     "hasCaption": false
+    },
+    {
+     "radius": "4px",
+     "w": 308,
+     "h": 330,
+     "broken": false,
+     "brokenDom": false,
+     "lazyOffen": false,
+     "shell": false,
+     "hasCaption": false
+    },
+    {
+     "radius": "4px",
+     "w": 308,
+     "h": 330,
+     "broken": false,
+     "brokenDom": false,
+     "lazyOffen": false,
+     "shell": false,
+     "hasCaption": false
+    },
+    {
+     "radius": "4px",
+     "w": 308,
+     "h": 330,
+     "broken": false,
+     "brokenDom": false,
+     "lazyOffen": false,
+     "shell": false,
+     "hasCaption": false
+    },
+    {
+     "radius": "4px",
+     "w": 308,
+     "h": 330,
+     "broken": false,
+     "brokenDom": false,
+     "lazyOffen": false,
+     "shell": false,
+     "hasCaption": false
+    },
+    {
+     "radius": "4px",
+     "w": 308,
+     "h": 330,
+     "broken": false,
+     "brokenDom": false,
+     "lazyOffen": false,
+     "shell": false,
+     "hasCaption": false
+    }
+   ],
+   "ctaKnoepfe": [
+    {
+     "text": "In den Warenkorb",
+     "bg": "rgb(201, 161, 75)",
+     "color": "rgb(44, 42, 38)",
+     "radius": "8px",
+     "fontSize": 16.14,
+     "h": 56,
+     "label": "In den Warenkorb",
+     "href": "https://qiblanco.com/cart/62077673767180:1",
+     "shell": false
+    },
+    {
+     "text": "Hole dir deinen Qi Master®",
+     "bg": "rgb(201, 161, 75)",
+     "color": "rgb(250, 249, 245)",
+     "radius": "8px",
+     "fontSize": 16.14,
+     "h": 76,
+     "label": "Hole dir deinen Qi Master®",
+     "href": "#qm-buybox",
+     "shell": false
+    }
+   ],
+   "ctaKnoepfeGedeckelt": false,
+   "ctaHuelle": 0,
+   "sections": [
+    {
+     "name": "qm-kopf",
+     "h": 90,
+     "bg": "rgba(0, 0, 0, 0)",
+     "padTop": 16,
+     "padBottom": 16,
+     "marTop": 0,
+     "marBottom": 0
+    },
+    {
+     "name": "qm-buybox",
+     "h": 2824,
+     "bg": "rgba(0, 0, 0, 0)",
+     "padTop": 64,
+     "padBottom": 64,
+     "marTop": 0,
+     "marBottom": 0
+    },
+    {
+     "name": "qm-diamantbilder",
+     "h": 693,
+     "bg": "rgba(0, 0, 0, 0)",
+     "padTop": 0,
+     "padBottom": 0,
+     "marTop": 0,
+     "marBottom": 0
+    },
+    {
+     "name": "qm-treppe",
+     "h": 1097,
+     "bg": "rgba(0, 0, 0, 0)",
+     "padTop": 16,
+     "padBottom": 16,
+     "marTop": 24,
+     "marBottom": 24
+    },
+    {
+     "name": "qm-features",
+     "h": 1150,
+     "bg": "rgba(0, 0, 0, 0)",
+     "padTop": 64,
+     "padBottom": 64,
+     "marTop": 0,
+     "marBottom": 0
+    },
+    {
+     "name": "qm-guete",
+     "h": 473,
+     "bg": "rgba(0, 0, 0, 0)",
+     "padTop": 0,
+     "padBottom": 64,
+     "marTop": 0,
+     "marBottom": 0
+    },
+    {
+     "name": "qm-diamantbilder",
+     "h": 893,
+     "bg": "rgba(0, 0, 0, 0)",
+     "padTop": 64,
+     "padBottom": 64,
+     "marTop": 0,
+     "marBottom": 0
+    },
+    {
+     "name": "qm-literatur",
+     "h": 4194,
+     "bg": "rgba(0, 0, 0, 0)",
+     "padTop": 64,
+     "padBottom": 64,
+     "marTop": 0,
+     "marBottom": 0
+    },
+    {
+     "name": "qm-6g",
+     "h": 2466,
+     "bg": "rgb(248, 244, 238)",
+     "padTop": 64,
+     "padBottom": 64,
+     "marTop": 0,
+     "marBottom": 0
+    },
+    {
+     "name": "qm-persoenlichkeit",
+     "h": 2020,
+     "bg": "rgba(0, 0, 0, 0)",
+     "padTop": 64,
+     "padBottom": 64,
+     "marTop": 0,
+     "marBottom": 0
+    },
+    {
+     "name": "qm-begleiter",
+     "h": 393,
+     "bg": "rgb(26, 26, 26)",
+     "padTop": 64,
+     "padBottom": 64,
+     "marTop": 0,
+     "marBottom": 0
+    },
+    {
+     "name": "qm-studien",
+     "h": 2533,
+     "bg": "rgba(0, 0, 0, 0)",
+     "padTop": 64,
+     "padBottom": 64,
+     "marTop": 0,
+     "marBottom": 0
+    },
+    {
+     "name": "qm-fertigung",
+     "h": 727,
+     "bg": "rgba(0, 0, 0, 0)",
+     "padTop": 64,
+     "padBottom": 64,
+     "marTop": 0,
+     "marBottom": 0
+    },
+    {
+     "name": "qm-faq",
+     "h": 1067,
+     "bg": "rgba(0, 0, 0, 0)",
+     "padTop": 64,
+     "padBottom": 64,
+     "marTop": 0,
+     "marBottom": 0
+    },
+    {
+     "name": "qm-fuss",
+     "h": 213,
+     "bg": "rgb(26, 26, 26)",
+     "padTop": 48,
+     "padBottom": 48,
+     "marTop": 0,
+     "marBottom": 0
+    }
+   ],
+   "maxZ": 0,
+   "huelleDefinition": "hauptbereich",
+   "hauptBereich": {
+    "top": 90,
+    "bottom": 18830
+   },
+   "consentEntfernt": [],
+   "pageerrors": [],
+   "pageerrorsFremd": [],
+   "requestsFailed": [],
+   "requestsClientAbgebrochen": [],
+   "requestsFailedDetail": [],
+   "requestsSelbstAbgebrochen": [],
+   "tiles": [
+    "shot-mobile-tile0.png",
+    "shot-mobile-tile1.png",
+    "shot-mobile-tile2.png",
+    "shot-mobile-tile3.png",
+    "shot-mobile-tile4.png"
+   ],
+   "tilesInhalt": [
+    {
+     "datei": "shot-mobile-tile0.png",
+     "top": 90,
+     "bottom": 844
+    },
+    {
+     "datei": "shot-mobile-tile1.png",
+     "top": 0,
+     "bottom": 844
+    },
+    {
+     "datei": "shot-mobile-tile2.png",
+     "top": 0,
+     "bottom": 844
+    },
+    {
+     "datei": "shot-mobile-tile3.png",
+     "top": 0,
+     "bottom": 844
+    },
+    {
+     "datei": "shot-mobile-tile4.png",
+     "top": 0,
+     "bottom": 844
+    }
+   ],
+   "consentKacheln": 0
+  }
+ }
+}
