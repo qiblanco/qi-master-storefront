@@ -2,7 +2,7 @@
   "schema": 1,
   "upstream_repo": "qiblanco/qiblanco-storefront",
   "upstream_ref": "origin/main",
-  "upstream_commit": "4349b782bcff616cbaaeea2ba0b29121e9d28f57",
+  "upstream_commit": "ae103de933cb888b6e61376521ae1468253ee9e7",
   "erzeuger": "pruefungen/bestand-nachziehen (Ableitung in pruefungen/bestand.py)",
   "dateien": [
     {
@@ -15,7 +15,7 @@
       "lokal": "app/data/qi-master/qi-master-faq.js",
       "klasse": "K3",
       "quelle": "app/data/product-faqs.js",
-      "sha256": "31df7c0631dcaa0b917743560e1d61ba63466b2342a706c9fd9f781d80be26ff"
+      "sha256": "44f93f627dd0ce580b84eac050a3f6c11736845b2374292f9ef68c1ad3f7c138"
     },
     {
       "lokal": "app/data/qi-master/qi-master-guetezeichen.js",
@@ -51,7 +51,7 @@
       "lokal": "app/lib/qi-master-kopfsymbole.js",
       "klasse": "K1",
       "quelle": "app/lib/qi-master-kopfsymbole.js",
-      "sha256": "3b5b9cdd2001bdc5d051a958cb52023cde16fee69f1ea7e8cdbff88ed99a72aa"
+      "sha256": "76b97ea8a12ed9794ab0df3978cd3da1eac711ef5a3d3a7b23f63fff9f866114"
     },
     {
       "lokal": "app/lib/qi-master-preisstufen.js",
