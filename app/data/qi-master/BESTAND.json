@@ -2,7 +2,7 @@
   "schema": 1,
   "upstream_repo": "qiblanco/qiblanco-storefront",
   "upstream_ref": "origin/main",
-  "upstream_commit": "ae103de933cb888b6e61376521ae1468253ee9e7",
+  "upstream_commit": "5793b299c04428dda338fb8470a402a539572428",
   "erzeuger": "pruefungen/bestand-nachziehen (Ableitung in pruefungen/bestand.py)",
   "dateien": [
     {
@@ -21,7 +21,7 @@
       "lokal": "app/data/qi-master/qi-master-guetezeichen.js",
       "klasse": "K1",
       "quelle": "app/data/qi-master-guetezeichen.js",
-      "sha256": "e3338e5a1eb07027ea7d7c46129433373bb8e97d4c979364511c25bee252360d"
+      "sha256": "aacb76eafb854b76247eb5bdde4bada96a1ee740c9f8fb0dcba9cae4c37e3ef1"
     },
     {
       "lokal": "app/data/qi-master/qi-master-literaturbilder.js",
@@ -33,7 +33,7 @@
       "lokal": "app/data/qi-master/qi-master-preisstufen.json",
       "klasse": "K1",
       "quelle": "app/data/qi-master-preisstufen.json",
-      "sha256": "4dd863e363131847ece873fe777375bf9ed5f9705e3557413bde655559f2c44d"
+      "sha256": "650cacde71ead875e047ac77f45b622ebf2b17a7d16f37d2fb122d3e83f402fd"
     },
     {
       "lokal": "app/data/qi-master/qi-master-studien.js",
