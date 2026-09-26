@@ -1,11 +1,11 @@
 import {Image} from '@shopify/hydrogen';
 import {Kaufknopf} from './Kaufknopf';
-import {Treppe} from './Treppe';
+import {Wortlaut} from './Wortlaut';
 import {BenefitList} from './BenefitList';
 import {fremdHtmlMitKopfsymbolen} from '~/lib/qi-master-kopfsymbole';
 
 /**
- * Die Kaufbox der Kaufseite: Titel, Preis, Vorverkaufstreppe, Beschreibung, Kaufknopf, Nutzen.
+ * Die Kaufbox der Kaufseite: Titel, Preis, Christians Wortlaut vom 22.09.2026, Beschreibung, Kaufknopf, Nutzen.
  *
  * SIE TRAEGT DIE ID qm-buybox, weil der Banner weiter unten ("Hole dir deinen Qi Master®")
  * dorthin springt -- dieselbe Id wie auf qiblanco.com, und sie existiert wirklich (Befund
@@ -17,7 +17,7 @@ import {fremdHtmlMitKopfsymbolen} from '~/lib/qi-master-kopfsymbole';
  *
  * "inkl. 19 % MwSt." haengt am Preis, nicht unter der Tabelle (Christian, 2026-09-16).
  */
-export function BuyBox({product, preisText, kaufwegHref, treppe, bilderErsatz}) {
+export function BuyBox({product, preisText, kaufwegHref, bilderErsatz}) {
   const bilder = product?.images?.nodes?.filter(Boolean) ?? [];
   const html = fremdHtmlMitKopfsymbolen(product?.descriptionHtml ?? '');
   return (
@@ -35,8 +35,8 @@ export function BuyBox({product, preisText, kaufwegHref, treppe, bilderErsatz}) 
           <span className="qm-buybox__betrag">{preisText}</span>
           <span className="qm-steuerhinweis">inkl. 19 % MwSt.</span>
         </p>
+        <Wortlaut kompakt />
         <Kaufknopf href={kaufwegHref} />
-        {treppe ? <Treppe treppe={treppe} kompakt /> : null}
         <div
           className="qm-beschreibung"
           dangerouslySetInnerHTML={{__html: html}}

@@ -1,6 +1,6 @@
 {
  "engine": "design-meister webdesign-rubrik v1 (deterministisch, offline)",
- "zeit": "2026-09-20T22:09:44Z",
+ "zeit": "2026-09-26T02:44:44Z",
  "target": "http://127.0.0.1:3341/",
  "seite": "qi-master-frontseite",
  "score": 99,
@@ -10,7 +10,7 @@
   "technisch": 100,
   "harmonisch_farbe": 100,
   "durchdacht_layout": 100,
-  "stimmig_typo": 96,
+  "stimmig_typo": 92,
   "liebevoll_detail": 100,
   "ruhig_weissraum": 100
  },
@@ -23,8 +23,8 @@
   "ruhig_weissraum": 0.1
  },
  "befunde": [
-  "stimmig: Body-Groesse uneinheitlich (haeufigste Groesse traegt nur 43%).",
-  "hinweis: 1 von 29 Textbloecken stehen in der geteilten Huelle (Kopf/Fuss/Navigation) und zaehlen nicht gegen die Body-Groesse dieser Seite."
+  "stimmig: Body-Groesse uneinheitlich (haeufigste Groesse traegt nur 37%).",
+  "hinweis: 1 von 28 Textbloecken stehen in der geteilten Huelle (Kopf/Fuss/Navigation) und zaehlen nicht gegen die Body-Groesse dieser Seite."
  ],
  "render_plausibel": {
   "plausibel": true,
@@ -32,18 +32,18 @@
    "desktop": {
     "befunde": [],
     "plausibel": true,
-    "docHeight": 5009,
+    "docHeight": 4698,
     "viewportHoehe": 900,
-    "elemente": 55,
+    "elemente": 53,
     "dominanteSchrift": "system-ui",
     "kachelnIdentisch": false
    },
    "mobile": {
     "befunde": [],
     "plausibel": true,
-    "docHeight": 10054,
+    "docHeight": 9679,
     "viewportHoehe": 844,
-    "elemente": 55,
+    "elemente": 53,
     "dominanteSchrift": "system-ui",
     "kachelnIdentisch": false
    }
@@ -52,5 +52,6 @@
   "befunde": []
  },
  "requests_client_abgebrochen": [],
- "pageerrors_fremd": []
+ "pageerrors_fremd": [],
+ "lernkarte": "/srv/openclaw/shared-state/design-meister/db/webdesign/lernkarten/20260926T024444Z-qi-master-frontseite.yaml"
 }

@@ -1,8 +1,6 @@
 import {useLoaderData} from 'react-router';
 import {ladeQiMaster} from '~/lib/qi-master-produkt';
 import {kaufwegUrl, trackingParameter} from '~/lib/kaufweg';
-import {treppe as treppeRechnen} from '~/lib/qi-master-preisstufen';
-import preisstufen from '~/data/qi-master/qi-master-preisstufen.json';
 import {BuyBox} from '~/components/qi-master/BuyBox';
 import {Studien} from '~/components/qi-master/Studien';
 import {Faq} from '~/components/qi-master/Faq';
@@ -56,7 +54,9 @@ export async function loader({context, request}) {
   const mitreisend = trackingParameter(request).toString();
   return {
     ...geladen,
-    treppe: treppeRechnen(preisstufen),
+    // Bis 2026-09-26 rechnete der Loader hier die Vorverkaufstreppe. Christian hat sie am
+    // 22.09. abgeloest; was der Loader liefert, steht im ausgelieferten Stream -- deshalb
+    // rechnet er keine Stufe mehr. An ihrer Stelle steht Wortlaut.jsx (Bauzeit-Import).
     kaufwegHref: kaufwegUrl(geladen.variante?.id, request),
     mitreisend: mitreisend ? `?${mitreisend}` : '',
   };
@@ -64,14 +64,13 @@ export async function loader({context, request}) {
 
 export default function Kaufseite() {
   /** @type {LoaderReturnData} */
-  const {product, preisText, treppe, kaufwegHref, mitreisend} = useLoaderData();
+  const {product, preisText, kaufwegHref, mitreisend} = useLoaderData();
   return (
     <div className="qm qm-pdp" data-qb-seite="qi-master-kaufseite">
       <BuyBox
         product={product}
         preisText={preisText}
         kaufwegHref={kaufwegHref}
-        treppe={treppe}
         bilderErsatz={<DiamantBilder mitTitel={false} klein />}
       />
       <MainFeatures />

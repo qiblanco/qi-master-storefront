@@ -2,31 +2,31 @@
  "target": "http://127.0.0.1:3341/products/qi-master",
  "viewports": {
   "desktop": {
-   "docHeight": 10537,
+   "docHeight": 10200,
    "clientWidth": 1440,
    "overflowX": false,
    "fontFamilies": {
-    "system-ui": 161
+    "system-ui": 136
    },
    "fontSizes": {
-    "16": 37,
-    "17": 42,
-    "20": 21,
+    "16": 35,
+    "17": 27,
+    "20": 20,
     "25": 8,
     "39": 2,
-    "13.5": 42,
+    "13.5": 35,
     "31.25": 9
    },
    "colorsText": {
-    "rgb(26, 26, 26)": 49,
-    "rgb(44, 42, 38)": 70,
-    "rgb(107, 102, 93)": 32,
+    "rgb(26, 26, 26)": 47,
+    "rgb(44, 42, 38)": 51,
+    "rgb(107, 102, 93)": 28,
     "rgb(250, 249, 245)": 8,
     "rgb(207, 200, 187)": 2
    },
    "colorsBg": {
-    "rgb(201, 161, 75)": 2,
     "rgb(248, 244, 238)": 11,
+    "rgb(201, 161, 75)": 2,
     "rgb(26, 26, 26)": 2
    },
    "colorsTextHuelle": {
@@ -38,6 +38,28 @@
    "colorsBgHuelle": {
     "rgb(26, 26, 26)": 1
    },
+   "colorsTextGrund": {
+    "rgb(26, 26, 26)": {
+     "rgb(250, 249, 245)": 44,
+     "rgb(248, 244, 238)": 3
+    },
+    "rgb(44, 42, 38)": {
+     "rgb(250, 249, 245)": 42,
+     "rgb(248, 244, 238)": 8,
+     "rgb(201, 161, 75)": 1
+    },
+    "rgb(107, 102, 93)": {
+     "rgb(250, 249, 245)": 14,
+     "rgb(248, 244, 238)": 14
+    },
+    "rgb(250, 249, 245)": {
+     "rgb(26, 26, 26)": 7,
+     "rgb(201, 161, 75)": 1
+    },
+    "rgb(207, 200, 187)": {
+     "rgb(26, 26, 26)": 2
+    }
+   },
    "fontSizesHuelle": {
     "17": 2,
     "20": 1,
@@ -46,37 +68,28 @@
    "textBlocks": [
     {
      "tag": "P",
+     "fontSize": 17,
+     "lineHeight": "27.2px",
+     "widthPx": 496,
+     "chars": 534,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 17,
+     "lineHeight": "27.2px",
+     "widthPx": 496,
+     "chars": 89,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
      "fontSize": 13.6,
      "lineHeight": "19.04px",
      "widthPx": 528,
      "chars": 78,
-     "align": "start",
-     "shell": false
-    },
-    {
-     "tag": "P",
-     "fontSize": 13.6,
-     "lineHeight": "19.04px",
-     "widthPx": 528,
-     "chars": 476,
-     "align": "start",
-     "shell": false
-    },
-    {
-     "tag": "P",
-     "fontSize": 16,
-     "lineHeight": "22.4px",
-     "widthPx": 528,
-     "chars": 197,
-     "align": "start",
-     "shell": false
-    },
-    {
-     "tag": "P",
-     "fontSize": 13.6,
-     "lineHeight": "19.04px",
-     "widthPx": 528,
-     "chars": 89,
      "align": "start",
      "shell": false
     },
@@ -569,15 +582,6 @@
      "shell": false
     },
     {
-     "tag": "H3",
-     "text": "Hole dir jetzt ein einmaliges Angebot, das es danach nie wie",
-     "size": 20,
-     "weight": "600",
-     "family": "system-ui",
-     "align": "start",
-     "shell": false
-    },
-    {
      "tag": "H2",
      "text": "Qi Master® - Eine bisher unerreichte Liga",
      "size": 31.248,
@@ -970,7 +974,7 @@
     },
     {
      "name": "qm-buybox",
-     "h": 1786,
+     "h": 1449,
      "bg": "rgba(0, 0, 0, 0)",
      "padTop": 96,
      "padBottom": 96,
@@ -987,11 +991,11 @@
      "marBottom": 0
     },
     {
-     "name": "qm-treppe",
-     "h": 805,
-     "bg": "rgba(0, 0, 0, 0)",
-     "padTop": 32,
-     "padBottom": 32,
+     "name": "qm-wortlaut",
+     "h": 461,
+     "bg": "rgb(248, 244, 238)",
+     "padTop": 16,
+     "padBottom": 16,
      "marTop": 24,
      "marBottom": 24
     },
@@ -1099,7 +1103,7 @@
    "huelleDefinition": "hauptbereich",
    "hauptBereich": {
     "top": 64,
-    "bottom": 10360
+    "bottom": 10024
    },
    "consentEntfernt": [],
    "pageerrors": [],
@@ -1145,31 +1149,31 @@
    "consentKacheln": 0
   },
   "mobile": {
-   "docHeight": 19059,
+   "docHeight": 18696,
    "clientWidth": 390,
    "overflowX": false,
    "fontFamilies": {
-    "system-ui": 161
+    "system-ui": 136
    },
    "fontSizes": {
-    "16": 37,
+    "16": 35,
     "33": 2,
-    "18.25": 21,
-    "16.25": 42,
-    "12.75": 42,
+    "18.25": 20,
+    "16.25": 27,
+    "12.75": 35,
     "26.75": 9,
     "22.25": 8
    },
    "colorsText": {
-    "rgb(26, 26, 26)": 49,
-    "rgb(44, 42, 38)": 70,
-    "rgb(107, 102, 93)": 32,
+    "rgb(26, 26, 26)": 47,
+    "rgb(44, 42, 38)": 51,
+    "rgb(107, 102, 93)": 28,
     "rgb(250, 249, 245)": 8,
     "rgb(207, 200, 187)": 2
    },
    "colorsBg": {
-    "rgb(201, 161, 75)": 2,
     "rgb(248, 244, 238)": 11,
+    "rgb(201, 161, 75)": 2,
     "rgb(26, 26, 26)": 2
    },
    "colorsTextHuelle": {
@@ -1181,6 +1185,28 @@
    "colorsBgHuelle": {
     "rgb(26, 26, 26)": 1
    },
+   "colorsTextGrund": {
+    "rgb(26, 26, 26)": {
+     "rgb(250, 249, 245)": 44,
+     "rgb(248, 244, 238)": 3
+    },
+    "rgb(44, 42, 38)": {
+     "rgb(250, 249, 245)": 42,
+     "rgb(248, 244, 238)": 8,
+     "rgb(201, 161, 75)": 1
+    },
+    "rgb(107, 102, 93)": {
+     "rgb(250, 249, 245)": 14,
+     "rgb(248, 244, 238)": 14
+    },
+    "rgb(250, 249, 245)": {
+     "rgb(26, 26, 26)": 7,
+     "rgb(201, 161, 75)": 1
+    },
+    "rgb(207, 200, 187)": {
+     "rgb(26, 26, 26)": 2
+    }
+   },
    "fontSizesHuelle": {
     "18.25": 1,
     "16.25": 2,
@@ -1189,37 +1215,28 @@
    "textBlocks": [
     {
      "tag": "P",
+     "fontSize": 16.14,
+     "lineHeight": "25.824px",
+     "widthPx": 278,
+     "chars": 534,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16.14,
+     "lineHeight": "25.824px",
+     "widthPx": 278,
+     "chars": 89,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
      "fontSize": 12.87,
      "lineHeight": "18.018px",
      "widthPx": 310,
      "chars": 78,
-     "align": "start",
-     "shell": false
-    },
-    {
-     "tag": "P",
-     "fontSize": 12.87,
-     "lineHeight": "18.018px",
-     "widthPx": 310,
-     "chars": 476,
-     "align": "start",
-     "shell": false
-    },
-    {
-     "tag": "P",
-     "fontSize": 16,
-     "lineHeight": "22.4px",
-     "widthPx": 310,
-     "chars": 197,
-     "align": "start",
-     "shell": false
-    },
-    {
-     "tag": "P",
-     "fontSize": 12.87,
-     "lineHeight": "18.018px",
-     "widthPx": 310,
-     "chars": 89,
      "align": "start",
      "shell": false
     },
@@ -1712,15 +1729,6 @@
      "shell": false
     },
     {
-     "tag": "H3",
-     "text": "Hole dir jetzt ein einmaliges Angebot, das es danach nie wie",
-     "size": 18.165,
-     "weight": "600",
-     "family": "system-ui",
-     "align": "start",
-     "shell": false
-    },
-    {
      "tag": "H2",
      "text": "Qi Master® - Eine bisher unerreichte Liga",
      "size": 26.67,
@@ -2113,7 +2121,7 @@
     },
     {
      "name": "qm-buybox",
-     "h": 2824,
+     "h": 2461,
      "bg": "rgba(0, 0, 0, 0)",
      "padTop": 64,
      "padBottom": 64,
@@ -2130,9 +2138,9 @@
      "marBottom": 0
     },
     {
-     "name": "qm-treppe",
-     "h": 1097,
-     "bg": "rgba(0, 0, 0, 0)",
+     "name": "qm-wortlaut",
+     "h": 725,
+     "bg": "rgb(248, 244, 238)",
      "padTop": 16,
      "padBottom": 16,
      "marTop": 24,
@@ -2242,7 +2250,7 @@
    "huelleDefinition": "hauptbereich",
    "hauptBereich": {
     "top": 90,
-    "bottom": 18830
+    "bottom": 18466
    },
    "consentEntfernt": [],
    "pageerrors": [],

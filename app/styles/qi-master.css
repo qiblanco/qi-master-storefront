@@ -193,28 +193,16 @@ body {
 .qm-gwl summary b { text-decoration: underline; text-underline-offset: 0.2em; text-decoration-color: var(--qm-akzent); }
 .qm-gwl__bild { margin-top: var(--qm-s-2); max-width: 22rem; border-radius: var(--qm-r-1); border: 1px solid var(--qm-linie); }
 
-/* Vorverkaufstreppe */
-.qm-treppe { margin: var(--qm-s-3) 0; }
-.qm-treppe__titel { font-size: var(--qm-fs-3); margin-bottom: var(--qm-s-2); }
-.qm-treppe__grund, .qm-treppe__angebot { max-width: var(--qm-satz); }
-.qm-treppe__herkunft { font-weight: 600; color: var(--qm-dunkel); }
-.qm-treppe__vorlauf { color: var(--qm-muted); }
-.qm-treppe__tabelle { width: 100%; border-collapse: collapse; margin: var(--qm-s-2) 0 var(--qm-s-3); font-size: var(--qm-fs-1); }
-.qm-treppe__tabelle th, .qm-treppe__tabelle td { text-align: left; padding: var(--qm-s-1) var(--qm-s-2); border-bottom: 1px solid var(--qm-linie); }
-.qm-treppe__tabelle thead th { font-size: var(--qm-fs-0); color: var(--qm-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
-.qm-treppe__tabelle tbody th { font-weight: 400; }
-.qm-treppe__zeile--aktiv { background: var(--qm-flaeche); }
-.qm-treppe__zeile--aktiv .qm-treppe__preis { font-weight: 600; color: var(--qm-dunkel); }
-.qm-treppe__marke { display: inline-block; margin-left: var(--qm-s-1); padding: 0 var(--qm-s-1); border-radius: var(--qm-r-1); background: var(--qm-akzent); color: var(--qm-akzent-text); font-size: var(--qm-fs-0); font-weight: 600; }
-.qm-treppe__versand { font-size: var(--qm-fs-0); color: var(--qm-muted); }
-.qm-treppe--kompakt .qm-treppe__grund { font-size: var(--qm-fs-0); }
-@media (max-width: 40em) {
-  .qm-treppe__tabelle thead { display: none; }
-  .qm-treppe__tabelle tr { display: grid; grid-template-columns: 1fr 1fr; padding: var(--qm-s-1) 0; border-bottom: 1px solid var(--qm-linie); }
-  .qm-treppe__tabelle th, .qm-treppe__tabelle td { border: 0; padding: 0 var(--qm-s-1); }
-  .qm-treppe__tabelle tbody th { grid-column: 1 / -1; font-weight: 600; }
-  .qm-treppe__tabelle td::before { content: attr(data-spalte) ': '; color: var(--qm-muted); font-size: var(--qm-fs-0); }
-}
+/* Christians Wortlaut vom 22.09.2026 (Wortlaut.jsx) -- an der Stelle der abgeloesten Treppe.
+   Wie drueben (qiblanco-storefront app/styles/qi-master-wortlaut.css): EINE Schriftgroesse,
+   die Rolle eines Absatzes zeigt sich nur an Gewicht und Ton. KEIN Gold -- der eine
+   Gold-Akzent gehoert dem Kaufknopf. Alle Werte aus den --qm-*-Token oben. */
+.qm-wortlaut { margin: var(--qm-s-3) 0; padding: var(--qm-s-3); background: var(--qm-flaeche); border-radius: var(--qm-r-2); color: var(--qm-text); }
+.qm-wortlaut--kompakt { padding: var(--qm-s-2); }
+.qm-wortlaut__absatz { font-size: var(--qm-fs-1); line-height: 1.6; max-width: var(--qm-satz); margin: 0 0 var(--qm-s-2); }
+.qm-wortlaut__absatz:last-child { margin-bottom: 0; }
+.qm-wortlaut__absatz--herkunft, .qm-wortlaut__absatz--termin { font-weight: 600; color: var(--qm-dunkel); }
+.qm-wortlaut__absatz--versand { color: var(--qm-muted); }
 
 /* Drei Spalten "Eine bisher unerreichte Liga" */
 .qm-features__spalten { display: grid; gap: var(--qm-s-4); }

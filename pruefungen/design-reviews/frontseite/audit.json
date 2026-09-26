@@ -2,26 +2,26 @@
  "target": "http://127.0.0.1:3341/",
  "viewports": {
   "desktop": {
-   "docHeight": 5009,
+   "docHeight": 4698,
    "clientWidth": 1440,
    "overflowX": false,
    "fontFamilies": {
-    "system-ui": 101
+    "system-ui": 76
    },
    "fontSizes": {
-    "16": 13,
-    "17": 44,
-    "20": 10,
+    "16": 10,
+    "17": 29,
+    "20": 9,
     "25": 5,
     "39": 1,
     "48.75": 1,
-    "13.5": 23,
+    "13.5": 17,
     "31.25": 4
    },
    "colorsText": {
-    "rgb(26, 26, 26)": 29,
-    "rgb(44, 42, 38)": 50,
-    "rgb(107, 102, 93)": 15,
+    "rgb(26, 26, 26)": 27,
+    "rgb(44, 42, 38)": 31,
+    "rgb(107, 102, 93)": 11,
     "rgb(250, 249, 245)": 6,
     "rgb(207, 200, 187)": 1
    },
@@ -38,6 +38,27 @@
    },
    "colorsBgHuelle": {
     "rgb(26, 26, 26)": 1
+   },
+   "colorsTextGrund": {
+    "rgb(26, 26, 26)": {
+     "rgb(250, 249, 245)": 23,
+     "rgb(248, 244, 238)": 4
+    },
+    "rgb(44, 42, 38)": {
+     "rgb(250, 249, 245)": 14,
+     "rgb(201, 161, 75)": 3,
+     "rgb(248, 244, 238)": 14
+    },
+    "rgb(107, 102, 93)": {
+     "rgb(250, 249, 245)": 9,
+     "rgb(248, 244, 238)": 2
+    },
+    "rgb(250, 249, 245)": {
+     "rgb(26, 26, 26)": 6
+    },
+    "rgb(207, 200, 187)": {
+     "rgb(26, 26, 26)": 1
+    }
    },
    "fontSizesHuelle": {
     "17": 2,
@@ -245,27 +266,18 @@
     },
     {
      "tag": "P",
-     "fontSize": 16,
-     "lineHeight": "22.4px",
-     "widthPx": 713,
-     "chars": 476,
+     "fontSize": 17,
+     "lineHeight": "27.2px",
+     "widthPx": 757,
+     "chars": 534,
      "align": "start",
      "shell": false
     },
     {
      "tag": "P",
-     "fontSize": 16,
-     "lineHeight": "22.4px",
-     "widthPx": 713,
-     "chars": 197,
-     "align": "start",
-     "shell": false
-    },
-    {
-     "tag": "P",
-     "fontSize": 13.6,
-     "lineHeight": "19.04px",
-     "widthPx": 605,
+     "fontSize": 17,
+     "lineHeight": "27.2px",
+     "widthPx": 757,
      "chars": 89,
      "align": "start",
      "shell": false
@@ -428,15 +440,6 @@
     {
      "tag": "H3",
      "text": "Die Iris: 108 Striche",
-     "size": 20,
-     "weight": "600",
-     "family": "system-ui",
-     "align": "start",
-     "shell": false
-    },
-    {
-     "tag": "H3",
-     "text": "Hole dir jetzt ein einmaliges Angebot, das es danach nie wie",
      "size": 20,
      "weight": "600",
      "family": "system-ui",
@@ -685,7 +688,7 @@
     },
     {
      "name": "qm-abschluss",
-     "h": 1345,
+     "h": 1034,
      "bg": "rgb(248, 244, 238)",
      "padTop": 96,
      "padBottom": 96,
@@ -693,11 +696,11 @@
      "marBottom": 0
     },
     {
-     "name": "qm-treppe",
-     "h": 706,
-     "bg": "rgba(0, 0, 0, 0)",
-     "padTop": 32,
-     "padBottom": 32,
+     "name": "qm-wortlaut",
+     "h": 395,
+     "bg": "rgb(248, 244, 238)",
+     "padTop": 24,
+     "padBottom": 24,
      "marTop": 24,
      "marBottom": 24
     },
@@ -715,7 +718,7 @@
    "huelleDefinition": "hauptbereich",
    "hauptBereich": {
     "top": 64,
-    "bottom": 4832
+    "bottom": 4521
    },
    "consentEntfernt": [],
    "pageerrors": [],
@@ -755,32 +758,32 @@
     {
      "datei": "shot-desktop-tile4.png",
      "top": 0,
-     "bottom": 825
+     "bottom": 763
     }
    ],
    "consentKacheln": 0
   },
   "mobile": {
-   "docHeight": 10054,
+   "docHeight": 9679,
    "clientWidth": 390,
    "overflowX": false,
    "fontFamilies": {
-    "system-ui": 101
+    "system-ui": 76
    },
    "fontSizes": {
-    "16": 13,
+    "16": 10,
     "33": 1,
-    "18.25": 10,
-    "16.25": 44,
+    "18.25": 9,
+    "16.25": 29,
     "39.25": 1,
-    "12.75": 23,
+    "12.75": 17,
     "26.75": 4,
     "22.25": 5
    },
    "colorsText": {
-    "rgb(26, 26, 26)": 29,
-    "rgb(44, 42, 38)": 50,
-    "rgb(107, 102, 93)": 15,
+    "rgb(26, 26, 26)": 27,
+    "rgb(44, 42, 38)": 31,
+    "rgb(107, 102, 93)": 11,
     "rgb(250, 249, 245)": 6,
     "rgb(207, 200, 187)": 1
    },
@@ -797,6 +800,27 @@
    },
    "colorsBgHuelle": {
     "rgb(26, 26, 26)": 1
+   },
+   "colorsTextGrund": {
+    "rgb(26, 26, 26)": {
+     "rgb(250, 249, 245)": 23,
+     "rgb(248, 244, 238)": 4
+    },
+    "rgb(44, 42, 38)": {
+     "rgb(250, 249, 245)": 14,
+     "rgb(201, 161, 75)": 3,
+     "rgb(248, 244, 238)": 14
+    },
+    "rgb(107, 102, 93)": {
+     "rgb(250, 249, 245)": 9,
+     "rgb(248, 244, 238)": 2
+    },
+    "rgb(250, 249, 245)": {
+     "rgb(26, 26, 26)": 6
+    },
+    "rgb(207, 200, 187)": {
+     "rgb(26, 26, 26)": 1
+    }
    },
    "fontSizesHuelle": {
     "18.25": 1,
@@ -1004,27 +1028,18 @@
     },
     {
      "tag": "P",
-     "fontSize": 16,
-     "lineHeight": "22.4px",
-     "widthPx": 310,
-     "chars": 476,
+     "fontSize": 16.14,
+     "lineHeight": "25.824px",
+     "widthPx": 262,
+     "chars": 534,
      "align": "start",
      "shell": false
     },
     {
      "tag": "P",
-     "fontSize": 16,
-     "lineHeight": "22.4px",
-     "widthPx": 310,
-     "chars": 197,
-     "align": "start",
-     "shell": false
-    },
-    {
-     "tag": "P",
-     "fontSize": 12.87,
-     "lineHeight": "18.018px",
-     "widthPx": 310,
+     "fontSize": 16.14,
+     "lineHeight": "25.824px",
+     "widthPx": 262,
      "chars": 89,
      "align": "start",
      "shell": false
@@ -1187,15 +1202,6 @@
     {
      "tag": "H3",
      "text": "Die Iris: 108 Striche",
-     "size": 18.165,
-     "weight": "600",
-     "family": "system-ui",
-     "align": "start",
-     "shell": false
-    },
-    {
-     "tag": "H3",
-     "text": "Hole dir jetzt ein einmaliges Angebot, das es danach nie wie",
      "size": 18.165,
      "weight": "600",
      "family": "system-ui",
@@ -1444,7 +1450,7 @@
     },
     {
      "name": "qm-abschluss",
-     "h": 1935,
+     "h": 1559,
      "bg": "rgb(248, 244, 238)",
      "padTop": 64,
      "padBottom": 64,
@@ -1452,11 +1458,11 @@
      "marBottom": 0
     },
     {
-     "name": "qm-treppe",
-     "h": 1194,
-     "bg": "rgba(0, 0, 0, 0)",
-     "padTop": 16,
-     "padBottom": 16,
+     "name": "qm-wortlaut",
+     "h": 819,
+     "bg": "rgb(248, 244, 238)",
+     "padTop": 24,
+     "padBottom": 24,
      "marTop": 24,
      "marBottom": 24
     },
@@ -1474,7 +1480,7 @@
    "huelleDefinition": "hauptbereich",
    "hauptBereich": {
     "top": 90,
-    "bottom": 9825
+    "bottom": 9449
    },
    "consentEntfernt": [],
    "pageerrors": [],

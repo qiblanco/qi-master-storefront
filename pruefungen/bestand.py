@@ -18,7 +18,7 @@ Vortages hatte 46 % des Textes verloren (RESULT 20260918-qi-master-de-aufbauen-.
 wird deshalb `git show <ref>:<pfad>`, nie die Datei auf der Platte.
 
 DREI KLASSEN, nach dem Muster von crystal-cacao (shared/UPSTREAM.json, ADR 0056):
-  K1  byte-gleich uebernommen        (Texte, Guetezeichen, Bilddaten, Preisstufen, Rechenweg)
+  K1  byte-gleich uebernommen        (Texte, Guetezeichen, Bilddaten, Preisstufen, Rechenweg, Wortlaut)
   K3  abgeleitet, nicht byte-gleich  (FAQ: nur das Qi-Master-Array aus product-faqs.js;
                                       Studien: nur die Eckdaten aus fuenf JSON-Dateien)
       -- die Ableitung ist DETERMINISTISCH und steht hier; die Wache leitet neu ab und
@@ -58,6 +58,24 @@ K1 = {
     "app/lib/qi-master-preisstufen.js": "app/lib/qi-master-preisstufen.js",
     "app/lib/qi-master-kopfsymbole.js": "app/lib/qi-master-kopfsymbole.js",
     "app/lib/qi-master-symbole.generated.js": "app/lib/qi-master-symbole.generated.js",
+    # Christians Wortlaut vom 22.09.2026 an der Stelle der abgeloesten Vorverkaufstreppe.
+    # Drueben lesen ihn Produktseite, Landingpage und Anna; hier Frontseite und Kaufseite
+    # (app/components/qi-master/Wortlaut.jsx). Aufgenommen 2026-09-26, Job
+    # 20260926-qi-master-de-treppe-abgeloest-wortlaut-ungedeckt-prio50.
+    "app/data/qi-master-wortlaut.json": "app/data/qi-master/qi-master-wortlaut.json",
+}
+
+# Upstream-Dateien mit "qi-master" im Namen, die BEWUSST nicht abgeleitet werden. Jede mit
+# Grund; restbericht() nimmt sie aus dem HINWEIS, damit er nur NEUES zeigt. Wer eine Datei
+# hier eintraegt, entscheidet damit gegen den Nachzug -- nie, um einen Hinweis leise zu machen.
+BEWUSST_NICHT = {
+    "app/lib/qi-master-addons.js":
+        "Add-ons (Wunschnummer, Goldkette) sind eigene Shopify-Produkte, die auf der Kaufseite von "
+        "qiblanco.com gewaehlt und von DEREN Warenkorb-Action gebunden werden. qi-master.de "
+        "wickelt keinen Warenkorb ab (app/lib/kaufweg.js: Permalink auf qiblanco.com/cart/<v>:1).",
+    "app/lib/qi-master-addons.server.js":
+        "Serverseitige Warenkorb-Bindung der Add-ons (cart.jsx / cart.$lines.jsx drueben). "
+        "qi-master.de hat keine Warenkorb-Route -- es gibt hier nichts, woran sie haengen koennte.",
 }
 
 FAQ_QUELLE = "app/data/product-faqs.js"
@@ -203,6 +221,6 @@ def restbericht():
                         "app/data", "app/lib"], capture_output=True, text=True)
     if r.returncode != 0:
         raise Messausfall(f"git ls-tree: {r.stderr.strip()[:200]}")
-    quellen = set(K1) | {FAQ_QUELLE, *STUDIEN_QUELLEN}
+    quellen = set(K1) | {FAQ_QUELLE, *STUDIEN_QUELLEN} | set(BEWUSST_NICHT)
     return sorted(p for p in r.stdout.split()
                   if "qi-master" in os.path.basename(p) and p not in quellen)

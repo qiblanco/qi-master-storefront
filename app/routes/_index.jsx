@@ -1,10 +1,8 @@
 import {useLoaderData} from 'react-router';
 import {ladeQiMaster, QI_MASTER_HANDLE} from '~/lib/qi-master-produkt';
 import {kaufwegUrl, internerPfad, trackingParameter} from '~/lib/kaufweg';
-import {treppe as treppeRechnen} from '~/lib/qi-master-preisstufen';
-import preisstufen from '~/data/qi-master/qi-master-preisstufen.json';
 import {Kaufknopf} from '~/components/qi-master/Kaufknopf';
-import {Treppe} from '~/components/qi-master/Treppe';
+import {Wortlaut} from '~/components/qi-master/Wortlaut';
 import {BenefitList} from '~/components/qi-master/BenefitList';
 import {Studien} from '~/components/qi-master/Studien';
 import {ZweiFragen} from '~/components/qi-master/Faq';
@@ -33,7 +31,7 @@ import {fremdHtmlMitKopfsymbolen} from '~/lib/qi-master-kopfsymbole';
  * steht VOR dem Kaufknopf, nicht im Einstieg. Abschluss: Angebot, Rueckgabe, Finanzierung.
  *
  * JEDER TEXT KOMMT AUS DEM BESTAND: Shopify-Beschreibung (Kopfblock), Christians Fassungen der
- * Feature-Spalten, Guetezeichen, FAQ, Studien, Treppe -- nichts ist hier erfunden. Was auf
+ * Feature-Spalten, Guetezeichen, FAQ, Studien, Wortlaut -- nichts ist hier erfunden. Was auf
  * qiblanco.com gestrichen wurde, bleibt gestrichen.
  */
 
@@ -62,8 +60,6 @@ export async function loader({context, request}) {
   return {
     ...geladen,
     handle: QI_MASTER_HANDLE,
-    // Serverseitig entschieden, damit HTML und Hydration dieselbe Stufe zeigen.
-    treppe: treppeRechnen(preisstufen),
     kaufwegHref: kaufwegUrl(geladen.variante?.id, request),
     kaufseiteHref: internerPfad('/products/qi-master', request),
     mitreisend: mitreisend ? `?${mitreisend}` : '',
@@ -72,7 +68,7 @@ export async function loader({context, request}) {
 
 export default function Frontseite() {
   /** @type {LoaderReturnData} */
-  const {product, preisText, treppe, kaufwegHref, kaufseiteHref, mitreisend} = useLoaderData();
+  const {product, preisText, kaufwegHref, kaufseiteHref, mitreisend} = useLoaderData();
   const kopf = fremdHtmlMitKopfsymbolen(product?.descriptionHtml ?? '');
   return (
     <div className="qm qm-lp" data-qb-seite="qi-master-frontseite">
@@ -109,7 +105,7 @@ export default function Frontseite() {
 
       <section className="qm-abschluss" data-section="qm-abschluss">
         <div className="qm-abschluss__inner">
-          <Treppe treppe={treppe} titelId="qm-lp-treppe-titel" />
+          <Wortlaut />
           <BenefitList />
           <div className="qm-abschluss__wege">
             <a className="qm-btn qm-btn--primary" href={kaufseiteHref}>

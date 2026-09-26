@@ -11,7 +11,8 @@
  * qiblanco.com zeigt 10.639,- EUR, also netto x 1,19 auf ganze Euro gerundet
  * (app/lib/markt-pricing.js / cart-display-pricing.js dort). Derselbe Rechenweg steht hier,
  * damit beide Laeden dieselbe Zahl zeigen -- und die Naht-Probe misst, dass die Zahl auch mit
- * dem Listenpreis der Vorverkaufstreppe (qi-master-preisstufen.json) uebereinstimmt.
+ * dem Listenpreis in qi-master-preisstufen.json uebereinstimmt (Datei bleibt als K1-Datenquelle
+ * der Preis-Naht; seit 2026-09-26 importiert sie keine Route mehr, die Treppe ist abgeloest).
  * Nur DE: qi-master.de ist ein deutscher Laden mit einem Markt; AT/CH-Kontexte gibt es hier
  * nicht, die Kasse auf qiblanco.com rechnet den Steuersatz des Lieferlands ohnehin selbst.
  */
