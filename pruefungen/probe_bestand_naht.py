@@ -93,22 +93,6 @@ def arm_preis(befunde):
     return {"api_brutto": brutto_api, "treppe_brutto": brutto_json}
 
 
-def restbericht():
-    """Upstream-Dateien mit "qi-master" im Namen unter app/data und app/lib, die KEINE Quelle
-    der Ableitung sind. Ohne Verdikt (Markierung, kein Exit): die Wache ist ein
-    Einschluss-Selektor -- sie vergleicht nur, was bestand.py ableitet, und waere sonst blind
-    dafuer, dass drueben eine NEUE Quelle die alte abloest (Belegfall 2026-09-26: seit dem 22.09.
-    tragen die Seiten drueben den Wortlaut aus qi-master-wortlaut.json statt der Treppe; hier
-    stand alles gruen). Ob so eine Datei hierher gehoert, ist eine Entscheidung, kein Nachzug."""
-    r = subprocess.run(["git", "-C", B.QB_REPO, "ls-tree", "-r", "--name-only", B.QB_REF,
-                        "app/data", "app/lib"], capture_output=True, text=True)
-    if r.returncode != 0:
-        raise B.Messausfall(f"git ls-tree: {r.stderr.strip()[:200]}")
-    quellen = set(B.K1) | {B.FAQ_QUELLE, *B.STUDIEN_QUELLEN}
-    return sorted(p for p in r.stdout.split()
-                  if "qi-master" in os.path.basename(p) and p not in quellen)
-
-
 def main(argv):
     als_json = "--json" in argv
     befunde, detail = [], {}
@@ -144,7 +128,6 @@ def main(argv):
         detail["kaufweg"] = arm_kaufweg(befunde)
         if "--live" in argv:
             detail["preis"] = arm_preis(befunde)
-        detail["ungedeckt"] = restbericht()
         detail.update({"upstream": commit, "manifest_commit": mani.get("upstream_commit"),
                        "dateien": len(soll)})
     except B.Messausfall as e:
@@ -158,8 +141,6 @@ def main(argv):
         print(f"GRUEN: {detail['dateien']} Dateien synchron mit {B.QB_REF}={commit[:9]}; "
               f"Kaufweg-Allowlist {detail['kaufweg']['hier']}/{detail['kaufweg']['oben']} gedeckt"
               + (f"; Preis {detail['preis']['api_brutto']} EUR = Treppe" if "preis" in detail else ""))
-    if not als_json and detail["ungedeckt"]:
-        print(f"HINWEIS: UNGEDECKT (drueben, nicht abgeleitet, ohne Verdikt): {', '.join(detail['ungedeckt'])}")
     return 2 if befunde else 0
 
 

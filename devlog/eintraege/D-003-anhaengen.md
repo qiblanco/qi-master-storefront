@@ -29,10 +29,12 @@ EXIT4 MESSAUSFALL.
 danach `probe_bestand_naht.py --live` exit 0, `probe_goldaussage_ausgeliefert.py` exit 0.
 Build dauert ~6,5 min Wandzeit (user 11 s) -- timeout_min im Task darum 30.
 
-**Restbericht in der Probe (neu, ohne Verdikt).** Die Wache ist ein Einschluss-Selektor: sie
+**Restbericht (neu, ohne Verdikt; `bestand.restbericht()`, gedruckt vom AUFLOESER, nicht von der
+Probe -- probe_bestand_naht.py ist als Messgeraet des Kriteriums k68c01def42 beurkundet und bleibt
+byte-gleich; ein erster Einbau in die Probe loeste A11 "Messgeraet still getauscht" aus).** Die Wache ist ein Einschluss-Selektor: sie
 vergleicht nur, was bestand.py ableitet. Drueben tragen die Seiten seit dem 22.09. den Wortlaut
 aus `app/data/qi-master-wortlaut.json` (Vorverkaufstreppe abgeloest), hier rendert
-qi-master.de weiter `Treppe.jsx` -- und die Wache war gruen. Die Probe druckt jetzt
+qi-master.de weiter `Treppe.jsx` -- und die Wache war gruen. Der Aufloeser druckt jetzt
 `HINWEIS: UNGEDECKT` mit allen qi-master-Dateien drueben, die keine Quelle der Ableitung sind
 (heute: qi-master-wortlaut.json, qi-master-addons.js, qi-master-addons.server.js). Rot-Nachweis:
 bei QB_REF=6968ded^ (vor Einfuehrung von wortlaut.json) leer, heute drei. Ob diese Dateien

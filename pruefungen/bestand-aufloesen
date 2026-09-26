@@ -87,8 +87,10 @@ def main(argv):
     except OSError:
         print("EXIT4 MESSAUSFALL: ein anderer Aufloeser-Lauf haelt die Sperre")
         return 4
+    hinweis = []
     try:
         vorher = probe(live)  # faehrt selbst `git fetch` in qiblanco-storefront
+        hinweis = B.restbericht()
         if not vorher["befunde"]:
             print(f"SYNCHRON: {vorher['dateien']} Dateien = {B.QB_REF} {vorher['upstream'][:9]}; nichts zu tun")
             return 0
@@ -143,6 +145,9 @@ def main(argv):
         print(f"EXIT4 MESSAUSFALL: {e}")
         return 4
     finally:
+        if hinweis:
+            print("HINWEIS: UNGEDECKT (drueben, nicht abgeleitet, ohne Verdikt -- Entscheidung, kein "
+                  f"Nachzug): {', '.join(hinweis)}")
         fcntl.flock(sperre, fcntl.LOCK_UN)
 
 
