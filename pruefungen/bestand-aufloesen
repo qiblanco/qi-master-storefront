@@ -1,0 +1,150 @@
+#!/usr/bin/env python3
+"""Aufloeser der Bestands-Naht: zieht UPSTREAM-DRIFT ohne Mensch nach, baut, committet LOKAL.
+
+WARUM ES DAS GIBT. probe_bestand_naht.py (rt-Task qi-master-bestand-naht) ERKENNT, dass
+qiblanco-storefront drueben eine abgeleitete Datei geaendert hat. Aufgeloest wurde das bis
+2026-09-26 nie vom Traeger, sondern nur, wenn zufaellig ein Job kam: vom 09-24 an stand der
+Befund taeglich rot, das review-Item sammelte 28 Wiedervorlagen, niemand ging den Weg.
+Der Weg ist rein mechanisch (Nachzieher, Build, lokaler Commit, alles per git revert
+ruecknehmbar, kein Push) -- also geht ihn dieses Werkzeug.
+
+WAS ES NUR TUT, UND WAS NIE.
+  * Es handelt NUR, wenn JEDER Befund der Probe "UPSTREAM-DRIFT:" ist. LOKAL-DRIFT, MANIFEST,
+    FEHLT, DEUTUNG, KAUFWEG-NAHT, PREIS-NAHT bleiben Meldung der Wache (Zeile
+    NICHT-AUFLOESBAR, nichts angefasst) -- dort ist eine Entscheidung faellig, kein Nachzug.
+  * Es entscheidet an der PROBE, nie am Exit des Nachziehers (devlog F-002: dessen exit 2
+    heisst "BESTAND.json-Feld upstream_commit waere neu", das ist kein Synchron-Urteil).
+  * Es committet nur, wenn Build UND erneute Probe gruen sind. Sonst: abgeleitete Dateien
+    auf HEAD zurueck, dist/ aus HEAD neu bauen, laut melden (exit 2), nichts committen.
+  * Es rührt nichts an, wenn eine abgeleitete Datei uncommittete Aenderungen traegt
+    (fremde Arbeit im Baum) -- ebenfalls NICHT-AUFLOESBAR.
+  * Kein Push. Kein Deploy. Der Push ist R3 (Repo-ACL) und liegt als Vorlage bei Christian.
+
+EXIT   0 kein Handlungsbedarf fuer DIESES Werkzeug; die erste Zeile sagt welcher:
+         SYNCHRON: | AUFGELOEST: (Commit, Dateien) | NICHT-AUFLOESBAR: (bleibt Befund der
+         Wache qi-master-bestand-naht, die ihn selbst meldet -- ein eigener Exit wuerde in rt
+         als "fehler" landen und einen Reparaturlauf gegen gesunden Code schicken)
+       2 BEFUND: Aufloesung versucht und gescheitert (Marker "ROT:" in Spalte 0)
+       4 MESSAUSFALL (Probe/fetch/git nicht lesbar) -- nie gruen, nie Befund
+
+  pruefungen/bestand-aufloesen [--live] [--trocken]
+Umlenkbar fuer den Rot-Nachweis: QB_REPO/QB_REF (wie bestand.py), QM_BUILD_CMD (Build-Befehl).
+"""
+import fcntl
+import json
+import os
+import subprocess
+import sys
+
+HIER = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HIER)
+import bestand as B  # noqa: E402
+
+BAUM = B.STOREFRONT
+PROBE = os.path.join(HIER, "probe_bestand_naht.py")
+NACHZIEHER = os.path.join(HIER, "bestand-nachziehen")
+BUILD = os.environ.get("QM_BUILD_CMD", "npm run build")
+MANIFEST_REL = os.path.relpath(B.MANIFEST, BAUM)
+
+
+def git(*a, pruefen=True):
+    r = subprocess.run(["git", "-C", BAUM, *a], capture_output=True, text=True)
+    if pruefen and r.returncode != 0:
+        raise B.Messausfall(f"git {' '.join(a)}: {r.stderr.strip()[:200]}")
+    return r.stdout
+
+
+def probe(extra):
+    env = dict(os.environ, QM_STOREFRONT=BAUM)
+    r = subprocess.run([sys.executable, PROBE, "--json", *extra], capture_output=True,
+                       text=True, env=env, timeout=600)
+    try:
+        d = json.loads(r.stdout.strip().splitlines()[-1])
+    except (ValueError, IndexError):
+        raise B.Messausfall(f"Probe lieferte kein JSON (rc {r.returncode}): {r.stderr.strip()[:200]}")
+    if r.returncode == 4 or d.get("exit") == 4:
+        raise B.Messausfall(f"Probe: {d.get('messausfall')}")
+    return d
+
+
+def bauen():
+    r = subprocess.run(BUILD, shell=True, cwd=BAUM, capture_output=True, text=True, timeout=1500)
+    return r.returncode, (r.stdout + r.stderr)[-600:]
+
+
+def zuruecksetzen(pfade):
+    git("checkout", "HEAD", "--", *pfade)
+    rc, _ = bauen()
+    return rc
+
+
+def main(argv):
+    live = ["--live"] if "--live" in argv else []
+    trocken = "--trocken" in argv
+    sperre = open(os.path.join(BAUM, ".git", "bestand-aufloesen.lock"), "w")
+    try:
+        fcntl.flock(sperre, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except OSError:
+        print("EXIT4 MESSAUSFALL: ein anderer Aufloeser-Lauf haelt die Sperre")
+        return 4
+    try:
+        vorher = probe(live)  # faehrt selbst `git fetch` in qiblanco-storefront
+        if not vorher["befunde"]:
+            print(f"SYNCHRON: {vorher['dateien']} Dateien = {B.QB_REF} {vorher['upstream'][:9]}; nichts zu tun")
+            return 0
+        # Die Menge der abgeleiteten Dateien kommt aus derselben Ableitung wie Probe und
+        # Nachzieher, nicht aus einer eigenen Liste -- ein neues Ziel in bestand.py ist hier
+        # sofort mitgedeckt.
+        abgeleitet = sorted(set(B.soll_ableiten()) | {MANIFEST_REL})
+        fremd = [b for b in vorher["befunde"] if not b.startswith("UPSTREAM-DRIFT: ")]
+        if fremd:
+            print("NICHT-AUFLOESBAR (bleibt Meldung der Wache qi-master-bestand-naht): " + " | ".join(fremd))
+            return 0
+        schmutzig = git("status", "--porcelain", "--", *abgeleitet).strip()
+        if schmutzig:
+            print("NICHT-AUFLOESBAR: uncommittete Aenderungen an abgeleiteten Dateien, fremde Arbeit "
+                  "wird nicht ueberschrieben:\n" + schmutzig)
+            return 0
+        drift = [b.split(": ", 1)[1] for b in vorher["befunde"]]
+        print(f"UPSTREAM-DRIFT {len(drift)}: {', '.join(drift)} (Quelle {vorher['upstream'][:9]})")
+        if trocken:
+            print("TROCKEN: nichts geschrieben")
+            return 0
+        kopf_vorher = git("rev-parse", "HEAD").strip()
+        r = subprocess.run([sys.executable, NACHZIEHER, "--schreiben"], capture_output=True, text=True,
+                           cwd=BAUM, timeout=300)
+        print(r.stdout.strip())
+        if r.returncode == 4:  # der EXIT des Nachziehers zaehlt nur als Messausfall (F-002)
+            zuruecksetzen(abgeleitet)
+            raise B.Messausfall("Nachzieher: " + r.stdout.strip()[-200:])
+        rc, schwanz = bauen()
+        if rc != 0:
+            rc2 = zuruecksetzen(abgeleitet)
+            print(f"ROT: BUILD-FEHLER nach dem Nachzug (rc {rc}) -- nichts committet, abgeleitete Dateien "
+                  f"auf HEAD zurueck, dist/ neu gebaut rc {rc2}. Schwanz: {schwanz!r}")
+            return 2
+        nachher = probe(["--kein-fetch", *live])
+        if nachher["befunde"]:
+            rc2 = zuruecksetzen(abgeleitet)
+            print("ROT: PROBE NACH DEM NACHZUG NICHT GRUEN -- nichts committet, zurueckgesetzt (Build rc "
+                  f"{rc2}): " + " | ".join(nachher["befunde"]))
+            return 2
+        geaendert = [p for p in git("status", "--porcelain", "--", *abgeleitet).splitlines() if p.strip()]
+        git("add", "--", *abgeleitet)
+        msg = (f"bestand-aufloesen: abgeleitete Datenschicht auf {B.QB_REF} {nachher['upstream'][:9]} "
+               f"nachgezogen (automatisch)\n\nUPSTREAM-DRIFT: {', '.join(drift)}\n"
+               "Build rc 0, probe_bestand_naht.py danach exit 0. Rueckweg: git revert.\n")
+        git("commit", "-q", "-m", msg, "--", *abgeleitet)
+        kopf = git("rev-parse", "--short", "HEAD").strip()
+        print(f"AUFGELOEST: Commit {kopf} (vorher {kopf_vorher[:7]}), {len(geaendert)} Datei(en), "
+              f"Quelle {nachher['upstream'][:9]}; Probe danach gruen; kein Push (R3)")
+        return 0
+    except B.Messausfall as e:
+        print(f"EXIT4 MESSAUSFALL: {e}")
+        return 4
+    finally:
+        fcntl.flock(sperre, fcntl.LOCK_UN)
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))
