@@ -1,25 +1,25 @@
 {
- "target": "http://127.0.0.1:3341/products/qi-master",
+ "target": "http://localhost:3487/products/qi-master",
  "viewports": {
   "desktop": {
-   "docHeight": 10200,
+   "docHeight": 10441,
    "clientWidth": 1440,
    "overflowX": false,
    "fontFamilies": {
-    "system-ui": 136
+    "system-ui": 140
    },
    "fontSizes": {
-    "16": 35,
+    "16": 38,
     "17": 27,
     "20": 20,
     "25": 8,
     "39": 2,
-    "13.5": 35,
+    "13.5": 36,
     "31.25": 9
    },
    "colorsText": {
-    "rgb(26, 26, 26)": 47,
-    "rgb(44, 42, 38)": 51,
+    "rgb(26, 26, 26)": 48,
+    "rgb(44, 42, 38)": 54,
     "rgb(107, 102, 93)": 28,
     "rgb(250, 249, 245)": 8,
     "rgb(207, 200, 187)": 2
@@ -40,11 +40,11 @@
    },
    "colorsTextGrund": {
     "rgb(26, 26, 26)": {
-     "rgb(250, 249, 245)": 44,
+     "rgb(250, 249, 245)": 45,
      "rgb(248, 244, 238)": 3
     },
     "rgb(44, 42, 38)": {
-     "rgb(250, 249, 245)": 42,
+     "rgb(250, 249, 245)": 45,
      "rgb(248, 244, 238)": 8,
      "rgb(201, 161, 75)": 1
     },
@@ -522,6 +522,33 @@
      "lineHeight": "21.76px",
      "widthPx": 199,
      "chars": 81,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 757,
+     "chars": 132,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 757,
+     "chars": 129,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 757,
+     "chars": 185,
      "align": "start",
      "shell": false
     },
@@ -1064,7 +1091,7 @@
     },
     {
      "name": "qm-studien",
-     "h": 691,
+     "h": 932,
      "bg": "rgba(0, 0, 0, 0)",
      "padTop": 96,
      "padBottom": 96,
@@ -1103,7 +1130,7 @@
    "huelleDefinition": "hauptbereich",
    "hauptBereich": {
     "top": 64,
-    "bottom": 10024
+    "bottom": 10264
    },
    "consentEntfernt": [],
    "pageerrors": [],
@@ -1149,24 +1176,24 @@
    "consentKacheln": 0
   },
   "mobile": {
-   "docHeight": 18696,
+   "docHeight": 19092,
    "clientWidth": 390,
    "overflowX": false,
    "fontFamilies": {
-    "system-ui": 136
+    "system-ui": 140
    },
    "fontSizes": {
-    "16": 35,
+    "16": 38,
     "33": 2,
     "18.25": 20,
     "16.25": 27,
-    "12.75": 35,
+    "12.75": 36,
     "26.75": 9,
     "22.25": 8
    },
    "colorsText": {
-    "rgb(26, 26, 26)": 47,
-    "rgb(44, 42, 38)": 51,
+    "rgb(26, 26, 26)": 48,
+    "rgb(44, 42, 38)": 54,
     "rgb(107, 102, 93)": 28,
     "rgb(250, 249, 245)": 8,
     "rgb(207, 200, 187)": 2
@@ -1187,11 +1214,11 @@
    },
    "colorsTextGrund": {
     "rgb(26, 26, 26)": {
-     "rgb(250, 249, 245)": 44,
+     "rgb(250, 249, 245)": 45,
      "rgb(248, 244, 238)": 3
     },
     "rgb(44, 42, 38)": {
-     "rgb(250, 249, 245)": 42,
+     "rgb(250, 249, 245)": 45,
      "rgb(248, 244, 238)": 8,
      "rgb(201, 161, 75)": 1
     },
@@ -1669,6 +1696,33 @@
      "lineHeight": "20.592px",
      "widthPx": 310,
      "chars": 81,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 310,
+     "chars": 132,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 310,
+     "chars": 129,
+     "align": "start",
+     "shell": false
+    },
+    {
+     "tag": "P",
+     "fontSize": 16,
+     "lineHeight": "22.4px",
+     "widthPx": 310,
+     "chars": 185,
      "align": "start",
      "shell": false
     },
@@ -2211,7 +2265,7 @@
     },
     {
      "name": "qm-studien",
-     "h": 2533,
+     "h": 2929,
      "bg": "rgba(0, 0, 0, 0)",
      "padTop": 64,
      "padBottom": 64,
@@ -2250,7 +2304,7 @@
    "huelleDefinition": "hauptbereich",
    "hauptBereich": {
     "top": 90,
-    "bottom": 18466
+    "bottom": 18862
    },
    "consentEntfernt": [],
    "pageerrors": [],

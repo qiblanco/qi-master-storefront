@@ -266,6 +266,7 @@ body {
 .qm-studie__link:hover .qm-studie__titel, .qm-studie__link:focus-visible .qm-studie__titel { text-decoration: underline; text-underline-offset: 0.2em; text-decoration-color: var(--qm-akzent); }
 @media (min-width: 40em) { .qm-studien__raster { grid-template-columns: repeat(2, 1fr); } }
 @media (min-width: 60em) { .qm-studien__raster { grid-template-columns: repeat(5, 1fr); } }
+.qm-zellwerte { margin-top: var(--qm-s-6); }
 
 /* Fertigung */
 .qm-fertigung__spalten { display: grid; gap: var(--qm-s-4); max-width: 60rem; margin: 0 auto; }

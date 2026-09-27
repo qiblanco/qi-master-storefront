@@ -80,7 +80,7 @@ export default function Kaufseite() {
       <SechsG />
       <Persoenlichkeit />
       <Begleiter href="#qm-buybox" />
-      <Studien request={mitreisend} />
+      <Studien request={mitreisend} mitZellwerte />
       <Fertigung />
       <Faq />
     </div>
