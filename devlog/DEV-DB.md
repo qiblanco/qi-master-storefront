@@ -202,3 +202,12 @@ design-rubrik Kaufseite 97, Frontseite 99.
 
 ## D-006 | 2026-09-27 | Zellwerte-Block (qm-zellwerte) aus dem Bestand auf der Kaufseite
 Job 20260927-qi-master-de-zellwerte-block-mitfuehren. Drueben stand der Block (PR #645) hart im JSX; bestand.py leitet nur Datendateien ab, deshalb kam er nie an. Weg A: qiblanco-storefront PR #674 (28589e2) legt den Wortlaut als QIMASTER_ZELLWERTE in app/data/qi-master-texte.js; K1 traegt ihn hierher. Studien.jsx rendert ihn mit mitZellwerte nur auf /products/qi-master (Marken [8]/[9] brauchen die 6G-Quellenliste, die nur die Kaufseite hat). Probe pruefungen/probe_zellwerte_ausgeliefert.py: Soll von drueben, Arme DIST + SEITE (--basis), rot vor Bau exit 3, gruen danach. Lehre: ein "]" im Text ("[8]") beendet eine per Regex geschnittene JS-Liste - Listenende am Zeilenanfang suchen. design-rubrik 97. Nicht gepusht (R3).
+
+## D-007 | 2026-09-28 | Zellwerte-Block entfaellt (Christian 2026-09-28 ersatzlos gestrichen)
+Job 20260928-update-qimaster-seite-streichungen-christian. Drueben PR #697 (0d5a872): Export QIMASTER_ZELLWERTE gestrichen.
+Hier: Studien.jsx ohne Schalter mitZellwerte und ohne Import (7fcf4c7), dann bestand-nachziehen --schreiben auf
+0d5a872 (2183709), npm run build rc 0. probe_zellwerte_ausgeliefert.py in den Papierkorb (Traeger h4571c5e5
+zurueckgenommen). Nachfolge-Naht worker-pool/pruefungen/probe_qimaster_de_zellwerte_weg__20260928.py: rot vor dem
+Nachzug (Export abgeleitet, dist lieferte die Saetze), gruen danach (K1 byte-gleich, Q, D). probe_bestand_naht.py --live
+rc 0. Reihenfolge war wichtig: erst Studien.jsx entkoppeln, dann nachziehen - umgekehrt haette der naechste
+Aufloeser-Lauf (06:05Z) einen Import ins Leere erzeugt. Nicht gepusht (R3, wie D-006).
