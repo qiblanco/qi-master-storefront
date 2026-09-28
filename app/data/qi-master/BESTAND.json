@@ -2,7 +2,7 @@
   "schema": 1,
   "upstream_repo": "qiblanco/qiblanco-storefront",
   "upstream_ref": "origin/main",
-  "upstream_commit": "28589e2d4172fef4a615240395877b9e27525fc1",
+  "upstream_commit": "5c5112575bd737e016c9bf890e80ee6d59df8b6d",
   "erzeuger": "pruefungen/bestand-nachziehen (Ableitung in pruefungen/bestand.py)",
   "dateien": [
     {
@@ -45,7 +45,7 @@
       "lokal": "app/data/qi-master/qi-master-texte.js",
       "klasse": "K1",
       "quelle": "app/data/qi-master-texte.js",
-      "sha256": "acaea92a09e69928c734f8609250ed51c2a5909c19a7404a37c29921452601c9"
+      "sha256": "87d6d50569e818d31f0df46215376d05fd32641385c5b63bcfe11dd783e6eb11"
     },
     {
       "lokal": "app/data/qi-master/qi-master-wortlaut.json",

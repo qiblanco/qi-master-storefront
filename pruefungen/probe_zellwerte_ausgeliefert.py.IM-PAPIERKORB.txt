@@ -1,0 +1,9 @@
+IN DEN PAPIERKORB VERSCHOBEN (reversibel)
+Original: /srv/openclaw/shared-state/homepage-bauer/werkbank/qi-master-storefront/pruefungen/probe_zellwerte_ausgeliefert.py
+Wann: 2026-09-28T18:43:33
+Grund: Christian 2026-09-28 ERSATZLOS GESTRICHEN: Probe verlangt den Zellwerte-Block auf /products/qi-master, den Christian gestrichen hat (AI-CEO-Entscheid 26.09. aufgehoben). Traegerhypothesen zurueckgenommen, Nachfolge Abnahme h4ec84059 + test/qi-master-streichungen-christian.test.mjs. Job 20260928-update-qimaster-seite-streichungen-christian
+Von: claude-admin
+Papierkorb-ID: 20260928T184333__probe_zellwerte_ausgeliefert.py__b8e6f7ca
+Papierkorb: /mnt/HC_Volume_106066469/_papierkorb
+Zurueckholen: papierkorb restore 20260928T184333__probe_zellwerte_ausgeliefert.py__b8e6f7ca
+Auto-Hardloeschung fruehestens nach 30 Tagen (nur wenn scharfgeschaltet).
