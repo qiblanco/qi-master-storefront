@@ -1,5 +1,4 @@
 import {QIMASTER_STUDIEN} from '~/data/qi-master/qi-master-studien';
-import {QIMASTER_ZELLWERTE} from '~/data/qi-master/qi-master-texte';
 import {qiblancoUrl} from '~/lib/kaufweg';
 
 const MONATE = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August',
@@ -22,18 +21,15 @@ function veroeffentlichtLang(wert) {
  * KEIN Karussell, keine Pfeile: fuenf Kacheln in einem Raster, das auf dem Telefon zu einer
  * Spalte wird. Jede Kachel steht als echtes <a> im Markup -- crawlbar, ohne JavaScript.
  *
- * ZELLWERTE (mitZellwerte): unter den Kacheln die gemessenen Werte, wie drueben unter den
- * Studienkacheln der Kaufseite (data-block="qm-zellwerte", PR #645). Der Wortlaut kommt aus
- * dem Bestand (QIMASTER_ZELLWERTE, K1 aus qi-master-texte.js), nicht aus diesem Markup --
- * aendert Christian ihn drueben, zieht der Aufloeser ihn hierher nach. Nur die Kaufseite gibt
- * den Schalter: ihre Marken [8]/[9] zeigen auf die Quellenliste im 6G-Abschnitt, und den hat
- * nur sie. Auf der Frontseite zeigten sie ins Leere.
- * Gemessen: pruefungen/probe_zellwerte_ausgeliefert.py.
+ * KEIN ZELLWERTE-BLOCK: CHRISTIAN 2026-09-28 ERSATZLOS GESTRICHEN. Vom 2026-09-27 bis
+ * 2026-09-28 stand hier unter den Kacheln der Block „Gemessen" (Schalter mitZellwerte, Wortlaut
+ * QIMASTER_ZELLWERTE aus qi-master-texte.js drueben). Christian hat ihn drueben ersatzlos
+ * gestrichen und den AI-CEO-Entscheid vom 2026-09-26 aufgehoben; der Export existiert dort nicht
+ * mehr. Nicht wieder einbauen. Job 20260928-update-qimaster-seite-streichungen-christian.
  */
 export function Studien({
   request,
   headline = 'Publizierte Zellstudien zum Gitterchip™',
-  mitZellwerte = false,
 }) {
   return (
     <section className="qm-studien" data-section="qm-studien">
@@ -65,14 +61,6 @@ export function Studien({
           );
         })}
       </ul>
-      {mitZellwerte ? (
-        <div className="qm-sektion__inner qm-zellwerte" data-block="qm-zellwerte">
-          <span className="qm-label qm-label--beleg">{QIMASTER_ZELLWERTE.label}</span>
-          {QIMASTER_ZELLWERTE.absaetze.map((abs) => (
-            <p key={abs.slice(0, 40)}>{abs}</p>
-          ))}
-        </div>
-      ) : null}
     </section>
   );
 }
