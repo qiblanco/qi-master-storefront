@@ -9,7 +9,8 @@ Code wie der Nachzieher) und byte-weise mit der lokalen Fassung verglichen. Dazu
   kaufweg    die Parameter-Allowlist in app/lib/kaufweg.js ist eine TEILMENGE der
              TRACKING_PARAM_NAMES in checkout-tracking.js drueben (die Naht der Attribution)
   preis      der Listenpreis der Treppe (JSON) stimmt mit dem Bruttopreis der Storefront-API
-             ueberein (netto x 1,19, ganze Euro) -- nur mit --live, sonst uebersprungen
+             ueberein (Rechenweg der Seite: Metafeld qb_preis.modus, brutto = API-Betrag,
+             netto = x 1,19; ganze Euro) -- nur mit --live, sonst uebersprungen
 
 EXIT   0 SYNCHRON | 2 BEFUND (Drift oder Verletzung) | 4 MESSAUSFALL (Quelle nicht lesbar)
 Ein Messausfall ist nie gruen und nie ein Befund: ein git-Fehler schickt sonst Reparatur gegen
@@ -71,7 +72,8 @@ def arm_preis(befunde):
             if "=" in z and not z.startswith("#"):
                 k, v = z.split("=", 1)
                 env[k] = v.strip().strip('"')
-    q = {"query": 'query($c: CountryCode) @inContext(country: $c) { product(handle:"qi-master") '
+    q = {"query": 'query($c: CountryCode) @inContext(country: $c) { '
+                  'shop { metafield(namespace:"qb_preis", key:"modus") { value } } product(handle:"qi-master") '
                   '{ selectedOrFirstAvailableVariant { price { amount } } } }', "variables": {"c": "DE"}}
     req = urllib.request.Request(
         f"https://{env['PUBLIC_STORE_DOMAIN']}/api/2026-04/graphql.json",
@@ -84,13 +86,14 @@ def arm_preis(befunde):
             d = json.load(r)
     except Exception as e:  # noqa: BLE001
         raise B.Messausfall(f"Storefront-API nicht erreichbar: {e}")
-    netto = float(d["data"]["product"]["selectedOrFirstAvailableVariant"]["price"]["amount"])
-    brutto_api = round(netto * 1.19)
+    amount = d["data"]["product"]["selectedOrFirstAvailableVariant"]["price"]["amount"]
+    modus = B.preismodus_aus(((d["data"].get("shop") or {}).get("metafield") or {}).get("value"))
+    brutto_api = B.brutto_euro(amount, modus)
     js = json.loads(lokal("app/data/qi-master/qi-master-preisstufen.json"))
     brutto_json = round(float(js["listenpreis_brutto_eur"]))
     if brutto_api != brutto_json:
         befunde.append(f"PREIS-NAHT: Storefront-API {brutto_api} EUR brutto gegen Treppe {brutto_json} EUR")
-    return {"api_brutto": brutto_api, "treppe_brutto": brutto_json}
+    return {"api_brutto": brutto_api, "treppe_brutto": brutto_json, "preismodus": modus}
 
 
 def main(argv):

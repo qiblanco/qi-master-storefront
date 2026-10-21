@@ -7,9 +7,14 @@
  * Haelfte (Texte der Abschnitte, FAQ, Preisstufen) liegt in app/data/qi-master/ und wird von
  * pruefungen/probe_bestand_naht.py gegen die DACH-Storefront gemessen.
  *
- * DER PREIS: die Storefront-API liefert den Nettobetrag (gemessen 2026-09-20: 8940.34 EUR).
- * qiblanco.com zeigt 10.639,- EUR, also netto x 1,19 auf ganze Euro gerundet
- * (app/lib/markt-pricing.js / cart-display-pricing.js dort). Derselbe Rechenweg steht hier,
+ * DER PREIS: bis zum Brutto-Kipp (2026-10-09T14:48Z, shop.taxesIncluded=true) lieferte die
+ * Storefront-API den Nettobetrag (gemessen 2026-09-20: 8940.34 EUR), qiblanco.com zeigte
+ * netto x 1,19 auf ganze Euro. Seit dem Kipp ist der API-Betrag schon der Endbetrag (10639.0),
+ * und derselbe Aufschlag waere doppelte Steuer (gemessen 2026-10-21: 12.660,- statt 10.639,-).
+ * Welcher Fall gilt, sagt das Shop-Metafeld qb_preis.modus ('netto'|'brutto') -- derselbe
+ * Traeger, den qiblanco.com liest (app/lib/preismodus.js dort). Es kommt in DERSELBEN Abfrage
+ * wie das Produkt; fehlt es oder ist es unbekannt, gilt PREISMODUS_VORGABE (Zustand des Shops
+ * seit dem Kipp). Derselbe Rechenweg steht hier,
  * damit beide Laeden dieselbe Zahl zeigen -- und die Naht-Probe misst, dass die Zahl auch mit
  * dem Listenpreis in qi-master-preisstufen.json uebereinstimmt (Datei bleibt als K1-Datenquelle
  * der Preis-Naht; seit 2026-09-26 importiert sie keine Route mehr, die Treppe ist abgeloest).
@@ -21,9 +26,20 @@ export const QI_MASTER_HANDLE = 'qi-master';
 
 export const MWST_SATZ_DE = 0.19;
 
-export function bruttoEuro(nettoAmount) {
-  const n = Number.parseFloat(nettoAmount);
+export const PREISMODI = ['netto', 'brutto'];
+export const PREISMODUS_VORGABE = 'brutto';
+
+/** Metafeld-Wert -> 'netto'|'brutto'; unbekannt oder fehlend -> Vorgabe (nie ein dritter Zustand). */
+export function preismodusAus(wert) {
+  const m = String(wert ?? '').trim().toLowerCase();
+  return PREISMODI.includes(m) ? m : PREISMODUS_VORGABE;
+}
+
+/** API-Preis -> ganzer Euro brutto. Im Modus brutto ist der API-Betrag schon der Endbetrag. */
+export function bruttoEuro(amount, modus = PREISMODUS_VORGABE) {
+  const n = Number.parseFloat(amount);
   if (!Number.isFinite(n)) return null;
+  if (preismodusAus(modus) === 'brutto') return Math.round(n);
   return Math.round(n * (1 + MWST_SATZ_DE));
 }
 
@@ -57,6 +73,11 @@ export const QI_MASTER_QUERY = `#graphql
   }
   query QiMaster($handle: String!, $country: CountryCode, $language: LanguageCode)
     @inContext(country: $country, language: $language) {
+    shop {
+      metafield(namespace: "qb_preis", key: "modus") {
+        value
+      }
+    }
     product(handle: $handle) {
       id
       title
@@ -97,17 +118,19 @@ export const QI_MASTER_QUERY = `#graphql
  * zugeordnet, Handle geaendert). Ein Platzhalter waere hier eine erfundene Seite.
  */
 export async function ladeQiMaster(storefront) {
-  const {product} = await storefront.query(QI_MASTER_QUERY, {
+  const {product, shop} = await storefront.query(QI_MASTER_QUERY, {
     variables: {handle: QI_MASTER_HANDLE},
   });
   if (!product?.id) {
     throw new Response(null, {status: 404});
   }
   const variante = product.selectedOrFirstAvailableVariant;
-  const brutto = bruttoEuro(variante?.price?.amount);
+  const preismodus = preismodusAus(shop?.metafield?.value);
+  const brutto = bruttoEuro(variante?.price?.amount, preismodus);
   return {
     product,
     variante,
+    preismodus,
     bruttoEuro: brutto,
     preisText: preisText(brutto),
   };

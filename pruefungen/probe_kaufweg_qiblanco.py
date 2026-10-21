@@ -33,6 +33,9 @@ import time
 import urllib.request
 
 HIER = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HIER)
+import bestand as B  # noqa: E402  (Preis-Rechenweg der Seite, einmal: B.brutto_euro)
+
 STOREFRONT = os.environ.get("QM_STOREFRONT", os.path.dirname(HIER))
 DEUTUNG = "Zwischen der Überlieferung und dem Fundament"
 UA = "Mozilla/5.0 qi-master-kaufweg-probe (qiblanco-hausprobe)"
@@ -64,7 +67,8 @@ def env_lesen():
 
 
 def variante_aus_api(env):
-    q = {"query": '{ product(handle:"qi-master") { selectedOrFirstAvailableVariant { id price { amount } } } }'}
+    q = {"query": '{ shop { metafield(namespace:"qb_preis", key:"modus") { value } } '
+                  'product(handle:"qi-master") { selectedOrFirstAvailableVariant { id price { amount } } } }'}
     req = urllib.request.Request(
         f"https://{env['PUBLIC_STORE_DOMAIN']}/api/2026-04/graphql.json",
         data=json.dumps(q).encode(), method="POST",
@@ -72,8 +76,10 @@ def variante_aus_api(env):
                  "X-Shopify-Storefront-Access-Token": env["PUBLIC_STOREFRONT_API_TOKEN"],
                  "User-Agent": UA})
     with urllib.request.urlopen(req, timeout=30) as r:
-        v = json.load(r)["data"]["product"]["selectedOrFirstAvailableVariant"]
-    return re.search(r"ProductVariant/(\d+)", v["id"]).group(1), round(float(v["price"]["amount"]) * 1.19)
+        d = json.load(r)["data"]
+    v = d["product"]["selectedOrFirstAvailableVariant"]
+    modus = B.preismodus_aus(((d.get("shop") or {}).get("metafield") or {}).get("value"))
+    return re.search(r"ProductVariant/(\d+)", v["id"]).group(1), B.brutto_euro(v["price"]["amount"], modus)
 
 
 def server_starten(port):

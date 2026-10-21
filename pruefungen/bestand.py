@@ -112,6 +112,24 @@ def sha256(b):
     return hashlib.sha256(b).hexdigest()
 
 
+# Preis-Rechenweg der Seite (app/lib/qi-master-produkt.js bruttoEuro), EINMAL fuer die Proben.
+# Seit dem Brutto-Kipp 2026-10-09T14:48Z ist der API-Betrag der Endbetrag; das Shop-Metafeld
+# qb_preis.modus sagt, welcher Fall gilt. Fehlt es, gilt dieselbe Vorgabe wie auf der Seite.
+PREISMODI = ("netto", "brutto")
+PREISMODUS_VORGABE = "brutto"
+MWST_SATZ_DE = 0.19
+
+
+def preismodus_aus(wert):
+    m = str(wert or "").strip().lower()
+    return m if m in PREISMODI else PREISMODUS_VORGABE
+
+
+def brutto_euro(amount, modus):
+    n = float(amount)
+    return round(n) if preismodus_aus(modus) == "brutto" else round(n * (1 + MWST_SATZ_DE))
+
+
 def faq_ableiten(quelle_bytes):
     """Schneidet GENAU das Array FAQ_QI_MASTER aus product-faqs.js -- byte-gleich im Inneren.
 
