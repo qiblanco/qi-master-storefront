@@ -79,7 +79,7 @@ export const QIMASTER_STUDIEN = [
       "veroeffentlicht": "2024-01-12",
       "produkt": "QiBracelet®",
       "artikelUrl": "https://www.appliedcellbiology.com/open-access/protective-effect-of-the-qibraceletreg-against-oxidative-stress-514.pdf",
-      "pdfUrl": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Studie_-_Appl_Cell_Biol_12_1_2024_1-6_-_Protective_Effect_of_the_QiBracelet_Against_Oxidative_Stress.pdf?v=1709036505",
+      "pdfUrl": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-studien--e0003--98a5ee2d2b49.pdf?v=1791640835",
       "coverUrl": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Cell_Biology_Cover_Remake_Seite_3.png?v=1710540229",
       "studientyp": "In-vitro-Zellstudie (Zellkultur)",
       "material": "MDCK (Hund), Hep G2 (Mensch), IPEC-J2 (Schwein), A-549 (Mensch), L-929 (Maus) — 5 Zelltypen in 3 Serien",

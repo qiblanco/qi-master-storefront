@@ -2,7 +2,7 @@
   "schema": 1,
   "upstream_repo": "qiblanco/qiblanco-storefront",
   "upstream_ref": "origin/main",
-  "upstream_commit": "5c5112575bd737e016c9bf890e80ee6d59df8b6d",
+  "upstream_commit": "a667cb8ab13a03e5bc4859075166d3fede765fc9",
   "erzeuger": "pruefungen/bestand-nachziehen (Ableitung in pruefungen/bestand.py)",
   "dateien": [
     {
@@ -39,7 +39,7 @@
       "lokal": "app/data/qi-master/qi-master-studien.js",
       "klasse": "K3",
       "quelle": "app/data/studien/e0001..e0005.json",
-      "sha256": "79979d0ef2537eb9c2880feebf3623d3f6ddc1c2f89b9e34d93ca958538c8da5"
+      "sha256": "01ee9fa6082c1761af992c4161b29bb6744edad32f439a6d75b0f546dde76a42"
     },
     {
       "lokal": "app/data/qi-master/qi-master-texte.js",
