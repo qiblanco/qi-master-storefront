@@ -397,6 +397,9 @@ export type QiMasterQueryVariables = StorefrontAPI.Exact<{
 }>;
 
 export type QiMasterQuery = {
+  shop: {
+    metafield?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
+  };
   product?: StorefrontAPI.Maybe<
     Pick<
       StorefrontAPI.Product,
@@ -1273,7 +1276,7 @@ interface GeneratedQueryTypes {
     return: FooterQuery;
     variables: FooterQueryVariables;
   };
-  '#graphql\n  fragment QiMasterVariante on ProductVariant {\n    id\n    title\n    availableForSale\n    price {\n      amount\n      currencyCode\n    }\n    compareAtPrice {\n      amount\n      currencyCode\n    }\n    image {\n      id\n      url\n      altText\n      width\n      height\n    }\n    sku\n  }\n  query QiMaster($handle: String!, $country: CountryCode, $language: LanguageCode)\n    @inContext(country: $country, language: $language) {\n    product(handle: $handle) {\n      id\n      title\n      handle\n      vendor\n      description\n      descriptionHtml\n      availableForSale\n      seo {\n        title\n        description\n      }\n      featuredImage {\n        id\n        url\n        altText\n        width\n        height\n      }\n      images(first: 8) {\n        nodes {\n          id\n          url\n          altText\n          width\n          height\n        }\n      }\n      selectedOrFirstAvailableVariant(ignoreUnknownOptions: true, caseInsensitiveMatch: true) {\n        ...QiMasterVariante\n      }\n    }\n  }\n': {
+  '#graphql\n  fragment QiMasterVariante on ProductVariant {\n    id\n    title\n    availableForSale\n    price {\n      amount\n      currencyCode\n    }\n    compareAtPrice {\n      amount\n      currencyCode\n    }\n    image {\n      id\n      url\n      altText\n      width\n      height\n    }\n    sku\n  }\n  query QiMaster($handle: String!, $country: CountryCode, $language: LanguageCode)\n    @inContext(country: $country, language: $language) {\n    shop {\n      metafield(namespace: "qb_preis", key: "modus") {\n        value\n      }\n    }\n    product(handle: $handle) {\n      id\n      title\n      handle\n      vendor\n      description\n      descriptionHtml\n      availableForSale\n      seo {\n        title\n        description\n      }\n      featuredImage {\n        id\n        url\n        altText\n        width\n        height\n      }\n      images(first: 8) {\n        nodes {\n          id\n          url\n          altText\n          width\n          height\n        }\n      }\n      selectedOrFirstAvailableVariant(ignoreUnknownOptions: true, caseInsensitiveMatch: true) {\n        ...QiMasterVariante\n      }\n    }\n  }\n': {
     return: QiMasterQuery;
     variables: QiMasterQueryVariables;
   };
