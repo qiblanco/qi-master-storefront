@@ -211,3 +211,24 @@ zurueckgenommen). Nachfolge-Naht worker-pool/pruefungen/probe_qimaster_de_zellwe
 Nachzug (Export abgeleitet, dist lieferte die Saetze), gruen danach (K1 byte-gleich, Q, D). probe_bestand_naht.py --live
 rc 0. Reihenfolge war wichtig: erst Studien.jsx entkoppeln, dann nachziehen - umgekehrt haette der naechste
 Aufloeser-Lauf (06:05Z) einen Import ins Leere erzeugt. Nicht gepusht (R3, wie D-006).
+
+## D-008 | 2026-10-27 | qi-master.de wird qi-alpha.com: Storefront zum Qi-Alpha-Laden umgebaut (Zweig feat/qi-alpha-shop)
+**Auftrag:** Elina EL-20261027-beafe3d2 (Prio 1, Teil A). **Nicht live**, Merge auf main erst nach Elinas GO.
+
+**Was.** Startseite = TheAlpha (Variante A), Kaufseite /products/qi-alpha = TheAlphaShop+Wissen+FAQ, 39 Dateien aus
+qiblanco-storefront 4870e7ff (app/qi-alpha/HERKUNFT.json, Nachzug pruefungen/alpha-nachziehen). Eigener Warenkorb
+(Schublade, deutsch, Betrag de-DE), Kasse checkout.qiblanco.com. Domain-Weiche lib/qi-alpha-domain.js (Neben-Hosts 301
+-> https://qi-alpha.com in server.js; Fremdrouten 301 -> qiblanco.com; Sitemap 2 Adressen; robots sperrt Nicht-Haupthost).
+
+**Gemessen** (lokal + sslip-Vorschau, Chromium 1440/390): / und /products/qi-alpha 200, kein Querueberlauf, 0 JS-Fehler;
+Kaufknopf -> Schublade -> checkoutUrl checkout.qiblanco.com/cart/c/...; /discount/PARTNER5 -> Korb 10639.00 -> 10107.05 EUR;
+Host qi-master.de/www/qi-alpha.de/www.qi-alpha.com -> 301 https://qi-alpha.com/products/qi-alpha?utm_source=x.
+Oxygen-Lauf des Zweigs (Actions 40517193729): Build and Publish success.
+
+**Fallen.** (1) Codegen: Fragment `Product` doppelt (Geruest products.$handle vs qioneProductQuery) -> Geruest-Route
+ersetzt. (2) reset.css `body > main {margin: 1rem}` gab der schwarzen LP weisse Streifen. (3) <Money> ohne
+ShopifyProvider formatiert en-US. (4) www.qi-master.de CNAME auf den o2-Host = TLS-Abbruch, Apex 409: Domain nie in
+Shopify verbunden; Soll ist CNAME shops.myshopify.com + Zuordnung im Hydrogen-Kanal.
+
+**Offen.** Consent/Tracking (kein Cookiebot/Pixel/UpPromote auf dem Host), Storefront PRIVATE, Domains in Shopify,
+DNS. Nach GO: rt qi-master-bestand-aufloeser stilllegen, Altbestand qi-master entfernen, Vorschau-Dienst abbauen.
