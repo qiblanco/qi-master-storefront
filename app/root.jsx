@@ -10,10 +10,10 @@ import {
   useRouteLoaderData,
 } from 'react-router';
 import favicon from '~/assets/favicon.svg';
-import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
 import resetStyles from '~/styles/reset.css?url';
 import appStyles from '~/styles/app.css?url';
-import qiMasterStyles from '~/styles/qi-master.css?url';
+import qiAlphaStyles from '~/styles/qi-alpha.css?url';
+import euGewaehrleistungStyles from '~/styles/eu-gewaehrleistung.css?url';
 import {PageLayout} from './components/PageLayout';
 
 /**
@@ -75,6 +75,10 @@ export async function loader(args) {
     ...deferredData,
     ...criticalData,
     publicStoreDomain: env.PUBLIC_STORE_DOMAIN,
+    // Fuer die Preis- und Pflichtangaben der Qi-Alpha-Bausteine (lib/markt-land.js,
+    // EuGewaehrleistungsLabel): Markt und Sprache wie im DACH-Laden aus dem i18n-Kontext.
+    marktLand: storefront.i18n.country,
+    storefrontSprache: storefront.i18n.language.toLowerCase(),
     shop: getShopAnalytics({
       storefront,
       publicStorefrontId: env.PUBLIC_STOREFRONT_ID,
@@ -95,20 +99,11 @@ export async function loader(args) {
  * needed to render the page. If it's unavailable, the whole page should 400 or 500 error.
  * @param {Route.LoaderArgs}
  */
-async function loadCriticalData({context}) {
-  const {storefront} = context;
-
-  const [header] = await Promise.all([
-    storefront.query(HEADER_QUERY, {
-      cache: storefront.CacheLong(),
-      variables: {
-        headerMenuHandle: 'main-menu', // Adjust to your header menu handle
-      },
-    }),
-    // Add other queries here, so that they are loaded in parallel
-  ]);
-
-  return {header};
+async function loadCriticalData() {
+  // qi-alpha.com (EL-20261027-beafe3d2): Kopf und Fuss tragen kein Shopify-Menue. Die
+  // Menue-Abfragen des Geruests (main-menu, footer) lieferten die Navigation des
+  // DACH-Ladens in die Loader-Daten jeder Seite und sind deshalb entfallen.
+  return {};
 }
 
 /**
@@ -118,25 +113,10 @@ async function loadCriticalData({context}) {
  * @param {Route.LoaderArgs}
  */
 function loadDeferredData({context}) {
-  const {storefront, customerAccount, cart} = context;
-
-  // defer the footer query (below the fold)
-  const footer = storefront
-    .query(FOOTER_QUERY, {
-      cache: storefront.CacheLong(),
-      variables: {
-        footerMenuHandle: 'footer', // Adjust to your footer menu handle
-      },
-    })
-    .catch((error) => {
-      // Log query errors, but don't throw them so the page can still render
-      console.error(error);
-      return null;
-    });
+  const {customerAccount, cart} = context;
   return {
     cart: cart.get(),
     isLoggedIn: customerAccount.isLoggedIn(),
-    footer,
   };
 }
 
@@ -153,8 +133,10 @@ export function Layout({children}) {
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <link rel="stylesheet" href={resetStyles}></link>
         <link rel="stylesheet" href={appStyles}></link>
-        {/* Token-Schicht von qi-master.de -- beide Seiten, Kopf und Fuss (app/styles/qi-master.css). */}
-        <link rel="stylesheet" href={qiMasterStyles}></link>
+        {/* Rahmen von qi-alpha.com: Kopf, Fuss, Warenkorb (app/styles/qi-alpha.css). */}
+        <link rel="stylesheet" href={qiAlphaStyles}></link>
+        {/* EU-Gewaehrleistungs-Mitteilung der Kaufseite, global wie drueben. */}
+        <link rel="stylesheet" href={euGewaehrleistungStyles}></link>
         <Meta />
         <Links />
       </head>

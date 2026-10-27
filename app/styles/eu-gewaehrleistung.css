@@ -1,0 +1,409 @@
+/*
+ * Harmonisierte Mitteilung ueber das gesetzliche Gewaehrleistungsrecht.
+ * Global geladen in root.jsx -- NICHT per links() je Route.
+ *
+ * Grund (Hausmuster, vgl. qb-swipetab): ein Route-eigenes links() zoege jede
+ * nutzende Route in den Design-Gate-Diff. Alles hier ist auf .eu-gwl gescopt
+ * und trifft auf Seiten ohne Kaufpfad auf kein einziges Element.
+ *
+ * FARBE UND SCHRIFT sind bewusst NICHT hart gesetzt: die Linkfarbe kommt aus
+ * --color-accent-ink (der Gold-Ton des Shops in seiner text-tauglichen
+ * Fassung, WCAG AA >= 4.5:1 auf hellem Grund -- --color-accent-primary ist
+ * als Text auf Weiss zu hell), die Schrift erbt.
+ *
+ * AN DER GRAFIK SELBST DARF CSS NICHTS TUN (Anhang I Nr. 1 und Nr. 5):
+ * kein filter, kein mix-blend-mode, kein border-radius (der beschnitte die
+ * Ecken einer nicht editierbaren amtlichen Grafik), kein object-fit: cover
+ * (das verzerrt oder schneidet). Nur die BREITE wird gesteuert, das
+ * Seitenverhaeltnis laeuft ueber height: auto mit.
+ *
+ * DIE AMTLICHE GRAFIK KOMMT IN DIESER FASSUNG NUR IM OVERLAY VOR. Es gibt
+ * deshalb keinen .eu-gwl__bild-Block mehr -- wer ihn wieder einfuehrt, baut
+ * die offen sichtbare Grafik zurueck, die hier ausdruecklich nicht gewollt
+ * ist.
+ *
+ * NICHT ZU VERWECHSELN mit .eu-gwl__zeichen (seit 2026-09-08): das ist das
+ * Schmuck-Schild neben dem Link auf der Produktseite. Es traegt keinen
+ * QR-Code und keinen Verordnungstext, faellt also unter keine der Auflagen
+ * unten. Die beiden Klassen heissen bewusst verschieden -- ein gemeinsamer
+ * Name haette die Auflagen still auf ein Bild ausgedehnt, fuer das sie nicht
+ * gelten, oder von einem abgezogen, fuer das sie gelten.
+ */
+
+/* ------------------------------------------------------------------ */
+/* Produktseite: Zeichen links, Text-Link rechts                       */
+/* ------------------------------------------------------------------ */
+
+.eu-gwl--pdp {
+  margin: 1rem 0 0;
+}
+
+/*
+ * Die Zeile aus Zeichen und Link (Elina EL-20260908-d8349a01).
+ *
+ * `align-items: center` und nicht `baseline`: das Zeichen ist rund 2,5 Zeilen
+ * hoch: an der Schriftlinie ausgerichtet haenge es unten aus der Zeile
+ * heraus. Umbruch ist ausdruecklich erlaubt (flex-wrap) -- der Linktext ist
+ * seit dem 2026-09-08 laenger, und auf einem 320-px-Telefon in der
+ * schmalsten Spalte darf er unter das Zeichen rutschen, statt es zu
+ * quetschen.
+ */
+.eu-gwl__zeile {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+/*
+ * Das Zeichen. KEINE amtliche Grafik -- die Auflagen aus Anhang I Nr. 1 und
+ * Nr. 5 (kein filter, kein Radius, kein Beschnitt) gelten fuer
+ * .eu-gwl-dialog__bild und NICHT hier; dieses Bild traegt keinen Inhalt.
+ *
+ * `flex: 0 0 auto` haelt es bei knappem Platz auf seiner Breite, statt es
+ * vom laengeren Text zusammendruecken zu lassen. Die 36 px stehen ausserdem
+ * in AUSLOESER_ZEICHEN.anzeigeBreite -- dort rechnet die srcset-Leiter
+ * damit. Wer die Zahl hier aendert, aendert sie dort mit; der Test haelt
+ * beide Stellen zusammen.
+ *
+ * DIE 36 PX GELTEN FUER DIE BLOCK-BAUFORM. In der Listen-Bauform (seit
+ * Elina EL-20260909-395f848c) ueberschreiben `.BenefitList .eu-gwl__zeichen`
+ * und `.CacaoBenefitList .eu-gwl__zeichen` sie mit `1em` -- rund 19 px bzw.
+ * rund 14 px, weil die Nachbar-Icons bzw. die Emoji daneben genau so gross
+ * sind.
+ * Seit Elina EL-20261001-0b68ad76 ist das Zeichen in der Listen-Bauform
+ * kein Bild mehr, sondern ein <svg> (EuZeichenVektor) -- die srcset-Leiter
+ * betrifft dort nichts mehr, sie gilt nur noch fuer diese Block-Bauform.
+ * Die Klasse bleibt dieselbe, damit Groesse und Abstand der Listen weiter
+ * an einer Stelle greifen.
+ */
+.eu-gwl__zeichen {
+  flex: 0 0 auto;
+  width: 36px;
+  height: auto;
+}
+
+/*
+ * Das Zeichen der Listen-Bauform als Vektor (Elina EL-20261001-0b68ad76,
+ * Zeichnung in EuGewaehrleistungsLabel.jsx, EuZeichenVektor). Hier stehen
+ * die ORIGINALFARBEN des Bildes, gemessen am JPEG (Blau 2/76/161, Sterne
+ * 237/237/33). Sie gelten, wo keine Liste etwas anderes sagt -- in der
+ * Kakao-Liste. Die .BenefitList faerbt das Schild ueber `.BenefitList svg`
+ * in ihren Goldton und stellt die Sterne auf Weiss (app.css).
+ */
+.eu-gwl__zeichen--vektor {
+  color: #024ca1;
+}
+.eu-gwl__zeichen-sterne {
+  fill: #eded21;
+}
+.eu-gwl__zeichen-g {
+  stroke: #fff;
+}
+
+/* ------------------------------------------------------------------ */
+/* Produktseite, zweite Bauform: der Hinweis ALS Listenpunkt           */
+/* ------------------------------------------------------------------ */
+
+/*
+ * Elina EL-20260909-395f848c: der Hinweis soll "optisch wie ein weiterer,
+ * fuenfter Punkt der bestehenden Icon-Liste wirken, nicht wie ein separater
+ * Block darunter". EL-20260909-8c4001d1 hat denselben Zuschnitt auf jede
+ * Kaufflaeche mit eigener Nutzen-Liste gezogen; je nach Liste ist er dort
+ * der 4., 5. oder 6. Punkt. DIESE DATEI MUSSTE DAFUER NICHT ANGEFASST
+ * WERDEN, und das ist der Beleg fuer den Zuschnitt: was hier steht, sagt
+ * nichts ueber die Liste aus, in der der Punkt haengt -- es nimmt ihm nur
+ * die Gestaltung der Block-Bauform ab und gibt ihm den Zeiger-Zustand.
+ *
+ * DER GROESSTE TEIL DAVON STEHT ABSICHTLICH NIRGENDS.
+ * Zeilenabstand (`li { margin-bottom: 0.5rem }`) sowie Schriftart, -groesse,
+ * -hoehe und -farbe (`p, li { font-size: 1.2rem; line-height: 1.4; color:
+ * var(--color-dark) }`) kommen aus reset.css und gelten fuer diese <li> wie
+ * fuer die vier darueber -- weil sie eine <li> IST und keine <section> mehr.
+ * Genau das war der Auftrag: gleiche Werte, nicht aehnliche.
+ *
+ * ES GIBT HIER DESHALB BEWUSST KEINE margin- ODER padding-ZEILE. Ein
+ * `margin: 0` waere kein harmloser Reset: es hat hoehere Spezifitaet als
+ * `li { margin-bottom: 0.5rem }` und wuerde ausgerechnet den Abstand
+ * loeschen, den der Auftrag herstellen will. Wer hier spaeter aufraeumen
+ * moechte: der Block-Bau (.eu-gwl--pdp) beruehrt diese Zeile nicht, seine
+ * Klasse steht gar nicht am Element.
+ *
+ * Die Icon-Groesse steht ihrerseits bei der Liste (app.css, .BenefitList) --
+ * dort, wo auch die vier Geschwister-Icons ihre Masse bekommen, statt hier
+ * als zweite Meinung darueber.
+ *
+ * DAS `>` IN DEN ZWEI SELEKTOREN UNTEN IST PFLICHT, NICHT GESCHMACK.
+ * In dieser Bauform liegt der <dialog> INNERHALB der <li> (er muss dort
+ * liegen, sonst haengt er als ungueltiges Kind in der <ul>). Im Overlay
+ * steht aber ein zweiter `.eu-gwl__link`: der Verweis auf das amtliche
+ * Portal. Ein Nachfahren-Selektor faerbt den mit um -- gemessen: er verlor
+ * Goldton und Fettung, obwohl am Overlay ausdruecklich nichts geaendert
+ * werden sollte. `>` trifft nur den Ausloeser, der direkt in der Zeile steht.
+ */
+.eu-gwl--listenpunkt > .eu-gwl__link {
+  /*
+   * `.eu-gwl__link` bringt aus der Block-Bauform `font-weight: 600` und die
+   * Goldschrift mit. Beides faellt hier weg -- bestellt ist "gleiche
+   * Schriftart/Schriftgroesse/Schriftgewicht wie der Text der anderen vier
+   * Punkte". `inherit` statt eigener Werte, damit die Zahlen aus der Liste
+   * kommen und nicht daneben noch einmal aufgeschrieben werden.
+   */
+  font-weight: inherit;
+  color: inherit;
+}
+
+/*
+ * … und weil der Text damit aussieht wie Text, muss der Zeiger-Zustand die
+ * Klickbarkeit tragen. Ausdruecklich bestellt: "mit sichtbarem Hover-Zustand
+ * (z.B. Unterstreichung oder Farbaenderung beim Drueberfahren mit der Maus),
+ * damit klar bleibt dass er anklickbar ist".
+ *
+ * BEIDES statt eines von beiden: eine Unterstreichung allein uebersieht man
+ * unter dem eigenen Mauszeiger leicht, eine Farbe allein sagt einem
+ * farbfehlsichtigen Leser nichts. `:focus-visible` laeuft mit, damit die
+ * Tastatur denselben Hinweis bekommt wie die Maus -- der Fokusrahmen weiter
+ * unten bleibt davon unberuehrt.
+ */
+.eu-gwl--listenpunkt > .eu-gwl__link:hover,
+.eu-gwl--listenpunkt > .eu-gwl__link:focus-visible {
+  color: var(--color-accent-ink, var(--qb-akzent-tinte));
+  text-decoration: underline;
+}
+
+/* ------------------------------------------------------------------ */
+/* Der Textlink -- auf der Produktseite und im Footer derselbe          */
+/* ------------------------------------------------------------------ */
+
+.eu-gwl__link {
+  /* Ein <button>, der wie ein Link aussieht: tastaturbedienbar und
+     korrekt annonciert, ohne ein <a> ohne Ziel vorzutaeuschen. */
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
+
+  font: inherit;
+  font-weight: 600;
+  color: var(--color-accent-ink, var(--qb-akzent-tinte));
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.eu-gwl__link:hover,
+.eu-gwl__link:focus-visible {
+  text-decoration: underline;
+}
+
+.eu-gwl__link:focus-visible {
+  outline: 2px solid var(--color-accent-ink, var(--qb-akzent-tinte));
+  outline-offset: 2px;
+}
+
+/* Im Footer sitzt der Link in der Fussnotenreihe und muss deren
+   Schriftgroesse erben, statt eine 14. in den Shop einzufuehren. */
+.footer-disclaimer .eu-gwl__link {
+  font-size: inherit;
+  line-height: inherit;
+}
+
+/* ------------------------------------------------------------------ */
+/* Overlay                                                             */
+/* ------------------------------------------------------------------ */
+
+.eu-gwl-dialog {
+  /* Der <dialog> selbst ist der zentrierte Kasten; ::backdrop ist der Rand. */
+  width: min(96vw, 760px);
+
+  /*
+   * SCHRIFT-GRUNDLAGE DES OVERLAYS -- unabhaengig davon, WO der <dialog> im
+   * Dokument steht. Das ist seit dem 2026-09-09 noetig und keine Kosmetik:
+   * in der Listen-Bauform (Elina EL-20260909-395f848c) liegt der <dialog>
+   * INNERHALB der <li> und erbte damit deren 1.2rem/1.4 -- auf allen anderen
+   * Kaufflaechen erbt er weiter 1rem/normal vom <body>.
+   *
+   * SICHTBAR war der Unterschied nicht (nachgemessen 2026-09-09: jeder
+   * Texttraeger im Overlay setzt seine Groesse selbst -- der Fuss ueber
+   * `p, li`, der Schliessen-Knopf ueber .eu-gwl-dialog__zu; beide Seiten
+   * lieferten Zeichen fuer Zeichen dasselbe). Genau deshalb steht die Zeile
+   * hier: ein Unterschied, den man nicht sieht, wird beim naechsten Zusatz
+   * im Overlay zu einem, den man sieht -- und dann sucht ihn niemand an der
+   * Stelle, an der das Fenster HAENGT.
+   *
+   * Die beiden Werte sind kein neuer Entwurf, sondern der Zustand von
+   * VORHER: 16 px / normal, wie er auf jeder Kaufflaeche gemessen wurde.
+   */
+  font-size: 1rem;
+  line-height: normal;
+  max-height: 92vh;
+  padding: 0;
+  border: 0;
+  border-radius: 10px;
+  background: #fff;
+  overflow: auto;
+
+  /*
+   * MINDESTBREITE DER AMTLICHEN GRAFIK IM OVERLAY -- die Zahl ist gerechnet,
+   * nicht geschaetzt. Seit die Grafik nur noch hier vorkommt, traegt allein
+   * dieses Overlay die Scanbarkeit des QR-Codes.
+   *
+   * Messung 2026-08-25 an 20 der 24 Sprachfassungen auf dem Shopify-CDN:
+   * der QR-Code belegt 18,24 % (fr, schmalster Fall) bis 20,23 % (pl) der
+   * Bildbreite. In vier Fassungen (et, fi, sl, sv) ist der QR-Code in der
+   * Quelldatei so beschaedigt, dass er sich nicht lokalisieren laesst -- sie
+   * gehen in diese Spanne NICHT ein. Nach einem Neu-Upload dieser vier ist
+   * der Anteil nachzumessen; sinkt er unter 18,24 %, muss die Mindestbreite
+   * unten mitwachsen.
+   *
+   * Zielgroesse: die Praxisleitlinien der Kommission (April 2026, Abschnitt
+   * 3.1.2) nennen 2 x 2 cm als Untergrenze fuer den QR-Code. Die Zahl ist
+   * dort fuer das GARAN-Label geschrieben; fuer den QR-Code der Mitteilung
+   * gibt es keine eigene, deshalb wird sie hier uebertragen.
+   *
+   * Rechnung (1 CSS-px = 1/96 Zoll = 0,26458 mm):
+   *   20 mm Untergrenze  = 75,6 CSS-px  -> Bildbreite >= 75,6 / 0,1824 = 414 px
+   *   gewaehlt: 480 px   -> QR 87,6 CSS-px = 23,2 mm im schmalsten Fall (fr)
+   *                      -> QR 92,5 CSS-px = 24,5 mm im ausgelieferten DE
+   *
+   * Die 480 px sind damit ~16 % ueber der Untergrenze, auch in der
+   * unguenstigsten Sprachfassung. `test/eu-gewaehrleistung.test.mjs`
+   * liest diesen Wert aus DIESER Datei und rechnet nach -- eine Aenderung
+   * hier ohne Nachrechnen faellt dort auf.
+   */
+  --eu-gwl-bild-mindestbreite: 480px;
+}
+
+.eu-gwl-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.eu-gwl-dialog__kasten {
+  position: relative;
+  padding: 1.25rem;
+}
+
+.eu-gwl-dialog__zu {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 1;
+
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 0.25rem 0.5rem;
+
+  font: inherit;
+  font-size: 1.75rem;
+  line-height: 1;
+  color: #2c2a26;
+  cursor: pointer;
+}
+
+.eu-gwl-dialog__zu:focus-visible {
+  outline: 2px solid var(--color-accent-ink, var(--qb-akzent-tinte));
+  outline-offset: 2px;
+}
+
+/* ------------------------------------------------------------------ */
+/* Unsere eigenen Worte vor der amtlichen Mitteilung                   */
+/* ------------------------------------------------------------------ */
+
+/*
+ * DER ABSTAND ZUM SCHLIESSEN-KNOPF IST KEIN GESCHMACK, SONDERN PLATZ:
+ * der Knopf sitzt absolut oben rechts (siehe oben) und wuerde sonst auf der
+ * ersten Textzeile liegen.
+ */
+.eu-gwl-dialog__wort {
+  margin: 0 0 1.5rem;
+  padding-right: 2.5rem;
+}
+
+.eu-gwl-dialog__titel {
+  margin: 0 0 0.75rem;
+  font-size: var(--qs-t-gross);
+  line-height: 1.3;
+  color: #2c2a26;
+}
+
+.eu-gwl-dialog__absatz {
+  margin: 0 0 0.75rem;
+  font-size: var(--qs-t-fein);
+  line-height: 1.55;
+  color: #2c2a26;
+
+  /*
+   * MAXIMALE ZEILENLAENGE: der Dialog ist bis 760 px breit, und eine Zeile
+   * über ~75 Zeichen liest sich schlecht. Der Text darf schmaler sein als
+   * die Grafik darunter -- die Grafik trägt den QR-Code und braucht ihre
+   * Mindestbreite, der Text nicht.
+   */
+  max-width: 62ch;
+}
+
+.eu-gwl-dialog__absatz:last-child {
+  margin-bottom: 0;
+}
+
+/*
+ * DIE UEBERSCHRIFT ÜBER DER GRAFIK IST DIE TRENNLINIE zwischen unserer
+ * Stimme und der der Kommission. Sie ist deshalb sichtbar abgesetzt: eigene
+ * Linie darueber, kleiner und ruhiger als unsere eigene Ueberschrift.
+ */
+.eu-gwl-dialog__amtstitel {
+  margin: 0;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(44, 42, 38, 0.15);
+
+  font-size: var(--qs-t-fein);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+  color: #6b665e;
+}
+
+/*
+ * Die Buehne ist der einzige waagerecht scrollende Bereich.
+ *
+ * Warum ueberhaupt scrollen: auf einem 360-px-Telefon ist der Dialog rund
+ * 345 px breit. Wuerde die Grafik einfach mitschrumpfen, faellt der QR-Code
+ * auf ~63 CSS-px = 16,6 mm und damit unter die Untergrenze. Die
+ * Mindestbreite haelt ihn oben; die Buehne macht den Ueberstand
+ * erreichbar. Das ist KEIN Beschneiden -- die ganze Grafik bleibt
+ * zugaenglich, sie passt nur nicht gleichzeitig ins Bild.
+ *
+ * Ab etwa 512 px Viewport-Breite entsteht kein Ueberstand mehr; auf
+ * Desktop und Tablet scrollt hier nichts.
+ */
+.eu-gwl-dialog__buehne {
+  overflow-x: auto;
+  margin-top: 1.5rem;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+}
+
+.eu-gwl-dialog__bild {
+  display: block;
+  width: 100%;
+  min-width: var(--eu-gwl-bild-mindestbreite, 480px);
+  height: auto;
+
+  /* Ausdruecklich: keine Nachbearbeitung der amtlichen Grafik. */
+  filter: none;
+  opacity: 1;
+  border-radius: 0;
+  object-fit: fill;
+}
+
+.eu-gwl-dialog__fuss {
+  margin: 0.75rem 0 0;
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .eu-gwl-dialog {
+    animation: none;
+  }
+}

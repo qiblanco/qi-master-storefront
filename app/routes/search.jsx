@@ -3,6 +3,7 @@ import {getPaginationVariables, Analytics} from '@shopify/hydrogen';
 import {SearchForm} from '~/components/SearchForm';
 import {SearchResults} from '~/components/SearchResults';
 import {getEmptyPredictiveSearchResult} from '~/lib/search';
+import {zuQiblanco} from '~/lib/qi-alpha-domain';
 
 /**
  * @type {Route.MetaFunction}
@@ -15,6 +16,9 @@ export const meta = () => {
  * @param {Route.LoaderArgs}
  */
 export async function loader({request, context}) {
+  // qi-alpha.com zeigt nur Qi Alpha: diese Route gehoert zum DACH-Laden und geht per 301
+  // auf dieselbe Adresse unter qiblanco.com (lib/qi-alpha-domain.js, EL-20261027-beafe3d2).
+  throw zuQiblanco(request);
   const url = new URL(request.url);
   const isPredictive = url.searchParams.has('predictive');
   const searchPromise = isPredictive

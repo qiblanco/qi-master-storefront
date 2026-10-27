@@ -1,0 +1,1655 @@
+/**
+ * Zentraler SEO-Helper (DACH-Storefront) — Canonical-Bausteine.
+ *
+ * Reine Datenfabrik ohne React-Import (Node-unit-testbar, analog
+ * structured-data.js). Liefert ABSOLUTE Canonical-URLs für die
+ * Route-`meta`-Exporte.
+ *
+ * WARUM ES DIESE DATEI GIBT (Befund SEO-2026-W33 F_canonical):
+ * react-router-7 rendert einen meta-Descriptor OHNE `tagName` als
+ * `<meta ...>` mit allen Keys als Attribute (Renderschleife der
+ * <Meta>-Komponente in den dist-Chunks von node_modules/react-router:
+ * tagName -> title -> charset -> script:ld+json -> Fallback
+ * `createElement('meta', {...metaProps})`). Ein Descriptor
+ * `{rel:'canonical', href:X}` ergibt deshalb `<meta rel="canonical" href="X">`
+ * — im Quelltext fast nicht von der korrekten Form zu unterscheiden, für
+ * Suchmaschinen aber wirkungslos. Korrekt ist:
+ *
+ *     {tagName: 'link', rel: 'canonical', href: absoluteCanonical(pfad)}
+ *
+ * `isValidMetaTag` des Routers akzeptiert genau /^(meta|link)$/.
+ *
+ * WARUM ABSOLUT: react-router-7 merged `meta` NICHT baumweit (der nächste
+ * Leaf gewinnt vollständig) — es gibt also keinen zentralen Ort, an dem ein
+ * relativer Canonical serverseitig gegen die Produktions-Domain aufgeloest
+ * wird. Auf einem Oxygen-Preview-Host würde ein relativer Canonical auf den
+ * Preview-Host zeigen und die Preview-URL selbst kanonisieren. Ein absoluter
+ * Canonical ist auf Preview wie Produktion identisch korrekt.
+ *
+ * API-KOMPATIBILITAET: Namen und Semantik von CANONICAL_ORIGIN und
+ * absoluteCanonical() sind bewusst identisch zum Entwurf in PR #103
+ * (geo/seo-entity-hygiene-dach), damit dessen breiterer Helper diese Datei
+ * spaeter als Obermenge ersetzen kann statt neben ihr zu stehen.
+ */
+
+// Kanonische Produktions-Domain (apex). Quelle: TRACKING_PRODUCTION_HOSTS in
+// app/lib/checkout-tracking.js. Canonicals zeigen IMMER hierauf, auch wenn die
+// Seite gerade unter einer Preview-/Oxygen-URL ausgeliefert wird.
+// qi-alpha.com (EL-20261027-beafe3d2): Canonicals dieses Ladens zeigen auf die eigene Hauptdomain.
+export const CANONICAL_ORIGIN = 'https://qi-alpha.com';
+
+/**
+ * Absolute Canonical-URL für einen Pfad. Query/Hash werden entfernt, ein
+ * abschliessender Slash (ausser Root) getrimmt.
+ * @param {string} pathname
+ * @returns {string}
+ */
+export function absoluteCanonical(pathname) {
+  if (!pathname || pathname === '/') return `${CANONICAL_ORIGIN}/`;
+  let p = String(pathname).split('?')[0].split('#')[0];
+  if (!p.startsWith('/')) p = `/${p}`;
+  if (p.length > 1 && p.endsWith('/')) p = p.slice(0, -1);
+  return `${CANONICAL_ORIGIN}${p}`;
+}
+
+/**
+ * Fertiger meta-Descriptor für den Canonical einer Route.
+ * Rendert ein echtes `<link rel="canonical" href="...">`.
+ * @param {string} pathname
+ * @returns {{tagName: 'link', rel: 'canonical', href: string}}
+ */
+export function canonicalLink(pathname) {
+  return {tagName: 'link', rel: 'canonical', href: absoluteCanonical(pathname)};
+}
+
+/**
+ * Shopify-Page-Handles, die NICHT in den Google-Index gehören.
+ *
+ * WARUM DIESE LISTE HIER STEHT UND NICHT IN DER ROUTE (Befund SEO-2026-W33,
+ * Stufe S0): sie hat ZWEI Leser — die Route `pages.$handle.jsx` (setzt
+ * `robots: noindex`) und die Sitemap-Route (wirft den Eintrag raus). Stünden
+ * zwei Listen nebeneinander, driften sie auseinander, und der häufigere Fall
+ * ist der gefährliche: Seite trägt `noindex`, steht aber weiter in der
+ * Sitemap — dann meldet die Search Console dauerhaft einen Konflikt, und
+ * niemand sieht ihn, weil beide Einzelstellen für sich richtig aussehen.
+ *
+ * BELEGTER ANLASS: `/pages/development-nicht-loschen` ist eine
+ * Entwicklungsseite und stand am 2026-08-14 auf Platz 4 der Suche nach
+ * "Qi Blanco Studien" — sie war NICHT intern verlinkt (0 Treffer im
+ * gerenderten HTML der Startseite), sondern ausschließlich über
+ * `sitemap/pages/1.xml` auffindbar (lastmod 2025-02-02). Der Discovery-Pfad
+ * ist also die Sitemap, und deshalb genügt `noindex` allein nicht.
+ *
+ * AUFNAHME-KRITERIUM: nur Seiten, die für Kunden keinen Zweck haben
+ * (Entwicklungs-/Test-/Rest-Seiten). Eine Seite, die Kunden nutzen sollen,
+ * gehört NIE hierher — dann ist die richtige Antwort besserer Inhalt, nicht
+ * Unsichtbarkeit. Funnel-Bestätigungsseiten sind der Grenzfall, der trotzdem
+ * hierher gehört: Kunden SEHEN sie (nach dem Absenden eines Formulars), aber
+ * niemand SUCHT nach ihnen — sie sind Ziel eines Klicks, nie eines Treffers.
+ *
+ * ZWEI WIRKUNGEN, EINE QUELLE — und warum `ausSitemap` je Eintrag steht
+ * (Befund s05 des Grossjobs 20260823-seo-…-indexhygiene…, 2026-08-23):
+ * Bis hierher löste EIN Listeneintrag BEIDE Wirkungen zugleich aus, weil
+ * beide Leser dasselbe Array bekamen. Für `development-nicht-loschen` war das
+ * richtig. Für `/pages/pre-access` ist es GENAU FALSCHHERUM: die Seite hat
+ * NULL eingehende interne Links (gemessen über 79 gecrawlte DACH-Seiten), die
+ * Sitemap ist also der einzige Weg, auf dem Google sie noch besucht. Wer sie
+ * im selben Deploy aus der Sitemap wirft, nimmt Google die Gelegenheit, das
+ * frische `noindex` überhaupt zu LESEN — die Seite bliebe im Index und wäre
+ * zugleich unerreichbar für die Korrektur. Das ist derselbe Defekt wie ein
+ * `Disallow` in der robots.txt, nur durch die zweite Tür: das Ausschluss-
+ * Signal muss crawlbar bleiben, bis es gewirkt hat.
+ *
+ * Deshalb: `ausSitemap: false` heißt „noindex ja, Sitemap-Eintrag bleibt
+ * vorerst". Der Preis ist bewusst gewählt und benannt — für die Dauer des
+ * Übergangs besteht der Zustand „noindex UND in der Sitemap", vor dem der
+ * Absatz oben warnt. Er ist hier gewollt und endlich, nicht versehentlich.
+ * Aufgelöst wird er, wenn das noindex nachweislich gewirkt hat; dann kippt
+ * der Eintrag auf `ausSitemap: true`.
+ *
+ * WANN „NACHWEISLICH GEWIRKT"? DIE FRAGE WURDE 13 TAGE LANG NICHT GESTELLT,
+ * UND SIE IST MESSBAR (2026-09-12, Job 20260912-siebzehn-von-52-pages-urls-…).
+ * Der Satz darüber nennt die Auflösungsbedingung richtig, aber niemand hat sie
+ * je gemessen: am 2026-09-12 standen ALLE 16 Übergangs-Einträge noch auf
+ * `false` — also 16 der 52 URLs (30,8 %) der ausgelieferten `sitemap/pages/1.xml`
+ * trugen live `noindex, nofollow` in HTML UND X-Robots-Tag. Der Zustand, den
+ * der Absatz als „gewollt und endlich" beschreibt, war unbefristet geworden.
+ *
+ * DIE BEDINGUNG IST NICHT EIN DATUM, SONDERN EIN ZUSTAND BEI GOOGLE — und der
+ * Unterschied ist entscheidend: die Übergangsstufe hat NUR dann noch einen
+ * Zweck, wenn die Seite HEUTE IM INDEX STEHT. Nur dann gibt es etwas zu
+ * entfernen, für das Google das noindex erst lesen muss. Steht sie nicht (mehr)
+ * im Index, ist die Stufe gegenstandslos und erzeugt nur noch den Widerspruch
+ * „noindex UND in der Sitemap", vor dem der Absatz oben warnt.
+ *
+ * GEMESSEN WIRD MIT DEM BESTAND, NICHT NEU GEBAUT (P10):
+ *   homepage-bauer/bin/gsc-seitenstand --url https://qiblanco.com/pages/<handle>
+ * bzw. `urlInspection` -> `coverageState`. Die Lesart, am 2026-09-12 an allen
+ * 16 Einträgen durchgeführt:
+ *
+ *   „Gesendet und indexiert"            -> Google hat das noindex NOCH NICHT
+ *                                          gelesen, die Seite steht im Index.
+ *                                          Stufe 1 LÄUFT. Eintrag bleibt `false`.
+ *   „Durch noindex-Tag ausgeschlossen"  -> Stufe 1 ERFÜLLT  -> `true`
+ *   „Gecrawlt – zurzeit nicht indexiert" -> nicht im Index  -> `true`
+ *   „Gefunden – zurzeit nicht indexiert" -> nicht im Index  -> `true`
+ *   „URL ist Google nicht bekannt"      -> Google kennt die URL nicht und wird
+ *                                          das noindex auf ihr NIE lesen; die
+ *                                          Stufe wartet auf ein Ereignis, das
+ *                                          baulich nicht eintreten kann -> `true`
+ *
+ * ERGEBNIS 2026-09-12: 14 Einträge auf `true`, 2 bleiben `false` — `linkseite`
+ * und `ketogenes-wochenende` sind als EINZIGE „Gesendet und indexiert" (letzter
+ * Crawl je 2026-08-26, das noindex steht seit 2026-08-23/29). Für genau diese
+ * beiden tut die Übergangsstufe, wofür sie gebaut wurde. Wer sie später kippt,
+ * MISST vorher erneut — ein Datum ist hier nie der Beleg.
+ *
+ * NACHMESSUNG 2026-10-06 (Grossjob 20261006-GROSSJOB-seo-strategie-seiten-
+ * bewertung-crawl-kannibalisierung, s02, `gsc-seitenstand --url` je Seite):
+ * `linkseite` und `ketogenes-wochenende` stehen jetzt beide auf „Durch
+ * noindex-Tag ausgeschlossen". Stufe 1 ist erfüllt, beide Einträge kippen auf
+ * `ausSitemap: true`. Damit trägt keine Seite dieser Liste mehr die
+ * Übergangsstufe.
+ *
+ * DIE GEGENRICHTUNG, damit daraus keine Räumungslizenz wird: „nicht im Index"
+ * ist KEIN Grund, eine Seite noindex zu setzen. Diese Lesart entscheidet
+ * ausschließlich über den SITEMAP-Eintrag eines bereits entschiedenen
+ * noindex — das Aufnahme-Kriterium oben („nur Handles ohne Zweck für Kunden")
+ * bleibt unberührt und wird von ihr nicht aufgeweicht.
+ *
+ * WACHE: pruefungen/probe_sitemap_noindex_naht.py — sie misst die Naht
+ * zweiseitig (kein noindex in der ausgelieferten Sitemap AUSSER den namentlich
+ * als laufende Übergangsstufe belegten) und kann deshalb nicht dadurch grün
+ * werden, dass jemand Einträge löscht.
+ *
+ * KLASSE JE EINTRAG — WARUM DIE LISTE SAGT, WAS FÜR EINE SEITE SIE FÜHRT
+ * (2026-09-25, Job 20260925-update-lb-hygieneliste-naht-funnel-storefront-prio45).
+ * Die Liste hat inzwischen Leser AUSSERHALB dieses Repos, und die lesen mehr
+ * als „nicht in Index/Sitemap": funnel-substrat (bin/landing-bereich) zieht
+ * jeden Handle als tote Seite vom Landing-Bereich ab, und nachbau-audit führt
+ * die Handles als zurückgezogene Seiten. Das stimmte, solange hier nur tote
+ * Seiten standen. Seit dem 2026-08-29 (#271) stehen auch Landingpages hier
+ * (`partner`, `qibracelet`), später `qi-master-vorverkauf` und zwei noch
+ * unveröffentlichte Seiten. Die Bedeutung „tote Seite" ergab sich seitdem nur
+ * noch aus dem Freitext in `grund`. `/pages/qibracelet` fiel dadurch aus der
+ * Ads-Auswertung (42 Landungen als „organisch" gebucht statt als Ads-Verkehr).
+ *
+ * Deshalb trägt jeder Eintrag ein maschinenlesbares Feld `klasse`. Die
+ * Werte stehen in SEITEN_KLASSEN (unten):
+ *   'hygiene'       leer, tot, Dublette, Bestätigungsseite oder zurückgezogen.
+ *                   Kein Anzeigenziel und kein Kanalziel.
+ *   'landing'       Landingpage, die NUR über Anzeigen erreichbar ist
+ *                   (Landing-Bereich). Verkehr dort ist Ads-Verkehr.
+ *   'kanal-anderer' Landingpage für einen ANDEREN Kanal als Anzeigen. Das
+ *                   Pflichtfeld `kanal` nennt ihn ('partner', 'mail'). Verkehr
+ *                   dort ist KEIN Ads-Verkehr.
+ *   'vorab'         gebaut, aber bis zur Freigabe unsichtbar und unverlinkt.
+ *                   Wird bei Freigabe aus der Liste entfernt.
+ * Das Feld hat im Shop KEINE Laufzeitwirkung: `pages.$handle.jsx` und die
+ * Sitemap-Route lesen nur `handle` und `ausSitemap`. Wer einen Eintrag
+ * hinzufügt, entscheidet die Klasse mit. Der Test in
+ * test/seo-canonical.test.mjs lässt keinen Eintrag ohne gültige Klasse durch.
+ * Den Freitext in `grund` zu parsen ist ausdrücklich NICHT der Weg.
+ *
+ * Was hier NICHT passieren darf, ist eine ZWEITE Liste: die beiden Sichten
+ * unten werden aus DIESER einen Definition abgeleitet, können also nicht
+ * auseinanderdriften.
+ * @type {Array<{handle: string, ausSitemap: boolean,
+ *               klasse: 'hygiene'|'landing'|'kanal-anderer'|'vorab',
+ *               kanal?: string, grund: string, seit: string}>}
+ */
+export const NICHT_INDEXIERBARE_SEITEN_DEF = [
+  {
+    handle: 'development-nicht-loschen',
+    ausSitemap: true,
+    klasse: 'hygiene',
+    grund:
+      'Entwicklungsseite; Sitemap war ihr einziger Discovery-Pfad (2026-08-14)',
+    seit: '2026-08-14',
+  },
+  // Neu 2026-08-23 (s05). Jeder Handle live gemessen: HTTP 200, KEIN
+  // robots-meta, in `sitemap/pages/1.xml` geführt. Die ersten sechs tragen
+  // NULL eigene Wörter (das leere DACH-Gerüst misst 424 Wörter, sie messen
+  // exakt 424), die Funnel-Seiten wenige Zeilen.
+  {
+    handle: 'pre-access',
+    ausSitemap: true,
+    klasse: 'hygiene',
+    grund:
+      'leere Kampagnen-Restseite, stand auf Platz 2 der Suche nach "QiOne 2 Pro"',
+    seit: '2026-08-24',
+  },
+  {
+    handle: 'qibracelet_',
+    ausSitemap: true,
+    klasse: 'hygiene',
+    grund: 'leerer Handle-Vertipper zu /pages/qibracelet',
+    seit: '2026-08-24',
+  },
+  {
+    handle: 'qiblanco-qibracelet',
+    ausSitemap: true,
+    klasse: 'hygiene',
+    grund: 'leere Dublette zu /pages/qibracelet',
+    seit: '2026-08-24',
+  },
+  {
+    handle: 'kakao-anwendung-de',
+    ausSitemap: true,
+    klasse: 'hygiene',
+    grund: 'leere Sprachvariante zu /pages/kakao-anwendung',
+    seit: '2026-08-24',
+  },
+  {
+    handle: 'kakao-anwendung-us',
+    ausSitemap: true,
+    klasse: 'hygiene',
+    grund: 'leere Sprachvariante, rankte auf der DACH-Markensuche',
+    seit: '2026-08-24',
+  },
+  {
+    handle: 'zeremonie-kakao-language-select',
+    ausSitemap: true,
+    klasse: 'hygiene',
+    grund: 'leere Sprachweiche ohne Inhalt',
+    seit: '2026-08-24',
+  },
+  {
+    handle: 'anmeldung-erfolgreich',
+    ausSitemap: true,
+    klasse: 'hygiene',
+    grund: 'Funnel-Bestätigung: Klickziel, kein Suchziel',
+    seit: '2026-08-24',
+  },
+  {
+    handle: 'kw-anmeldung-erfolgreich',
+    ausSitemap: true,
+    klasse: 'hygiene',
+    grund: 'Funnel-Bestätigung: Klickziel, kein Suchziel',
+    seit: '2026-08-24',
+  },
+  {
+    handle: 'superhuman-anmeldung-erfolgreich',
+    ausSitemap: true,
+    klasse: 'hygiene',
+    grund: 'Funnel-Bestätigung: Klickziel, kein Suchziel',
+    seit: '2026-08-24',
+  },
+  {
+    handle: 'erinnerung-erfolgreich',
+    ausSitemap: true,
+    klasse: 'hygiene',
+    grund: 'Funnel-Bestätigung: Klickziel, kein Suchziel',
+    seit: '2026-08-24',
+  },
+  {
+    handle: 'superhuman-kurs-bestatigung',
+    ausSitemap: true,
+    klasse: 'hygiene',
+    grund: 'Funnel-Bestätigung: Klickziel, kein Suchziel',
+    seit: '2026-08-24',
+  },
+  // Neu 2026-08-26 (s04 des Grossjobs …seo-rest-kanonisierung…). Diese fünf
+  // sind derselbe Fall wie `pre-access` oben, nur später gefunden: sie waren
+  // nicht im damaligen Suchraum. Gemessen wurde nicht die Wortzahl, sondern
+  // die DIFFERENZ zu zwei nachweislich leeren Referenzseiten (`pre-access`,
+  // `qibracelet_` — beide oben mit Begründung geführt): das Gerüst aus Kopf,
+  // Navigation und Fuß ist damit abgezogen. Alle fünf messen 0 eigene
+  // Textstücke, tragen also NULL eigenen Inhalt, liefern HTTP 200 und stehen
+  // in `sitemap/pages/1.xml` (Beleg: belege/inhalts-delta.json, 20:12Z).
+  //
+  // `qiblanco` ist dabei der teuerste: eine leere Seite unter dem MARKENNAMEN
+  // konkurriert mit der Startseite um genau die Suche, die am sichersten
+  // konvertiert. Das ist der Präzedenzfall `pre-access` („stand auf Platz 2
+  // der Suche nach QiOne 2 Pro"), nur eine Ebene wichtiger.
+  {
+    handle: 'qiblanco',
+    ausSitemap: true,
+    klasse: 'hygiene',
+    grund:
+      'leere Restseite unter dem Markennamen; konkurriert mit der Startseite',
+    seit: '2026-08-27',
+  },
+  {
+    handle: 'linkseite',
+    // false bis 2026-10-06; seitdem „Durch noindex-Tag ausgeschlossen" (s. o.)
+    ausSitemap: true,
+    klasse: 'hygiene',
+    grund: 'leere Link-in-Bio-Restseite ohne eigenen Inhalt',
+    seit: '2026-08-27',
+  },
+  {
+    handle: 'one-inch',
+    // Stand 2026-10-12, gemessen: Shopify DACH führt die Seite veröffentlicht
+    // (Page/114678366476), sie liefert 200 mit leerem Rumpf. Bis dahin stand
+    // hier „laut Grossjob depubliziert". Das traf nur die gleichnamige Seite
+    // des US-Ladens (2026-08-23). Für DACH gibt es keinen Entscheid.
+    ausSitemap: true,
+    klasse: 'hygiene',
+    grund: 'leere Kampagnen-Restseite (One Inch Club) ohne eigenen Inhalt',
+    seit: '2026-08-27',
+  },
+  {
+    handle: 'ketogenes-wochenende',
+    // false bis 2026-10-06; seitdem „Durch noindex-Tag ausgeschlossen" (s. o.)
+    ausSitemap: true,
+    klasse: 'hygiene',
+    grund:
+      'leere Kursseite; die zugehörige Bestätigungsseite ist bereits noindex',
+    seit: '2026-08-27',
+  },
+  {
+    handle: 'superhuman-kurs',
+    ausSitemap: true,
+    klasse: 'hygiene',
+    grund:
+      'leere Kursseite; die zugehörige Bestätigungsseite ist bereits noindex',
+    seit: '2026-08-27',
+  },
+  // Neu 2026-08-29 (Job 20260829-ads-ziel-url-verstoss-...). Achse B der
+  // landing-bereich-Wache: beide Handles standen in `sitemap/pages/1.xml`,
+  // tragen live aber `noindex,nofollow` — wir bieten Google also eine Seite
+  // an, die wir ihm zugleich verbieten.
+  //
+  // DIESE BEIDEN GEHEN DIREKT AUF `ausSitemap: true`, ANDERS ALS DIE
+  // ÜBERGANGS-EINTRÄGE DARÜBER: die Zweistufigkeit existiert für Seiten,
+  // deren EINZIGER Discovery-Pfad die Sitemap ist — dort würde ein sofortiges
+  // Entfernen dafür sorgen, dass Google das frische `noindex` nie liest. Hier
+  // ist das `noindex` kein frisches Signal, sondern steht seit dem
+  // IA-Zweiblock-Umbau vom 2026-07-17 (~6 Wochen, live nachgemessen am
+  // 2026-08-29). Stufe 1 ist damit abgelaufen, nicht übersprungen.
+  //
+  // NEBENWIRKUNGS-PRÜFUNG: `NICHT_INDEXIERBARE_SEITEN` (Sicht 1) wird nur von
+  // `pages.$handle.jsx` gelesen. Beide Handles haben eigene Code-Routen
+  // (pages.partner.jsx, pages.qibracelet.jsx) und laufen nie durch den
+  // Catch-all — der Eintrag ändert also KEIN robots-meta, nur die Sitemap.
+  // Insbesondere bleibt der öffentliche Zwilling /pages/qibracelet-details
+  // unberührt, obwohl er denselben CMS-Handle 'qibracelet' abfragt.
+  {
+    handle: 'partner',
+    ausSitemap: true,
+    klasse: 'kanal-anderer',
+    kanal: 'partner',
+    grund:
+      'noindex-LP im Landing-Bereich (Partner-Funnel); stand trotz noindex in ' +
+      'der Sitemap — Achse B der landing-bereich-Wache, gemessen 2026-08-29',
+    seit: '2026-08-29',
+  },
+  {
+    handle: 'qibracelet',
+    ausSitemap: true,
+    klasse: 'landing',
+    grund:
+      'noindex-LP-Shopseite im Landing-Bereich; stand trotz noindex in der ' +
+      'Sitemap. Der öffentliche Zwilling ist /pages/qibracelet-details und ' +
+      'bleibt indexierbar — Achse B, gemessen 2026-08-29',
+    seit: '2026-08-29',
+  },
+  // Neu 2026-08-31 (Vollzugsauftrag Christian, direkt). DIESER EINTRAG BRICHT
+  // DAS AUFNAHME-KRITERIUM OBEN, UND ZWAR ABSICHTLICH — hier steht warum, damit
+  // ihn niemand als Präzedenzfall missversteht.
+  //
+  // Das Kriterium lautet: „nur Seiten, die für Kunden keinen Zweck haben […]
+  // Eine Seite, die Kunden nutzen sollen, gehört NIE hierher — dann ist die
+  // richtige Antwort besserer Inhalt, nicht Unsichtbarkeit." `wirkt-das` HAT
+  // einen Kundenzweck (der größte Einwand des Bestands, ew-01), und trotzdem
+  // steht sie jetzt hier. Der Unterschied: die Entscheidung „besserer Inhalt
+  // statt Unsichtbarkeit" IST getroffen worden — sie fiel gegen die Seite.
+  // Christian am 2026-08-31 wörtlich: „die Seite ist so schlecht, dass sie
+  // rausgenommen wird — also raus aus dem Reiter und nicht mehr crawlbar."
+  // Das Kriterium schützt davor, schwachen Inhalt wegzuverstecken statt ihn zu
+  // reparieren; es steht einer ausdrücklichen Rücknahme-Entscheidung nicht
+  // entgegen. Wer die Seite wieder aufnimmt, repariert erst den Inhalt und
+  // entfernt DANN diesen Eintrag — nicht umgekehrt.
+  //
+  // `ausSitemap: true` OHNE die Übergangsstufe `ausSitemap: false`: die
+  // Begründung der Übergangsstufe („die Sitemap ist der einzige Weg, auf dem
+  // Google die Seite noch besucht") gilt für Restseiten, die seit Jahren ohne
+  // eingehende Links liegen. Diese Seite ging am 2026-08-26 live, stand fünf
+  // Tage im Hauptmenü und auf der Produktseite und ist damit in der
+  // Crawl-Frontier — sie wird auch ohne Sitemap-Eintrag wieder besucht und
+  // trifft dann auf noindex in HTML und X-Robots-Tag. Der Widerspruch
+  // „noindex UND in der Sitemap" entsteht hier also gar nicht erst.
+  // Die beiden Einträge DIREKT DARÜBER (`partner`, `qibracelet`, 2026-08-29)
+  // sind unabhängig zum selben Schluss gekommen und nennen dieselbe Bedingung:
+  // die Zweistufigkeit existiert für Seiten, deren EINZIGER Discovery-Pfad die
+  // Sitemap ist. Sie begründen ihr Überspringen mit „Stufe 1 ist abgelaufen"
+  // (das noindex stand schon sechs Wochen), dieser hier mit „Stufe 1 ist
+  // gegenstandslos" (die Sitemap war nie der einzige Weg). Zwei Wege, dieselbe
+  // Regel — die Übergangsstufe ist die Ausnahme, nicht der Normalfall.
+  //
+  // WIRKUNG DIESES EINTRAGS IST NUR DIE SITEMAP: `/pages/wirkt-das` hat eine
+  // EIGENE Route (`pages.wirkt-das.jsx`), die den Katchall `pages.$handle.jsx`
+  // sticht — die Sicht `NICHT_INDEXIERBARE_SEITEN` erreicht sie deshalb nicht.
+  // Das noindex-meta und der X-Robots-Tag stehen in der eigenen Route. Der
+  // Eintrag hier bleibt trotzdem vollständig richtig: fiele die eigene Route
+  // je weg, griffe der Katchall und trüge das noindex weiter.
+  {
+    handle: 'wirkt-das',
+    ausSitemap: true,
+    klasse: 'hygiene',
+    grund:
+      'am 2026-08-31 von Christian wegen Textqualität zurückgezogen; URL bleibt 200, noindex in der eigenen Route',
+    seit: '2026-08-31',
+  },
+  // Neu 2026-09-12 (s04 des Grossjobs 20260911-BAU-qi-master-einmalig-aussage-
+  // auf-die-shopseite-und-eigene-landingpage). Die einzige Seite dieser Liste,
+  // die von Anfang an unsichtbar gebaut wurde statt nachtraeglich zurueckgezogen
+  // zu werden — sie wird ausschließlich über die Adresse in der Mailkette an
+  // den Bestand erreicht.
+  //
+  // AUFNAHME-KRITERIUM OBEN, ausdrücklich geprüft statt übergangen: die Liste
+  // ist für Seiten „ohne Zweck für Kunden", und diese hier hat einen. Sie fällt
+  // unter den dort benannten Grenzfall der Funnel-Seiten — Kunden SEHEN sie (aus
+  // der Mail), aber niemand SUCHT nach ihr: sie ist Ziel eines Klicks, nie eines
+  // Treffers. Die Regel „bei schlechtem Inhalt ist besserer Inhalt die Antwort,
+  // nicht Unsichtbarkeit" greift hier nicht — der Inhalt ist gewollt, nur sein
+  // Publikum ist es, das begrenzt ist.
+  //
+  // KEINE ÜBERGANGSSTUFE `ausSitemap: false`, und das ist eine Herleitung, kein
+  // kopierter Vorgaenger: die Stufe existiert, damit Google eine BEREITS
+  // INDEXIERTE Seite noch einmal besucht und ihr frisches `noindex` liest. Diese
+  // Seite ist neu, war nie im Index und in keiner Sitemap — Stufe 1 hat kein
+  // Objekt (dieselbe Lage wie bei `wirkt-das`, anders als bei `pre-access`).
+  // Entscheidend ist die Gegenrichtung: sie hat ausdrücklich KEINE interne
+  // Verlinkung, die Sitemap wäre also ihr EINZIGER Discovery-Pfad — genau der
+  // Weg, über den `development-nicht-loschen` ohne einen einzigen internen Link
+  // auf Platz 4 der Suche landete.
+  //
+  // WIRKUNG HEUTE: keine, und zwar messbar — am 2026-09-12 führt
+  // sitemap/pages/1.xml 52 URLs, davon 0 mit `qi-master`; es gibt kein
+  // Shopify-Seitenobjekt mit diesem Handle, und in `NUR_ROUTE_SEITEN` gehört
+  // die Seite nicht (dessen Kriterium verlangt „indexierbar gewollt"). Der
+  // Eintrag ist die Sperre für den Tag, an dem jemand im Shopify-Admin eine
+  // CMS-Seite mit diesem Handle anlegt. Das noindex selbst steht in der eigenen
+  // Route `pages.qi-master-vorverkauf.jsx` (meta + X-Robots-Tag), die den
+  // Katchall sticht; fällt die Route je weg, trägt der Katchall es über
+  // diesen Eintrag weiter.
+  {
+    handle: 'qi-master-vorverkauf',
+    ausSitemap: true,
+    klasse: 'kanal-anderer',
+    kanal: 'mail',
+    grund:
+      'Vorverkaufs-Landingpage, nur über die Mailkette erreichbar; ohne interne Verlinkung wäre die Sitemap ihr einziger Discovery-Pfad. noindex in der eigenen Route',
+    seit: '2026-09-12',
+  },
+  // Neu 2026-10-17: dieselbe Seite unter ihrem neuen Namen (Christian: „es
+  // heißt nun Qi Alpha", Grossjob 20261017 zum
+  // neuen Namen, Segment s02). Der Eintrag darueber bleibt
+  // stehen, solange der alte Pfad als 301-Hülle lebt: er sperrt weiter eine
+  // CMS-Seite mit dem alten Handle.
+  {
+    handle: 'qi-alpha-vorverkauf',
+    ausSitemap: true,
+    klasse: 'kanal-anderer',
+    kanal: 'mail',
+    grund:
+      'Vorverkaufs-Landingpage zum Qi Alpha, nur über die Mailkette erreichbar; ohne interne Verlinkung wäre die Sitemap ihr einziger Discovery-Pfad. noindex in der eigenen Route',
+    seit: '2026-10-17',
+  },
+  // Neu 2026-09-30 (Vollzug ov769eece306, Traeger 20260826-formate-gate12-
+  // blockade-sechs-belege-rot-vollzug-ov769eece306-w1). `/pages/partner-details`
+  // ist die Hilfeseite für angemeldete Partner und wird von der öffentlichen
+  // `/pages/affiliate-partnerprogramm` absichtlich verlinkt (HILFESEITE in
+  // AffiliatePartnerprogramm.jsx). Ohne Eintrag hier zog funnel-substrat sie
+  // wegen ihres noindex als Ads-Landingpage in den Landing-Bereich, und die
+  // Wache landing_bereich_unverlinkt.py las den gewollten Partner-Link als Leck
+  // (Achse A, gemessen 2026-09-30: 1 Verweis aus 1 Seite, genau dieser).
+  // Verkehr dort kommt aus dem Partnerkanal, nicht aus Anzeigen, also dieselbe
+  // Klasse wie `partner`. WIRKUNG IM SHOP: keine. Die eigene Route
+  // `pages.partner-details.jsx` sticht den Katchall und setzt noindex selbst,
+  // und in der Sitemap stand die Seite nie. Der Eintrag ist die Klassifikation
+  // für die Leser außerhalb des Repos und sperrt einen künftigen Sitemap-Eintrag.
+  {
+    handle: 'partner-details',
+    ausSitemap: true,
+    klasse: 'kanal-anderer',
+    kanal: 'partner',
+    grund:
+      'Hilfeseite für angemeldete Partner, aus /pages/affiliate-partnerprogramm verlinkt; Partnerkanal, kein Anzeigenziel. noindex in der eigenen Route',
+    seit: '2026-09-30',
+  },
+  // Der Eintrag `wie-funktioniert-der-gitterchip-im-qione` (seit 2026-09-24,
+  // klasse vorab) ist am 2026-10-01 mit der Freigabe entfernt; die Seite steht
+  // jetzt in NUR_ROUTE_SEITEN (Job growth-m-lp-produktseite-verkauft-s05).
+  // Neu 2026-09-24 (Großjob „Forschung bei Qi Blanco“, Christian 24.09.2026:
+  // „Die Page heißt /pages/forschung. Nicht crawlen, nicht veröffentlicht.“).
+  // Dieselbe Lage wie bis 2026-10-01 die GitterChip-Seite: von Anfang an unsichtbar gebaut,
+  // wirkungslos, solange es kein Shopify-Seitenobjekt mit diesem Handle gibt.
+  // Das noindex steht in der eigenen Route `pages.forschung.jsx`. Bei
+  // Christians Freigabe wird dieser Eintrag entfernt.
+  {
+    handle: 'forschung',
+    ausSitemap: true,
+    klasse: 'vorab',
+    grund:
+      'Forschungsverständnis in drei Stufen, bis zu Christians Freigabe unsichtbar und unverlinkt; ohne interne Verlinkung wäre die Sitemap ihr einziger Discovery-Pfad. noindex in der eigenen Route',
+    seit: '2026-09-24',
+  },
+];
+
+/**
+ * Seiten, die es NUR als Hydrogen-Route gibt — ohne Shopify-Seitenobjekt.
+ *
+ * WOZU: `getSitemap` zieht ausschließlich Shopify-Ressourcen. Eine Seite, die
+ * allein aus einer Route in diesem Repo besteht, liefert HTTP 200 mit vollem
+ * Inhalt und steht in KEINER Sitemap — gebaut und für die Suche unsichtbar.
+ * Die Sitemap-Route trägt die Einträge dieser Liste deshalb nach.
+ *
+ * AUFNAHME-KRITERIUM, bewusst eng: (1) die Seite hat eine eigene Route in
+ * app/routes/, (2) sie ist indexierbar gewollt (kein noindex), (3) es gibt eine
+ * stehende Wache auf ihren Live-Zustand — sonst wird aus dem Eintrag still eine
+ * 404-URL in der Sitemap. Wer hier ergänzt, nennt die Wache im Grund.
+ *
+ * DAS IST DIE ZWEITE BAUFORM, NICHT DIE ABLOESUNG DER ERSTEN: der Hausweg
+ * "leeres Shopify-Seitenobjekt als Sitemap-Träger" (technologie, studien)
+ * bleibt gültig und wird von hier NICHT angefasst. Diese Liste ist für
+ * Seiten, deren Träger sichtbar im Repo stehen soll.
+ *
+ * DIESE LISTE IST NICHT DIE EINZIGE QUELLE DES NACHTRAGS, und das ist gewollt
+ * (2026-09-05, Podcast-Sitemap-Naht): sie führt Pfade, die FESTSTEHEN. Für
+ * Pfade, deren MENGE aus Daten folgt, wäre eine Aufzählung hier falsch, sobald
+ * die Daten wachsen — die paginierte Podcast-Sektion hat heute fünf Seiten,
+ * und die fünfte ist keine Entscheidung, sondern das Ergebnis von 43 Folgen zu
+ * je zehn. Solche Pfade werden ABGELEITET (`sitemapSeiten()` in
+ * `~/lib/podcast-daten.server`) und in der Sitemap-Route mit dieser Liste
+ * zusammengeführt.
+ *
+ * WARUM SIE NICHT TROTZDEM HIER STEHEN: die Wahrheit über die Paginierung
+ * (`SEITEN_ZAHL`) liegt in einem `.server`-Modul. Diese Datei wird von
+ * `meta`-Exporten importiert und landet im CLIENT-Bundle; ein Import von dort
+ * würde ein server-only-Modul in den Client ziehen und den Build brechen. Es
+ * sind also zwei QUELLEN, aber nur EIN Mechanismus und EIN Injektor
+ * (`mitNurRouteSeiten`) — die Bauform der beiden ist identisch, inklusive
+ * Aufnahme-Kriterium und benannter Wache je Eintrag.
+ * @type {Array<{pfad: string, grund: string}>}
+ */
+/**
+ * DAS FELD `lastmod` (neu 2026-09-12, Job 20260912-sitemap-index-ohne-lastmod-…):
+ *
+ * Diese Seiten haben kein Shopify-Seitenobjekt, also auch kein `updatedAt`,
+ * aus dem `getSitemap` ein `<lastmod>` bilden könnte — sie standen bis dahin
+ * als EINZIGE Eintraege der ausgelieferten `sitemap/pages/1.xml` voellig ohne
+ * Datum (gemessen 2026-09-12: 9 von 42). Ausgerechnet die juengsten Seiten
+ * gaben Google damit kein Frischesignal, und über das Maximum ihrer Daten
+ * bildet der Sitemap-INDEX sein eigenes `<lastmod>` mit.
+ *
+ * DER WERT IST BELEGBAR, NICHT GESCHAETZT: er ist der Commit-Zeitpunkt der
+ * LETZTEN Aenderung an `app/routes/pages.<slug>.jsx` in `main` (UTC), also
+ * dieselbe Groesse, die homepage-bauer/pruefungen/probe_sitemap_lastmod_
+ * wahrhaftig.py für alle uebrigen Sitemap-Seiten als Wahrheitsmassstab
+ * heranzieht. Er ist bewusst eine UNTERGRENZE: rendert die Route Komponenten,
+ * die spaeter geaendert wurden, ohne dass die Routendatei mitging, ist das
+ * echte Datum juenger. Untertreiben ist die sichere Richtung — ein zu junges
+ * Datum wäre eine Luege gegenüber Google.
+ *
+ * WER DIE ROUTE AENDERT, ZIEHT DAS DATUM NACH. Das ist keine Bitte: sobald
+ * ein Eintrag ein `lastmod` trägt, wird er zum Kandidaten von
+ * probe_sitemap_lastmod_wahrhaftig.py, und die Probe wird ROT, sobald die
+ * letzte inhaltliche Aenderung der Routendatei juenger ist als das hier
+ * genannte Datum. Ein vergessenes Nachziehen ist damit laut, nicht still.
+ * Ohne Feld = kein `<lastmod>` — das ist erlaubt und ehrlicher als ein
+ * geratenes Datum.
+ */
+// ZUSAMMENGELEGT AM 2026-10-07 (Job 20261007-seo-zusammenlegung-duenne-seiten-
+// 301-umsetzen): 13 Nur-Route-Seiten sind per 301 in stärkere Seiten
+// aufgegangen und stehen deshalb nicht mehr in dieser Liste — eine
+// Weiterleitung gehört in keine Sitemap. Welche und wohin: app/lib/
+// zusammenlegungen.js. Die Zielseiten tragen ein neues `lastmod`.
+// ZURÜCK AM 2026-10-16: /pages/lexikon-kohaerentes-wasser antwortet wieder
+// selbst und steht wieder in dieser Liste (Rückweg, Zielseite am
+// Kontrollpunkt Tag 7 abgefallen).
+// ZURÜCK AM 2026-10-23: /pages/armband-duschen-sauna ebenso (Zielseite
+// /pages/faq am Kontrollpunkt Tag 14 abgefallen).
+// ZURÜCK AM 2026-10-24: /pages/wie-funktioniert-schutz-vor-elektrosmog und
+// /pages/wie-weit-reicht-elektrosmog-schutz ebenso (Zielseite
+// /pages/technologie am Kontrollpunkt Tag 14 abgefallen). Es bleiben 9
+// zusammengelegte Seiten.
+export const NUR_ROUTE_SEITEN = [
+  {
+    pfad: '/pages/wie-funktioniert-der-gitterchip-im-qione',
+    lastmod: '2026-10-01T01:00:00Z',
+    grund:
+      'Die Seite „Wie funktioniert der GitterChip im QiOne?“ (Christian ' +
+      '23.09.2026, Grossjob 20260923-GROSSJOB-seite-wie-funktioniert-der-' +
+      'gitterchip-im-qione-versteckt), bis zur Leitplanken-Frage 7 versteckt. ' +
+      'Freigegeben am 2026-10-01 (Job growth-m-lp-produktseite-verkauft-s05, ' +
+      'Entscheid AI-CEO 30.09., Option a): indexierbar und im Video-Dialog ' +
+      'der QiOne-Kaufseite verlinkt. Sie besteht allein aus der Route ' +
+      'pages.wie-funktioniert-der-gitterchip-im-qione.jsx und hat KEIN ' +
+      'Shopify-Seitenobjekt. Ohne diesen Eintrag liefert sie HTTP 200 und ' +
+      'steht in keiner Sitemap. Kriterium 2 erfuellt: kein noindex, ' +
+      'canonicalLink() in der Route, im selben Commit. lastmod ist die ' +
+      'Obergrenze des Merge-Fensters dieses Commits (Merge am 2026-09-30 ' +
+      'nach 22:20Z geplant); probe_sitemap_lastmod_wahrhaftig.py meldet, ' +
+      'falls der Merge spaeter lag. WACHE (Kriterium 3): ' +
+      'claude-jobs/growth-m-lp-produktseite-verkauft-s05/pruefungen/' +
+      'probe_gitterchip_seite_freigegeben.py, Messgeraet des ' +
+      'nachbau-audit-Kriteriums k5d7340e6f3. Sie prueft den INHALT ' +
+      '(Grafiken, Forscher, Kaufweg), nicht den Statuscode. Dazu prueft ' +
+      'sie kein noindex, den Canonical, den Sitemap-<loc> und den Link im ' +
+      'geoeffneten Video-Dialog der Kaufseite. Klassenweit wacht ' +
+      'probe_sitemap_noindex_naht.py.',
+  },
+  {
+    pfad: '/pages/neu-oder-gebraucht',
+    lastmod: '2026-09-12T23:30:00Z',
+    grund:
+      'Die nachpruefbaren Tatsachen des Kaufs als Fliesstext (Grossjob ' +
+      '20260912-…-googles-ki-antwort-raet-vom-kauf-ab, Segment s05). Anlass ' +
+      'ist gemessen: Googles KI-Antwort empfiehlt den Gebrauchtmarkt und ' +
+      'nennt für uns 14 statt 20 Tage Ruecknahme, obwohl ' +
+      '`merchantReturnDays: 20` seit langem korrekt im Produkt-Markup steht — ' +
+      'Strukturdaten allein haben das nicht gedreht. Die Seite besteht allein ' +
+      'aus der Route pages.neu-oder-gebraucht.jsx und hat KEIN ' +
+      'Shopify-Seitenobjekt; ohne diesen Eintrag liefert sie HTTP 200 mit ' +
+      'vollem Text und steht in keiner Sitemap. Ein Seitenobjekt wäre der ' +
+      'zweite mögliche Traeger und ist bewusst NICHT gewählt (Fremdsystem) ' +
+      '— dieselbe Begründung wie bei /pages/kritik und /pages/hypothesen. ' +
+      'Wache (Kriterium 3): homepage-bauer/pruefungen/' +
+      'probe_neu_oder_gebraucht_hell.py — prueft am ausgelieferten HTML den ' +
+      'INHALT (Rand-Marker), kein noindex, kein Disallow, Canonical, den ' +
+      'Sitemap-<loc> und den eingehenden Link von /pages/faq, nicht den ' +
+      'Statuscode.',
+  },
+  {
+    pfad: '/pages/was-auf-reddit-ueber-qi-blanco-steht',
+    lastmod: '2026-10-01T12:00:00Z',
+    grund:
+      'Tatsachenseite zum Zweifelsbegriff „Qi Blanco Reddit" (Job ' +
+      '20261001-s07vm-tatsachenseite-reddit, AI-CEO-Entscheid zu ' +
+      'forschungs-meister sollist-seo07-zitierwirkung-bewertende-reihe). ' +
+      'Anlass ist gemessen: Eigenanteil in Googles KI-Antwort 2 von 42 ' +
+      'Zitatzeilen (4,8 %), zitiert wurden zwei Reddit-Faeden ohne Antwort. ' +
+      'Die Seite besteht allein aus ihrer Route und hat KEIN ' +
+      'Shopify-Seitenobjekt. Ohne diesen Eintrag liefert sie HTTP 200 und ' +
+      'steht in keiner Sitemap. Kein noindex, canonicalLink() in der Route, ' +
+      'im selben Commit. lastmod ist die Obergrenze des Merge-Fensters ' +
+      '(Merge am 2026-10-01 vor 12:00Z geplant). ' +
+      'probe_sitemap_lastmod_wahrhaftig.py meldet, falls der Merge spaeter ' +
+      'lag. Wache (Kriterium 3): homepage-bauer/pruefungen/' +
+      'probe_zweifelsseite_dunkel.py --flaeche reddit. Sie prueft am ' +
+      'ausgelieferten HTML den INHALT (Rand-Marker aus der Flaechen-SSoT). ' +
+      'Dazu kein noindex, kein Disallow, Canonical, Sitemap-<loc> und den ' +
+      'eingehenden Link einer indexierten Nachbarseite.',
+  },
+  {
+    pfad: '/pages/qi-blanco-auf-trustpilot',
+    lastmod: '2026-10-01T18:00:00Z',
+    grund:
+      'Tatsachenseite zum Zweifelsbegriff „Qi Blanco Trustpilot" (Job ' +
+      '20261001-s07vm-tatsachenseite-trustpilot, AI-CEO-Entscheid zu ' +
+      'forschungs-meister sollist-seo07-zitierwirkung-bewertende-reihe). ' +
+      'Anlass ist gemessen: Eigenanteil in Googles KI-Antwort 5 von 58 ' +
+      'Zitatzeilen (8,6 %), der Begriff hatte keine zuständige Seite. ' +
+      'Die Seite besteht allein aus ihrer Route und hat KEIN ' +
+      'Shopify-Seitenobjekt. Ohne diesen Eintrag liefert sie HTTP 200 und ' +
+      'steht in keiner Sitemap. Kein noindex, canonicalLink() in der Route, ' +
+      'im selben Commit. lastmod ist die Obergrenze des Merge-Fensters ' +
+      '(Merge am 2026-10-01 vor 18:00Z geplant). ' +
+      'probe_sitemap_lastmod_wahrhaftig.py meldet, falls der Merge spaeter ' +
+      'lag. Wache: homepage-bauer/pruefungen/probe_zweifelsseite_dunkel.py ' +
+      '--flaeche trustpilot.',
+  },
+  {
+    pfad: '/pages/quellen',
+    lastmod: '2026-09-08T18:49:16Z',
+    grund:
+      'Quellenübersicht des Wissensforums (Grossjob 20260908-KONZEPT-' +
+      'fachartikel-…, Segment s05). Sie besteht allein aus der Route ' +
+      'pages.quellen.jsx und hat KEIN Shopify-Seitenobjekt — ohne diesen ' +
+      'Eintrag liefert sie HTTP 200 mit voller Liste und steht in keiner ' +
+      'Sitemap. Sie beantwortet einen gemessenen Kundeneinwand wörtlich ' +
+      '("Warum nicht einfach einen Link zu den Studien bereitstellen?"). ' +
+      'Wache (Kriterium 3): homepage-bauer/pruefungen/' +
+      'probe_quellen_seite_live.py — prüft INHALT (≥ 10 Quellen-Einträge ' +
+      'mit verschiedenen Jahren, Rückweg in einen Artikel), nicht den ' +
+      'Statuscode, und zusätzlich probe_werk_snapshot_frisch.py gegen das ' +
+      'Veralten des eingebackenen Auszugs.',
+  },
+  {
+    pfad: '/pages/erfahrungen',
+    lastmod: '2026-09-11T23:11:54Z',
+    grund:
+      'Am 2026-09-11 von Christian freigegeben („Aber ja, können wir auch ' +
+      'freischalten … live schalten und crawlbar machen"), nachdem die Seite ' +
+      'seit dem 2026-09-08 als Freigabe-Ansicht dunkel lag. Sie besteht allein ' +
+      'aus der Route pages.erfahrungen.jsx und hat KEIN Shopify-Seitenobjekt — ' +
+      'ohne diesen Eintrag liefert sie HTTP 200 mit 13 Menschen in 17 Videos ' +
+      'und steht in keiner Sitemap. Ein Seitenobjekt anzulegen wäre der zweite ' +
+      'mögliche Träger und ist bewusst NICHT gewählt: er läge im Fremdsystem, ' +
+      'während dieser hier im Repo sichtbar ist. ' +
+      'Wache (Kriterium 3): homepage-bauer/pruefungen/' +
+      'probe_erfahrungen_hell.py — prüft am ausgelieferten HTML INHALT ' +
+      '(Beitragstexte, nicht den Statuscode), Freischaltung (kein noindex, ' +
+      'kein Disallow, Sitemap-Eintrag, Menü-Link), die strukturierten Daten ' +
+      '(VideoObject je Video, Person je Mensch) und die Dublettenfreiheit ' +
+      '(h3.erf__name eindeutig). Sie löst probe_erfahrungen_erreichbar_aber_' +
+      'dunkel.py ab, deren Aussage mit der Freigabe überholt ist.',
+  },
+  {
+    pfad: '/pages/warum-qi-blanco',
+    lastmod: '2026-09-11T23:11:54Z',
+    grund:
+      'Die Absicht — warum es Qi Blanco gibt, in der ersten Person und mit ' +
+      'Autor und Datum ausgezeichnet (Auftrag 20260911-BAU-die-absicht-…). ' +
+      'Sie besteht allein aus der Route pages.warum-qi-blanco.jsx und hat ' +
+      'KEIN Shopify-Seitenobjekt — ohne diesen Eintrag liefert sie HTTP 200 ' +
+      'mit vollem Text und steht in keiner Sitemap, was von aussen nicht ' +
+      'davon zu unterscheiden ist, dass alles stimmt. Sie ist der einzige ' +
+      'Text der Domain, der ZURECHENBAR beantwortet, warum es dieses ' +
+      'Unternehmen gibt — der gemessene Anlass ist, dass Googles KI-Antwort ' +
+      'zu uns null eigene Quellen von sechs zitiert. Wache (Arm E): ' +
+      'homepage-bauer/pruefungen/probe_absicht_am_kundenrand.py — prueft ' +
+      'den Sitemap-Eintrag zusammen mit Autor, Datum und der ' +
+      'Verkaufstext-Freiheit am ausgelieferten HTML, nicht den Statuscode.',
+  },
+  {
+    pfad: '/pages/hypothesen',
+    lastmod: '2026-09-12T18:00:00Z',
+    grund:
+      'Am 2026-09-12 von Christian freigegeben („Ja, ansonsten kannst du das ' +
+      'hier veröffentlichen, das liest sich gut"), nachdem die Seite seit dem ' +
+      '2026-09-11 als Freigabe-Ansicht dunkel lag (noindex + X-Robots-Tag + ' +
+      'Disallow + unverlinkt). Sie besteht allein aus der Route ' +
+      'pages.hypothesen.jsx und hat KEIN Shopify-Seitenobjekt — ohne diesen ' +
+      'Eintrag liefert sie HTTP 200 mit sechs Hypothesen und ihren Quellen ' +
+      'und steht in keiner Sitemap. Ein Seitenobjekt anzulegen wäre der ' +
+      'zweite mögliche Träger und ist bewusst NICHT gewählt (Fremdsystem); ' +
+      'dieselbe Begründung wie bei /pages/erfahrungen und /pages/kritik. ' +
+      'Wache (Kriterium 3): homepage-bauer/pruefungen/' +
+      'probe_zweifelsseite_dunkel.py --flaeche hypothesen — sie verzweigt am ' +
+      'Feld `status` in konzepte/abgrenzung-flaechen.json und misst seit der ' +
+      'Umstellung auf `live_indexiert` die HELL-Arme (H1 Inhalt am Rand-' +
+      'Marker, H2 Sitemap-<loc> in der ausgelieferten Antwort, H3 mindestens ' +
+      'eine indexierte Nachbarseite verlinkt den Pfad, robots.txt frei). ' +
+      'Zusätzlich probe_sitemap_noindex_naht.py klassenweit über diese Liste.',
+  },
+  {
+    pfad: '/pages/affiliate-partnerprogramm',
+    // lastmod nachgezogen am 2026-09-24: die Seite ist seitdem die
+    // Erklärseite, auf die der Menüpunkt „Partner werden" führt (Job
+    // 20260924-bau-partner-werden-erst-erklaerseite-mit-freude-dann-
+    // anmeldung). Neuer Inhalt mit altem Datum hieße für die Suchmaschine
+    // „unverändert seit drei Wochen".
+    lastmod: '2026-09-24T21:00:00Z',
+    grund:
+      'Eigene indexierbare Antwort auf "Qi Blanco Partnerprogramm" (Job ' +
+      '20260905-eigene-indexierbare-partnerseite-...-prio25). Sie ersetzt die ' +
+      'Vendor-Seite aff.revolution.qiblanco.com/register, die mit dem ' +
+      'entschiedenen X-Robots-Tag über die ganze Subdomain aus dem Index ' +
+      'faellt. Wache: homepage-bauer/pruefungen/' +
+      'probe_partnerseite_naht_sitemap_route.py (Sitemap-Eintrag UND ' +
+      'Routen-Marker live) sowie probe_partnerseite_inhalt_live.py.',
+  },
+  // Neu 2026-09-12 (Job 20260912-siebzehn-von-52-pages-urls-sind-google-
+  // unbekannt-…). VIER EINTRAEGE AUS EINER VOLLERHEBUNG, NICHT AUS EINEM
+  // EINZELFALL: gemessen wurden ALLE 67 `pages.*`-Routen in origin/main gegen
+  // die ausgelieferte `sitemap/pages/1.xml`. 33 stehen dort nicht; 28 davon
+  // zu Recht (404 oder live `noindex`), fünf nicht — und eine der fünf
+  // (`kristall-kakao`) ist eine Weiterleitung und gehört ebenfalls nicht
+  // hinein. Bleiben diese vier. Der Restbericht ist Pflicht, nicht Kuer: ein
+  // Einschluss-Selektor sagt nur, was er NIMMT, und seine ausgelassene Menge
+  // ist sonst nicht pruefbar (Hausregel „Waechter-Zaun an der Eigenschaft").
+  //
+  // DREI DER VIER SIND CANONICAL-ZIELE VON SEITEN, DIE SELBST IN DER SITEMAP
+  // STEHEN — das ist der teurere Teil und war unsichtbar, weil beide Seiten
+  // für sich richtig aussehen: `/pages/qione` und `/pages/qihome` stehen in
+  // der Sitemap und erklären per `<link rel="canonical">` eine ANDERE URL zur
+  // kanonischen. Google bestaetigt das am 2026-09-12 woertlich mit
+  // coverageState „Seite mit Weiterleitung" und googleCanonical
+  // `/pages/qione-2-pro-details` bzw. `/pages/qihome-details`. Die Sitemap
+  // nannte damit zwei URLs, die sofort weiterzeigen, waehrend ihre Ziele in
+  // KEINER Sitemap standen. Eine Sitemap führt kanonische URLs, nie deren
+  // Vorstufen.
+  //
+  // `/pages/über-uns` ist der vierte und der einzige echte Neuzugang: live
+  // HTTP 200, 98 KB, self-canonical, kein noindex — und am 2026-09-12 von
+  // Google mit „URL ist Google nicht bekannt", `sitemap: None`,
+  // `referringUrls: 0` gemessen. Gebaut und für die Suche unsichtbar, genau
+  // der Fall, für den diese Liste existiert.
+  //
+  // WACHE FÜR ALLE VIER (Aufnahme-Kriterium 3, eine Wache statt vier):
+  // pruefungen/probe_sitemap_noindex_naht.py prueft je Eintrag dieser Liste
+  // live HTTP 200 + kein noindex + `<loc>` in der ausgelieferten Sitemap, und
+  // zusaetzlich klassenweit, dass das Canonical-Ziel jeder Sitemap-URL selbst
+  // in der Sitemap steht. Ein Eintrag, der zur 404-URL verkommt, wird dadurch
+  // rot, statt still in der Sitemap zu stehen.
+  {
+    pfad: '/pages/ueber-uns',
+    lastmod: '2026-09-11T23:11:54Z',
+    grund:
+      'Live 200/98 KB, indexierbar, self-canonical — und am 2026-09-12 von ' +
+      'Google als "URL ist Google nicht bekannt" gemessen (sitemap: None, ' +
+      'referringUrls: 0). Sie hat KEIN Shopify-Seitenobjekt und stand damit ' +
+      'in keiner Sitemap. Wache: pruefungen/probe_sitemap_noindex_naht.py.',
+  },
+  {
+    pfad: '/pages/qione-2-pro-details',
+    lastmod: '2026-08-31T19:11:51Z',
+    grund:
+      'Canonical-Ziel von /pages/qione, das selbst in der Sitemap steht. ' +
+      'Google 2026-09-12: /pages/qione = "Seite mit Weiterleitung", ' +
+      'googleCanonical = diese URL; diese URL "Gesendet und indexiert", aber ' +
+      'sitemap: None. Wache: pruefungen/probe_sitemap_noindex_naht.py.',
+  },
+  {
+    pfad: '/pages/qihome-details',
+    lastmod: '2026-09-10T19:29:21Z',
+    grund:
+      'Canonical-Ziel von /pages/qihome, das selbst in der Sitemap steht. ' +
+      'Google 2026-09-12: /pages/qihome = "Seite mit Weiterleitung", ' +
+      'googleCanonical = diese URL; diese URL "Gesendet und indexiert", aber ' +
+      'sitemap: None. Wache: pruefungen/probe_sitemap_noindex_naht.py.',
+  },
+  {
+    pfad: '/pages/qibracelet-details',
+    lastmod: '2026-08-31T19:11:51Z',
+    grund:
+      'Oeffentlicher Zwilling zu /pages/qibracelet (das seit 2026-08-29 ' +
+      'noindex + ausSitemap: true trägt und im Kommentar dort ausdrücklich ' +
+      'als "unberuehrt" benannt ist). Google 2026-09-12: "Gesendet und ' +
+      'indexiert", sitemap: None — indexiert, aber von keiner Sitemap ' +
+      'getragen. Wache: pruefungen/probe_sitemap_noindex_naht.py.',
+  },
+  {
+    pfad: '/pages/kritik',
+    lastmod: '2026-09-11T23:11:54Z',
+    grund:
+      'Eigene indexierbare Antwort auf "Qi Blanco Kritik" (Job 20260911-BAU-' +
+      'kritikseite-freischalten-…-s02; Christian 2026-09-11 nach dem Lesen ' +
+      'der Seite: "Live schalten und bei Mehr einbinden"). Sie besteht allein ' +
+      'aus der Route pages.kritik.jsx und hat KEIN Shopify-Seitenobjekt — ein ' +
+      'zweiter Träger für dieselbe Seite ist bewusst NICHT angelegt. Ohne ' +
+      'diesen Eintrag liefert sie HTTP 200 mit voller Beweisführung und ' +
+      'steht in keiner Sitemap. Kriterium 2 erfüllt: das noindex ist im ' +
+      'selben Commit aus pages.kritik.jsx entfernt und durch canonicalLink() ' +
+      'ersetzt. WACHE (Kriterium 3): homepage-bauer/pruefungen/' +
+      'probe_zweifelsseite_dunkel.py --flaeche kritik, hängt als ' +
+      'nachbau-audit h1afce75b. Sie verzweigt am Feld `status` der SSoT ' +
+      'konzepte/abgrenzung-flaechen.json und prüft für `live_indexiert` die ' +
+      'HELL-Arme: H1-INHALT (die zugesagten Randmarker, nicht der ' +
+      'Statuscode), H2-ROBOTS (kein Disallow), H2-NOINDEX (kein noindex, ' +
+      'aber Canonical), H2-SITEMAP (steht in einer real AUSGELIEFERTEN ' +
+      'Sitemap — nicht nur in dieser Liste) und H3-VERLINKT.',
+  },
+  {
+    pfad: '/pages/lexikon',
+    lastmod: '2026-10-07T04:30:00Z',
+    grund:
+      'Der Hub des Lexikons (Grossjob ' +
+      '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
+      'Segment s06; Christian 2026-09-15: "Ein Lexikon, das von der ' +
+      'AI akzeptiert wird"). Er besteht allein aus der Route ' +
+      'pages.lexikon.jsx und hat KEIN Shopify-Seitenobjekt — ohne ' +
+      'diesen Eintrag liefert er HTTP 200 mit neun verlinkten ' +
+      'Begriffen und steht in keiner Sitemap, also erreichbar und ' +
+      'trotzdem unauffindbar. Ein Seitenobjekt wäre der zweite ' +
+      'mögliche Träger und ist bewusst NICHT gewählt (Fremdsystem) — ' +
+      'dieselbe Begründung wie bei /pages/kritik, /pages/hypothesen ' +
+      'und /pages/erfahrungen. KEIN MENÜ-EINTRAG, und das ist kein ' +
+      'Versteck: die Route hängt nicht am Shopify-Menü-Objekt, ist ' +
+      'aber öffentlich, indexierbar und verlinkt. Kriterium 2 ' +
+      'erfüllt: kein noindex, canonicalLink() in der Route. WACHE ' +
+      '(Kriterium 3): ' +
+      'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py, ' +
+      'deklariert als nachbau-audit h5f5ad493. Sie misst den INHALT, ' +
+      'nicht den Statuscode: die vier namentlich genannten ' +
+      'Grundbegriffe im sichtbaren Hub-Text, je Eintragsseite den ' +
+      'Abschnitt data-geo="grenze" und eine H1, und für jede Seite ' +
+      'den Vergleich des SICHTBAREN Textes zwischen Mensch, Googlebot ' +
+      'und OAI-SearchBot (Roh-Bytes taugen dafür nicht: Cookiebot ' +
+      'setzt je Abruf eine Zufalls-Nonce und React-Streaming liefert ' +
+      'dem Browser zusätzliche Hydrations-Zeilen). Sie pinnt keine ' +
+      'Eintragszahl, sondern verlangt einen Boden und entdeckt den ' +
+      'Rest aus dem Hub.',
+  },
+  {
+    pfad: '/pages/lexikon-kohaerentes-wasser',
+    lastmod: '2026-10-16T13:00:00Z',
+    grund:
+      'Lexikon-Eintrag „kohärentes Wasser“ (Grossjob ' +
+      '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
+      'Segment s06; Inhalt aus s04). Je Begriff eine eigene URL, weil ' +
+      'ein Antwortsystem Abschnitte isoliert bewertet: ein Begriff ' +
+      'als blosser Anker auf dem Hub wird mit dem Nachbarbegriff ' +
+      'zusammen geschnitten und verliert dabei seine Definition. Die ' +
+      'Seite besteht allein aus der Route ' +
+      'pages.lexikon-kohärentes-wasser.jsx und hat KEIN ' +
+      'Shopify-Seitenobjekt. Ohne diesen Eintrag liefert sie HTTP ' +
+      '200 mit vollem Text und steht in keiner Sitemap. Kriterium 2 ' +
+      'erfüllt: kein noindex, canonicalLink() in der Route. WACHE ' +
+      '(Kriterium 3): ' +
+      'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py ' +
+      '(nachbau-audit h5f5ad493). Sie folgt den Hub-Links und prüft ' +
+      'je Eintragsseite den Abschnitt data-geo="grenze", eine H1 und ' +
+      'die gleiche Auslieferung an Mensch, Googlebot und ' +
+      'OAI-SearchBot. Ein Eintrag ohne seine Grenze fällt dort rot, ' +
+      'weil er ohne sie Werbung wäre. Vom 07.10. bis 16.10.2026 per 301 ' +
+      'in /pages/was-ist-kohaerentes-wasser aufgegangen (PR #815); ' +
+      'zurückgenommen, weil die Zielseite am Kontrollpunkt Tag 7 abfiel ' +
+      '(Folgeauftrag des Wirkungskreislaufs, Hypothese H-537022f708). ' +
+      'lastmod ist die Obergrenze des Merge-Fensters ' +
+      'dieses Rückwegs.',
+  },
+  {
+    pfad: '/pages/armband-duschen-sauna',
+    lastmod: '2026-10-23T12:00:00Z',
+    grund:
+      'Antwortseite zur Frage „Kann man ein Armband gegen Elektrosmog ' +
+      'beim Duschen und in der Sauna tragen?“ (Großjob ' +
+      '20260919-…-wer-spricht-über-uns-wenn-die-ki-gefragt-wird, ' +
+      'Segment s08). Ausgewählt anhand der Zitatmessung des seo-manager ' +
+      '(exports/KI-QUELLENLUECKE.json): zu dieser Frage werden heute ' +
+      'sauna-portal.com und armstark.com zitiert. Sie besteht allein ' +
+      'aus der Route pages.armband-duschen-sauna.jsx und hat KEIN ' +
+      'Shopify-Seitenobjekt. Ohne diesen Eintrag liefert sie HTTP 200 ' +
+      'mit vollem Text und steht in keiner Sitemap, und der Eigenkorpus ' +
+      'der Zitatmessung entsteht aus der SITEMAP: die Messung sähe die ' +
+      'Seite nie. Wache (Kriterium 3): ' +
+      'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py ' +
+      'leitet ihre Prüfmenge aus dem Fragen-Hub ab und deckt diese ' +
+      'Seite ohne Zutun mit ab. Vom 07.10. bis 23.10.2026 per 301 in ' +
+      '/pages/faq aufgegangen (PR #815); zurückgenommen, weil die ' +
+      'Zielseite am Kontrollpunkt Tag 14 abfiel (Folgeauftrag des ' +
+      'Wirkungskreislaufs, Hypothese H-395796ad98). lastmod ist die ' +
+      'Obergrenze des Merge-Fensters dieses Rückwegs.',
+  },
+  {
+    pfad: '/pages/wie-funktioniert-schutz-vor-elektrosmog',
+    lastmod: '2026-10-25T00:00:00Z',
+    grund:
+      'Frageseite „Wie funktioniert ein Schutz gegen Elektrosmog am ' +
+      'Körper?“ (Grossjob ' +
+      '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
+      'Segment s07; Text aus s05). Je Frage eine eigene URL, weil ein ' +
+      'Antwortsystem Abschnitte isoliert bewertet: eine Frage als blosse ' +
+      'Zeile unter zwoelf anderen auf /pages/faq konkurriert mit ihren ' +
+      'Nachbarn um dieselbe Adresse. Die Bestands-FAQ bleibt ' +
+      'unangetastet. Die Seite besteht allein aus der Route ' +
+      'pages.wie-funktioniert-schutz-vor-elektrosmog.jsx und hat KEIN ' +
+      'Shopify-Seitenobjekt. Ohne diesen Eintrag liefert sie HTTP 200 ' +
+      'mit vollem Text und steht in keiner Sitemap. Kriterium 2 erfuellt: ' +
+      'kein noindex, canonicalLink() in der Route. WACHE (Kriterium 3): ' +
+      'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py ' +
+      '(nachbau-audit h5f5ad493). Sie folgt den Links des Fragen-Hubs. ' +
+      'An dieser Seite prueft sie den Marker data-geo="frage" an der ' +
+      'Ueberschrift, HTTP 200 und die gleiche Auslieferung an drei ' +
+      'User-Agents. Vom 7. bis 24. Oktober 2026 ging sie per 301 in ' +
+      '/pages/technologie auf (PR #815). Zurückgenommen ist das, weil ' +
+      'die Zielseite am Kontrollpunkt Tag 14 abfiel. Folgeauftrag des ' +
+      'Wirkungskreislaufs, Hypothese H-11352f2aff. lastmod ist die ' +
+      'Obergrenze des Merge-Fensters dieses Rückwegs.',
+  },
+  {
+    pfad: '/pages/wie-weit-reicht-elektrosmog-schutz',
+    lastmod: '2026-10-25T00:00:00Z',
+    grund:
+      'Frageseite „Wie groß ist der Wirkungsbereich eines ' +
+      'Elektrosmog-Schutzes?“ (Grossjob ' +
+      '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
+      'Segment s07; Text aus s05). Je Frage eine eigene URL, weil ein ' +
+      'Antwortsystem Abschnitte isoliert bewertet: eine Frage als blosse ' +
+      'Zeile unter zwoelf anderen auf /pages/faq konkurriert mit ihren ' +
+      'Nachbarn um dieselbe Adresse. Die Bestands-FAQ bleibt ' +
+      'unangetastet. Die Seite besteht allein aus der Route ' +
+      'pages.wie-weit-reicht-elektrosmog-schutz.jsx und hat KEIN ' +
+      'Shopify-Seitenobjekt. Ohne diesen Eintrag liefert sie HTTP 200 ' +
+      'mit vollem Text und steht in keiner Sitemap. Kriterium 2 erfuellt: ' +
+      'kein noindex, canonicalLink() in der Route. WACHE (Kriterium 3): ' +
+      'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py ' +
+      '(nachbau-audit h5f5ad493). Sie folgt den Links des Fragen-Hubs. ' +
+      'An dieser Seite prueft sie den Marker data-geo="frage" an der ' +
+      'Ueberschrift, HTTP 200 und die gleiche Auslieferung an drei ' +
+      'User-Agents. Vom 7. bis 24. Oktober 2026 ging sie per 301 in ' +
+      '/pages/technologie auf (PR #815). Zurückgenommen ist das, weil ' +
+      'die Zielseite am Kontrollpunkt Tag 14 abfiel. Folgeauftrag des ' +
+      'Wirkungskreislaufs, Hypothese H-11352f2aff. lastmod ist die ' +
+      'Obergrenze des Merge-Fensters dieses Rückwegs.',
+  },
+  {
+    pfad: '/pages/lexikon-elektrosmog',
+    lastmod: '2026-10-06T20:05:00Z',
+    grund:
+      'Lexikon-Eintrag „Elektrosmog“ (Grossjob ' +
+      '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
+      'Segment s06; Inhalt aus s04). Je Begriff eine eigene URL, weil ' +
+      'ein Antwortsystem Abschnitte isoliert bewertet: ein Begriff ' +
+      'als blosser Anker auf dem Hub wird mit dem Nachbarbegriff ' +
+      'zusammen geschnitten und verliert dabei seine Definition. Die ' +
+      'Seite besteht allein aus der Route ' +
+      'pages.lexikon-elektrosmog.jsx und hat KEIN ' +
+      'Shopify-Seitenobjekt — ohne diesen Eintrag liefert sie HTTP ' +
+      '200 mit vollem Text und steht in keiner Sitemap. Kriterium 2 ' +
+      'erfüllt: kein noindex, canonicalLink() in der Route. WACHE ' +
+      '(Kriterium 3): ' +
+      'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py ' +
+      '(nachbau-audit h5f5ad493) — sie folgt den Hub-Links und prüft ' +
+      'je Eintragsseite den Abschnitt data-geo="grenze", eine H1 und ' +
+      'die gleiche Auslieferung an Mensch, Googlebot und ' +
+      'OAI-SearchBot. Ein Eintrag ohne seine Grenze fällt dort rot, ' +
+      'weil er ohne sie Werbung wäre.',
+  },
+  // Neu 2026-09-16 (Grossjob 20260915-GEO-lexikon-frageseiten-und-ob-die-ki-
+  // uns-zitiert, Segment s07). SIEBEN EINTRAEGE AUS EINEM BAU: der Fragen-Hub
+  // und sechs Frageseiten. Alle sieben bestehen allein aus ihrer Route und
+  // haben KEIN Shopify-Seitenobjekt — ohne diese Eintraege liefern sie HTTP 200
+  // mit vollem Text und stehen in keiner Sitemap, was von aussen nicht davon zu
+  // unterscheiden ist, dass alles stimmt.
+  //
+  // AUFNAHME-KRITERIUM 2 (indexierbar gewollt) IST JE SEITE GEPRUEFT: keine der
+  // sieben Routen setzt `noindex`, jede setzt `canonicalLink()` auf sich selbst.
+  //
+  // WACHE FÜR ALLE SIEBEN (Kriterium 3, eine Wache statt sieben):
+  // seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py
+  // (nachbau-audit h5f5ad493) folgt den Links des Fragen-Hubs innerhalb des
+  // Abschnitts data-geo="frageliste" und prueft je Frageseite den Marker
+  // data-geo="frage" und die gleiche Auslieferung an Mensch, Googlebot und
+  // OAI-SearchBot; dazu probe_geo_flaechen_in_sitemap.py (Sitemap-<loc> je
+  // Flaeche) und klassenweit probe_sitemap_noindex_naht.py.
+  //
+  // WAS HIER BEWUSST NICHT STEHT — und es ist der Eintrag, den der
+  // Segment-Auftrag ausdrücklich verlangt hat: /pages/wirkt-das. Am
+  // 2026-09-16 selbst nachgemessen liefert die Seite HTTP 200 und trägt
+  // `meta robots="noindex,nofollow"` UND den Header `x-robots-tag: noindex,
+  // nofollow`; Christian hat sie am 2026-08-31 wegen Textqualitaet
+  // zurueckgezogen. Ein Eintrag hier trägt sie in die Sitemap — also eine
+  // Sitemap-Zeile für eine noindex-Seite, und damit genau der Widerspruch,
+  // vor dem der Kopf dieser Datei warnt, gegen eine Menschen-Entscheidung.
+  // Dasselbe gilt für /pages/haelt-das-mein-leben-aus und
+  // /pages/kette-oder-armband (beide ebenfalls live noindex,nofollow). Der
+  // richtige Weg ist der Text, nicht die Sitemap — siehe RESULT s07.
+  // /pages/fragen STAND HIER BIS 2026-09-25 und ist entfernt: die Route
+  // leitet seither per 301 auf den Abschnitt #einzelfragen von /pages/faq
+  // (Auftrag 20260926-seo-duenne-vorlagenseiten-aufwerten-oder-
+  // zusammenfuehren; Begründung im Kopf von app/routes/pages.fragen.jsx).
+  // Eine Sitemap-URL, die weiterleitet, meldet
+  // pruefungen/probe_sitemap_ohne_weiterleitung.py. /pages/faq selbst steht
+  // über ihr Shopify-Seitenobjekt in der Sitemap, nicht in dieser Liste.
+  {
+    pfad: '/pages/kann-elektrosmog-den-schlaf-stoeren',
+    lastmod: '2026-10-06T22:10:00Z',
+    grund:
+      'Frageseite „Kann Elektrosmog den Schlaf stören?“ (Grossjob ' +
+      '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
+      'Segment s07; Text aus s05). Je Frage eine eigene URL, weil ein ' +
+      'Antwortsystem Abschnitte isoliert bewertet: eine Frage als blosse ' +
+      'Zeile unter zwoelf anderen auf /pages/faq konkurriert mit ihren ' +
+      'Nachbarn um dieselbe Adresse. Die Bestands-FAQ bleibt ' +
+      'unangetastet. Die Seite besteht allein aus der Route ' +
+      'pages.kann-elektrosmog-den-schlaf-stoeren.jsx und hat KEIN ' +
+      'Shopify-Seitenobjekt — ohne diesen Eintrag liefert sie HTTP 200 ' +
+      'mit vollem Text und steht in keiner Sitemap. Kriterium 2 erfuellt: ' +
+      'kein noindex, canonicalLink() in der Route. WACHE (Kriterium 3): ' +
+      'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py ' +
+      '(nachbau-audit h5f5ad493) — sie folgt den Links des Fragen-Hubs ' +
+      'und prueft an dieser Seite den Marker data-geo="frage" an der ' +
+      'Ueberschrift, HTTP 200 und die gleiche Auslieferung an drei ' +
+      'User-Agents.',
+  },
+  {
+    pfad: '/pages/ist-qi-blanco-serioes',
+    lastmod: '2026-09-28T12:00:00Z',
+    grund:
+      'Frageseite „Ist Qi Blanco seriös?“ (Grossjob ' +
+      '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
+      'Segment s07; Text aus s05). Je Frage eine eigene URL, weil ein ' +
+      'Antwortsystem Abschnitte isoliert bewertet: eine Frage als blosse ' +
+      'Zeile unter zwoelf anderen auf /pages/faq konkurriert mit ihren ' +
+      'Nachbarn um dieselbe Adresse. Die Bestands-FAQ bleibt ' +
+      'unangetastet. Die Seite besteht allein aus der Route ' +
+      'pages.ist-qi-blanco-serioes.jsx und hat KEIN Shopify-Seitenobjekt ' +
+      '— ohne diesen Eintrag liefert sie HTTP 200 mit vollem Text und ' +
+      'steht in keiner Sitemap. Kriterium 2 erfuellt: kein noindex, ' +
+      'canonicalLink() in der Route. WACHE (Kriterium 3): ' +
+      'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py ' +
+      '(nachbau-audit h5f5ad493) — sie folgt den Links des Fragen-Hubs ' +
+      'und prueft an dieser Seite den Marker data-geo="frage" an der ' +
+      'Ueberschrift, HTTP 200 und die gleiche Auslieferung an drei ' +
+      'User-Agents.',
+  },
+  // /pages/was-sagen-die-quarks-science-cops steht seit 2026-09-28 NICHT mehr
+  // hier: die Adresse leitet per 301 auf /pages/ist-qi-blanco-serioes (Grossjob
+  // 20260928-GROSSJOB-frageseiten-menschlich-schreiben-und-bestmoegliches-licht),
+  // und eine Sitemap-URL, die weiterleitet, sendet ein gegenlaeufiges Signal.
+  {
+    pfad: '/pages/was-ist-elektrosmog',
+    lastmod: '2026-10-07T04:30:00Z',
+    grund:
+      'Antwortseite zur Frage „Was ist Elektrosmog?“ (Großjob ' +
+      '20260919-…-wer-spricht-über-uns-wenn-die-ki-gefragt-wird, ' +
+      'Segment s08). Ausgewählt anhand der Zitatmessung des seo-manager ' +
+      '(exports/KI-QUELLENLUECKE.json): zu dieser Frage werden heute ' +
+      'planet-wissen.de, bfs.de, lernhelfer.de und beyondmatter.com ' +
+      'zitiert. Sie besteht allein aus der Route ' +
+      'pages.was-ist-elektrosmog.jsx und hat KEIN Shopify-Seitenobjekt ' +
+      '— ohne diesen Eintrag liefert sie HTTP 200 mit vollem Text und ' +
+      'steht in keiner Sitemap, und der Eigenkorpus der Zitatmessung ' +
+      'entsteht aus der SITEMAP: die Messung sähe die Seite nie. Ein ' +
+      'Seitenobjekt wäre der zweite mögliche Träger und ist nicht ' +
+      'gewählt (Fremdsystem) — dieselbe Begründung wie bei ' +
+      '/pages/fragen und den übrigen Frageseiten. Wache (Kriterium 3): ' +
+      'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py ' +
+      'leitet ihre Prüfmenge aus dem Fragen-Hub ab und deckt diese ' +
+      'Seite ohne Zutun mit ab; zusätzlich ' +
+      'homepage-bauer/pruefungen/probe_ki_luecke_am_kundenrand.py, die ' +
+      'am ausgelieferten HTML Inhalt, Sitemap-Eintrag und ' +
+      'Indexierbarkeit prüft, nicht den Statuscode.',
+  },
+  {
+    pfad: '/pages/bewertungen',
+    lastmod: '2026-09-21T12:00:00Z',
+    grund:
+      'Der Landeplatz für „Qi Blanco Bewertungen" (Grossjob 20260921-GROSSJOB-' +
+      'die-bewertenden-markenbegriffe-gehoeren-uns, Segment s04). Anlass ist ' +
+      'gemessen: der Begriff hatte am 2026-09-21 0 von 10 eigene organische ' +
+      'Treffer (seo.db) und /pages/bewertungen antwortete 404. Die Seite ' +
+      'besteht allein aus der Route pages.bewertungen.jsx und hat KEIN ' +
+      'Shopify-Seitenobjekt — ohne diesen Eintrag liefert sie HTTP 200 mit ' +
+      'den echten Google-Bewertungen und steht in keiner Sitemap. Ein ' +
+      'Seitenobjekt wäre der zweite mögliche Träger und ist bewusst NICHT ' +
+      'gewählt (Fremdsystem) — dieselbe Begründung wie bei /pages/kritik. ' +
+      'Wache (Kriterium 3): homepage-bauer/pruefungen/' +
+      'probe_bewertungen_hell.py — prüft am ausgelieferten HTML den INHALT ' +
+      '(Rand-Marker, Feed-Region mit gerenderten Karten, Badge mit Note), ' +
+      'kein noindex, kein Disallow, Canonical, den Sitemap-<loc>, den ' +
+      'eingehenden Link von /pages/faq und die Sitelink-Naht (gclid -> 200), ' +
+      'nicht den Statuscode.',
+  },
+  {
+    pfad: '/pages/produktberatung',
+    lastmod: '2026-09-28T22:09:16Z',
+    grund:
+      'Die Buchungsseite „Produktberatung: 20 Minuten mit Christian" (Grossjob ' +
+      '20260928-GROSSJOB-produktberatung-live-mit-christian-buchen, s02). ' +
+      'Christian 28.09.2026: live und über die Google-Suche auffindbar, aber ' +
+      'nicht in Menü oder Startseite verlinkt. Die Seite besteht allein aus ' +
+      'der Route pages.produktberatung.jsx und hat KEIN Shopify-Seitenobjekt. ' +
+      'Ohne Menü-Link ist die Sitemap ihr einziger Weg zu Google. Die Wache ' +
+      'produktberatung/pruefungen/probe_seite_zeigt_termine.py prüft am ' +
+      'ausgelieferten HTML die freien Termine des Endpunkts, den Canonical ' +
+      'und das Fehlen von noindex.',
+  },
+  {
+    pfad: '/pages/coming-home',
+    lastmod: '2026-10-01T13:31:10Z',
+    grund:
+      'Die Anmeldeseite zu „Coming Home“, sonntags 19 Uhr live mit Anna und ' +
+      'Christian (Grossjob growth-m-lp-coming-home-anmeldeseite, Christian ' +
+      '26.09.2026, Leitplanke Folie 15). Ziel für Einladungsmail, Bio, Reels ' +
+      'und die Anzeige V18, dazu organisch auffindbar. Die Seite besteht ' +
+      'allein aus der Route pages.coming-home.jsx und hat KEIN ' +
+      'Shopify-Seitenobjekt. Ohne diesen Eintrag liefert sie HTTP 200 und ' +
+      'steht in keiner Sitemap. Kein noindex auf dem Dokument (nur die ' +
+      'Action-Antwort trägt X-Robots-Tag), canonicalLink() in der Route. ' +
+      'Wache (Kriterium 3): growth-manager/pruefungen/' +
+      'probe_coming_home_seite.py, stehender Träger rt coming-home-wache. ' +
+      'Arm A prüft am ausgelieferten HTML HTTP 200, den Formular-Marker, ' +
+      'den Canonical und das Fehlen von noindex; 404 ist dort ein Befund.',
+  },
+  {
+    pfad: '/pages/live',
+    lastmod: '2026-10-18T10:52:20Z',
+    grund:
+      'Der Reiter „Live“ unter „Mehr“: Coming Home mit dem nächsten Termin, ' +
+      'dem Anmeldefenster und dem Rückblick je Woche (Grossjob 20261018-' +
+      'GROSSJOB-coming-home-zoom-aufnahme-transkript-zusammenfassung-' +
+      'homepage-reiter-live, Christian 18.10.2026). Die Seite besteht allein ' +
+      'aus der Route pages.live.jsx und hat KEIN Shopify-Seitenobjekt. Ohne ' +
+      'diesen Eintrag liefert sie HTTP 200 und steht in keiner Sitemap. Kein ' +
+      'noindex auf der Grundansicht (nur die Schritt-Ansichten der Mail-Links ' +
+      'tragen es), canonicalLink() in der Route. lastmod ist der Merge von ' +
+      'PR #943. Wache: coming-home/pruefungen/probe_live_seite.py prüft am ' +
+      'ausgelieferten HTML die vier Marker, das Anmeldefenster und den ' +
+      'Menü-Link.',
+  },
+  {
+    pfad: '/pages/was-ist-kohaerentes-wasser',
+    lastmod: '2026-10-09T15:00:00Z',
+    grund:
+      'Die Info-Seite „Kohärentes Wasser" (Großjob vom 23.09.2026, ' +
+      'Christian: ' +
+      '„die beste Info-Seite zu dem Thema im Netz"). Die Seite besteht allein ' +
+      'aus ihrer eigenen Route und hat KEIN ' +
+      'Shopify-Seitenobjekt — ohne diesen Eintrag liefert sie HTTP 200 mit ' +
+      'vollem Text und steht in keiner Sitemap. Ein Seitenobjekt wäre der ' +
+      'zweite mögliche Träger und ist nicht gewählt (Fremdsystem), dieselbe ' +
+      'Begründung wie bei /pages/kritik. Kriterium 2 erfüllt: kein noindex, ' +
+      'canonicalLink() in der Route. Wache (Kriterium 3): homepage-bauer/' +
+      'pruefungen/probe_infoseite_kohaerentes_wasser_hell__20260923.py — ' +
+      'prüft am ausgelieferten HTML den INHALT (beide Teile, Quellen-Links, ' +
+      'Grafiken, JSON-LD), kein noindex, den Canonical und den Sitemap-<loc>, ' +
+      'nicht den Statuscode.',
+  },
+  {
+    pfad: '/pages/was-ist-hexagonales-wasser',
+    lastmod: '2026-10-09T15:00:00Z',
+    grund:
+      'Die Seite „Hexagonales Wasser" für Christians Auftrag vom ' +
+      '23.09.2026 („Platz eins in SEO und GEO"). ' +
+      'Sie ist eine reine Route wie die Info-Seite. ' +
+      'Ein Shopify-Seitenobjekt hat sie nicht; ohne ' +
+      'diesen Eintrag stünde sie in keiner Sitemap. Kein noindex, ' +
+      'canonicalLink() in der Route.',
+  },
+  {
+    pfad: '/pages/wissen-und-vertrauen',
+    lastmod: '2026-10-07T04:30:00Z',
+    grund:
+      'Die Übersicht „Alle Antworten rund um Qi Blanco" (Großjob ' +
+      '20261006-GROSSJOB-seo-strategie-seiten-bewertung-crawl-' +
+      'kannibalisierung, Segment s06; Christian 06.10.2026: die neuen ' +
+      'Wissens- und Vertrauensseiten „sauber" verlinken). Sie besteht allein ' +
+      'aus der Route pages.wissen-und-vertrauen.jsx und hat KEIN ' +
+      'Shopify-Seitenobjekt. Ohne diesen Eintrag liefert sie HTTP 200 und ' +
+      'steht in keiner Sitemap. Kein noindex, canonicalLink() in der Route. ' +
+      'Wache: homepage-bauer/pruefungen/' +
+      'probe_wissen_vertrauen_verlinkung__20261006.py prüft am ' +
+      'ausgelieferten HTML Fußspalte, vollständige Übersicht, Leiste ' +
+      '„Weiterlesen" und den Sitemap-<loc>.',
+  },
+  {
+    pfad: '/pages/healy-alternative',
+    lastmod: '2026-10-07T16:33:49Z',
+    grund:
+      'Die Antwortseite „Was ist eine gute Alternative zu Healy?" (GEO-' +
+      'Grossjob 20261007-GROSSJOB-geo-manager-chatgpt-perplexity-grok-' +
+      'gemini-sichtbarkeit, Segment s04, Hebel M17; live seit 2026-10-07 ' +
+      'mit PR #828). Sie besteht allein aus der Route ' +
+      'pages.healy-alternative.jsx und hat KEIN Shopify-Seitenobjekt. ' +
+      'Ohne diesen Eintrag liefert sie HTTP 200 und steht in keiner ' +
+      'Sitemap. Dann meldet sie auch der IndexNow-Melder nie, er meldet ' +
+      'nur den Sitemap-Diff (am 2026-10-07: 0 Treffer in ' +
+      'seo-manager/data/indexnow/protokoll.jsonl). Nachgetragen ' +
+      'von Job 20261007-healy-alternative-auffindbar-sitemap-' +
+      'kontextlinks-uebersicht-prio45. Kriterium 2 erfüllt: kein noindex, ' +
+      'canonicalLink() in der Route. lastmod ist der Commit-Zeitpunkt der ' +
+      'Route in main (14781a4). WACHE (Kriterium 3): der GEO-Tagestakt ' +
+      'rt seo-manager-geo-daily prüft Hebel M17 täglich am Rand, dazu die ' +
+      'nachbau-audit-Abnahme hd08789ca und der tägliche Design-Watch ' +
+      '(homepage-bauer/config/design_gate_seiten.yaml, Seite ' +
+      'healy-alternative). Klassenweit wacht probe_sitemap_noindex_naht.py.',
+  },
+  {
+    pfad: '/pages/sprechstunde',
+    lastmod: '2026-10-19T11:37:53Z',
+    grund:
+      'Die Seite „Sprechstunde mit Christian“: eine Stunde 1:1 per Zoom, ' +
+      'freitags, Ticket 300 EUR (Grossjob 20261019-GROSSJOB-sprechstunde-mit-' +
+      'christian-ticket-300-eur-freitags-20-uhr-buchung-live-unter-mehr, s05; ' +
+      'Christian 19.10.2026). Sie besteht allein aus der Route ' +
+      'pages.sprechstunde.jsx und hat KEIN Shopify-Seitenobjekt. Kriterium 2: ' +
+      'kein noindex (nur die persönlichen Ansichten ?verwalten/?einloesen), ' +
+      'canonicalLink() in der Route. lastmod ist der Commit-Zeitpunkt der ' +
+      'Route. WACHE (Kriterium 3): probe_seite_live.py ' +
+      '(shared-state/sprechstunde) misst den Seitentext am Rand (nachbau-audit-Naht ' +
+      's03->s05), dazu der tägliche Design-Watch (design_gate_seiten.yaml).',
+  },
+  {
+    pfad: '/pages/The-Alpha',
+    lastmod: '2026-10-25T15:00:00Z',
+    grund:
+      'Die Seite „The Alpha“ (Variante A, Christians Figma-Vorlage 1:1, roter ' +
+      'Knopf auf die Kaufseite; Grossjob 20261025-prio1-the-alpha-landingpage-figma-' +
+      'vorlage-a-server-b-ki-c, s03; Christian 25.10.2026 Z2: „link wird sein ' +
+      'https://qiblanco.com/pages/The-Alpha“). Sie besteht allein aus der Route ' +
+      'pages.The-Alpha.jsx und hat KEIN Shopify-Seitenobjekt. Kriterium 2: kein ' +
+      'noindex, canonicalLink() in der Route; andere Schreibweisen bekommen ein ' +
+      '301 auf genau diesen Pfad. Die Testarme /pages/The-Alpha-B und -C stehen ' +
+      'NICHT hier (lib/vorschau-noindex.js). lastmod ist die Obergrenze des ' +
+      'Merge-Fensters dieses Commits. WACHE (Kriterium 3): ' +
+      'claude-jobs/20261025-prio1-the-alpha-landingpage-figma-vorlage-a-server-' +
+      'b-ki-c/probe_kauf_the_alpha.py (Kaufweg am Rand, nachbau-audit-Abnahme) ' +
+      'und probe.py (Abschnitte der Vorlage), dazu der tägliche Design-Watch.',
+  },
+];
+
+/**
+ * Die erlaubten Werte von `klasse` in NICHT_INDEXIERBARE_SEITEN_DEF, mit ihrer
+ * Bedeutung für Leser außerhalb des Shops (Lesart oben an der Liste). Exportiert,
+ * damit ein Test und ein fremder Leser dasselbe Vokabular prüfen.
+ * @type {ReadonlyArray<'hygiene'|'landing'|'kanal-anderer'|'vorab'>}
+ */
+export const SEITEN_KLASSEN = Object.freeze([
+  'hygiene',
+  'landing',
+  'kanal-anderer',
+  'vorab',
+]);
+
+/**
+ * Sicht 1 — alle Handles, die ein `noindex` bekommen. Leser: die Route
+ * `pages.$handle.jsx` (robots-meta UND X-Robots-Tag).
+ * @type {string[]}
+ */
+export const NICHT_INDEXIERBARE_SEITEN = NICHT_INDEXIERBARE_SEITEN_DEF.map(
+  (e) => e.handle,
+);
+
+/**
+ * Sicht 2 — die TEILMENGE, die zusätzlich aus der Sitemap fliegt. Leser: die
+ * Sitemap-Route. Immer eine Teilmenge von Sicht 1: aus der Sitemap fliegt nur,
+ * was ohnehin schon `noindex` trägt — nie umgekehrt.
+ * @type {string[]}
+ */
+export const AUS_SITEMAP_ENTFERNTE_SEITEN =
+  NICHT_INDEXIERBARE_SEITEN_DEF.filter((e) => e.ausSitemap).map(
+    (e) => e.handle,
+  );
+
+/**
+ * Gehört dieser Page-Handle aus dem Index?
+ * @param {string|undefined} handle
+ * @returns {boolean}
+ */
+export function istNichtIndexierbar(handle) {
+  return !!handle && NICHT_INDEXIERBARE_SEITEN.includes(handle);
+}
+
+/**
+ * Der Handle-Anteil eines `/pages/…`-Pfades — auch bei Unterpfaden:
+ * `/pages/podcasts/seite-2` -> `podcasts`. Alles andere -> null.
+ *
+ * WOZU: die Sitemap-Route trägt Nur-Route-Seiten als PFAD nach, die
+ * noindex-Hygiene ist aber über HANDLES definiert. Ohne diese Umrechnung
+ * könnten beide nebeneinander laufen, ohne sich je zu widersprechen — und
+ * genau dann entstünde der Konflikt "noindex UND in der Sitemap" durch die
+ * Hintertür, den diese Datei sonst verhindert.
+ * @param {string|undefined} pfad
+ * @returns {string|null}
+ */
+export function seitenHandleAusPfad(pfad) {
+  const m = /^\/pages\/([^/?#]+)/.exec(String(pfad == null ? '' : pfad));
+  return m ? m[1] : null;
+}
+
+/**
+ * meta-Descriptor, der eine Seite aus dem Index nimmt.
+ * `noindex` schließt den Index aus, `nofollow` verhindert, dass die Seite
+ * ihre Linkkraft weiterreicht — bei einer Entwicklungsseite ist beides
+ * gewollt.
+ * @returns {{name: 'robots', content: string}}
+ */
+export function noindexMeta() {
+  return {name: 'robots', content: 'noindex,nofollow'};
+}
+
+/**
+ * Die ZWEITE, vom HTML unabhängige Sperre desselben Signals (Hausmuster
+ * D-006, „Gurt und Hosenträger"): greift auch bei einem Bot, der den
+ * HTML-head nicht parst. Bewusst wortgleich zu dem, was die eigenen Routen
+ * mit eigener Datei setzen (z. B. `pages.übersicht.jsx`) — ein zweiter
+ * Wortlaut wäre ein zweiter Wartungspunkt ohne Nutzen.
+ * @returns {{'X-Robots-Tag': string}}
+ */
+export function noindexHeader() {
+  return {'X-Robots-Tag': 'noindex, nofollow'};
+}
+
+/**
+ * Produkt-Handles, die NICHT in den Google-Index gehören.
+ *
+ * WARUM DIESE LISTE HIER STEHT (und zwei Vorgänger-Listen ersetzt):
+ * Für Produkte existierte dieselbe Trennung bereits ZWEIMAL nebeneinander —
+ * `HIDDEN_BUNDLE_PRODUCT_HANDLES` in `products.$handle.jsx` (setzt das
+ * robots-meta) und `HIDDEN_PRODUCT_HANDLES` in der Sitemap-Route (wirft den
+ * Eintrag raus). Beide trugen zufällig denselben Inhalt. Genau vor dieser
+ * Doppelung warnt der Kommentar an NICHT_INDEXIERBARE_SEITEN oben; für
+ * Seiten wurde sie deshalb schon zusammengelegt, für Produkte war es nur
+ * noch nicht passiert. Zwei Listen driften, und der gefährliche Fall ist
+ * der leise: Produkt trägt `noindex`, steht aber weiter in der Sitemap —
+ * die Search Console meldet das dauerhaft als Konflikt, während jede
+ * Einzelstelle für sich richtig aussieht.
+ *
+ * BELEGTER ANLASS (live gemessen 2026-08-15 gegen sitemap/products/1.xml,
+ * 19 Einträge): SECHS der 19 Produkt-URLs sind keine Kundenseiten.
+ *   - `test-page-crystal-cacao®-create-spater-wieder-loschen` — eine
+ *     Testseite, die ihren Zweck im eigenen Handle nennt, ausgeliefert mit
+ *     HTTP 200 und indexierbar.
+ *   - `crystal-cacao-adfiefiale` — Vertipper-Handle, Titel identisch mit
+ *     `crystal-cacao-create`: eine Dublette der Umsatzseite.
+ *   - `8kendiw34hd`, `pjdz538hgs0` — Angebots-Handles aus Zufallszeichen.
+ *     Sie sind Ziel verschickter Angebotslinks, nicht Suchergebnis.
+ *   - `aw783hfn`, `37cr378n` — antworten selbst mit HTTP 404 und standen
+ *     trotzdem in der Sitemap: wir haben Google aktiv auf zwei tote URLs
+ *     gezeigt.
+ * Für die Suche heißt das: rund um das umsatztragende Wort
+ * "Crystal Cacao Create" konkurrieren mehrere fast gleiche Seiten, und
+ * Google muss selbst raten, welche die echte ist.
+ *
+ * AUFNAHME-KRITERIUM (bewusst identisch zu NICHT_INDEXIERBARE_SEITEN): nur
+ * Handles, die für Kunden keinen Zweck haben — Test-, Rest-, Dubletten- und
+ * reine Link-Ziel-Handles. NICHT aufgenommen sind deshalb die realen
+ * Bundle-/Mengenrabatt-Produkte (`bundle-2x-awake`, `mengenrabatt-3x-create`
+ * u. a.): die kann man kaufen. Sie sind inhaltlich dünn, aber die richtige
+ * Antwort darauf ist besserer Inhalt, nicht Unsichtbarkeit.
+ * @type {string[]}
+ */
+export const NICHT_INDEXIERBARE_PRODUKTE = [
+  // Bestand: nie beworbene Bundle-Handles (bis 2026-08-15 in zwei Listen).
+  'bundle-fundament',
+  'bundle-unabhangig',
+  'bundle-erholungs-residenz',
+  // Neu 2026-08-15, jeder Handle an der Live-Auslieferung belegt.
+  'test-page-crystal-cacao®-create-spater-wieder-loschen',
+  'crystal-cacao-adfiefiale',
+  '8kendiw34hd',
+  'pjdz538hgs0',
+  'aw783hfn',
+  '37cr378n',
+];
+
+/**
+ * Gehört dieser Produkt-Handle aus dem Index?
+ * @param {string|undefined} handle
+ * @returns {boolean}
+ */
+export function istNichtIndexierbaresProdukt(handle) {
+  if (!handle) return false;
+  return NICHT_INDEXIERBARE_PRODUKTE.includes(handle) || istZusammensetzungsSet(handle);
+}
+
+/**
+ * Kakao-Zusammensetzungs-Sets: reine Warenkorb-Ziele, keine Landeseiten.
+ *
+ * WARUM SIE ANDERS LIEGEN ALS DIE BESTANDS-SETS OBEN (Elina
+ * EL-20261001-397a9719, 2026-10-01): Der Satz am Aufnahme-Kriterium oben,
+ * „reale Bundles bleiben indexiert, besserer Inhalt statt Unsichtbarkeit",
+ * gilt für die vier Sets vom Dezember 2025 (`bundle-2x-awake`,
+ * `bundle-3x-awake`, `mengenrabatt-2x`, `mengenrabatt-3x-create`). Sie haben
+ * eigene Beschreibungen in produkt-seo.js und bleiben im Index. Die Sets vom
+ * 30.09.2026 sind etwas anderes:
+ *   - Die Laden-Normalform (kakao-set-zeile.js) legt sie SELBST in den
+ *     Warenkorb, damit der Partnercode neben dem Mengenpreis greift (ein
+ *     Produktrabatt je Zeile, Plan Advanced). Kein Kunde ruft sie direkt auf,
+ *     keine Seite verlinkt sie.
+ *   - Es sind 29 Beinahe-Dubletten derselben zwei Sorten. Gemessen am
+ *     2026-10-01: 29 von 43 Produkt-URLs der Sitemap, 25 von 28 Treffern der
+ *     Suche „awake" auf crystal-cacao.com, jede Seite HTTP 200 und indexierbar.
+ * Besserer Inhalt hilft hier nicht: eine Seite je Zusammensetzung hätte nichts
+ * zu sagen, was die Sorten-Seite nicht schon sagt.
+ *
+ * REGEL STATT LISTE, damit künftige Zusammensetzungen ohne Code-Änderung mit
+ * hineinfallen:
+ *   gemischt               bundle-<a>x-awake-<c>x-create   (jede Menge)
+ *   Sorten-Set ab 4 Pack.  bundle-<n>x-awake|create        (n >= 4)
+ * `bundle-2x-awake` und `bundle-3x-awake` passen absichtlich nicht.
+ *
+ * Kaufbar bleiben sie unverändert: Status, Kanäle und Preise werden nicht
+ * berührt, nur Sitemap, Suche und das robots-Meta lesen diese Regel.
+ * @param {string|undefined} handle
+ * @returns {boolean}
+ */
+export function istZusammensetzungsSet(handle) {
+  return !!handle && ZUSAMMENSETZUNGS_SET_RE.test(handle);
+}
+
+const ZUSAMMENSETZUNGS_SET_RE =
+  /^bundle-(?:\d+x-awake-\d+x-create|(?:[4-9]|[1-9]\d+)x-(?:awake|create))$/;
+
+/**
+ * Kollektions-Handles, die NICHT in den Google-Index gehören.
+ *
+ * WARUM DIE DRITTE LISTE UND NICHT EIN EINTRAG IN EINER DER OBEREN: Seiten,
+ * Produkte und Kollektionen sind drei getrennte Shopify-Namensräume mit je
+ * eigenem URL-Präfix. Ein Handle `products` existiert als Kollektion UND
+ * könnte als Seite existieren; eine gemeinsame Liste müsste den Typ mitführen
+ * und wäre an jeder Lesestelle zu filtern. Die Trennung ist hier billiger als
+ * die Vereinigung — die Doppelungs-Warnung oben richtet sich gegen ZWEI Listen
+ * für DENSELBEN Namensraum, nicht gegen eine je Namensraum.
+ *
+ * AUFNAHME-KRITERIUM (wortgleich zu den beiden Listen oben): nur Handles ohne
+ * Zweck für Kunden. Entscheidend ist NICHT, ob die Kollektion heute leer ist —
+ * eine leere Saison-Kollektion (`valentinstag-angebote`,
+ * `blackfriday-sale-artikel`) ist eine echte Kundenkategorie, die wieder
+ * gefüllt wird; dort ist die richtige Antwort Inhalt, nicht Unsichtbarkeit.
+ * Aufgenommen ist nur, was seiner NATUR nach intern ist.
+ *
+ * BELEGTER ANLASS (live gemessen 2026-08-26T20:07Z gegen alle neun in der
+ * Sitemap geführten Kollektionen, belege/inhalts-delta.json): fünf davon sind
+ * Steuerungs-Kollektionen des Shops, keine Kategorien.
+ *   - `slider` sagt es in der eigenen Beschreibung: „Artikel, die im Slider
+ *     angezeigt werden sollen." Das ist eine Konfiguration der Startseite,
+ *     die versehentlich eine öffentliche URL bekommen hat.
+ *   - `frontpage` („Home page") und `products` („Products") legt Shopify
+ *     selbst an. Beide tragen einen ENGLISCHEN Titel auf der deutschen
+ *     Storefront und dieselben Produkte wie `/collections/all` — sie sind
+ *     Dubletten der Kategorieübersicht, nicht eigene Kategorien.
+ *   - `digital-goods-vat-tax` ist eine steuerliche Gruppierung für die
+ *     Umsatzsteuer digitaler Güter, `cross-selling` eine Merchandising-Quelle
+ *     für Produktempfehlungen. Beide messen 0 eigene Produkte.
+ *
+ * VOLLZUG 2026-09-12 (Job 20260912-siebzehn-von-52-pages-urls-…): alle fünf
+ * standen seit dem 2026-08-27 auf `ausSitemap: false`, und die Sitemap-Route
+ * nannte das ausdrücklich „die MÖGLICHKEIT, nicht der Vollzug". Was fehlte,
+ * war die MESSUNG der Aufloesungsbedingung — dieselbe wie bei den Seiten:
+ * die Uebergangsstufe hat nur dann noch einen Zweck, wenn die URL HEUTE im
+ * Index steht. urlInspection am 2026-09-12 für alle fünf:
+ *   frontpage              -> „URL ist Google nicht bekannt"
+ *   products               -> „Gefunden – zurzeit nicht indexiert"
+ *   slider                 -> „Gefunden – zurzeit nicht indexiert"
+ *   cross-selling          -> „URL ist Google nicht bekannt"
+ *   digital-goods-vat-tax  -> „Durch noindex-Tag ausgeschlossen"
+ * KEINE steht im Index, es gibt also bei keiner etwas zu entfernen, wofür
+ * Google das noindex erst lesen müsste. Alle fünf kippen auf `true`. Zum
+ * Vergleich im selben Lauf: `zeremonie-kakao` ist „Gesendet und indexiert" —
+ * eine ECHTE Kundenkategorie, die hier korrekt nie geführt wurde. Die
+ * Lesart je Zustand steht ausfuehrlich an NICHT_INDEXIERBARE_SEITEN_DEF.
+ *
+ * WARUM noindex UND KEIN canonical: dieselbe Regel, die schon
+ * `pages.übersicht.jsx` trägt — noindex neben einem canonical auf eine
+ * andere URL sind widersprüchliche Signale. Für `frontpage`/`products` wäre
+ * ein canonical auf `/collections/all` fachlich naheliegend und trotzdem
+ * falsch: es machte die Dublette wieder crawlbar.
+ * @type {Array<{handle: string, ausSitemap: boolean, grund: string,
+ *               seit: string}>}
+ */
+export const NICHT_INDEXIERBARE_KOLLEKTIONEN_DEF = [
+  {
+    handle: 'frontpage',
+    ausSitemap: true,
+    grund:
+      'von Shopify selbst angelegte "Home page"-Kollektion, englischer Titel ' +
+      'auf der deutschen Storefront, dieselben Produkte wie /collections/all',
+    seit: '2026-08-27',
+  },
+  {
+    handle: 'products',
+    ausSitemap: true,
+    grund:
+      'von Shopify selbst angelegte "Products"-Kollektion, Dublette der ' +
+      'Kategorieübersicht',
+    seit: '2026-08-27',
+  },
+  {
+    handle: 'slider',
+    ausSitemap: true,
+    grund:
+      'Startseiten-Konfiguration ("Artikel, die im Slider angezeigt werden ' +
+      'sollen"), die versehentlich eine öffentliche URL bekommen hat',
+    seit: '2026-08-27',
+  },
+  {
+    handle: 'cross-selling',
+    ausSitemap: true,
+    grund: 'Merchandising-Quelle für Produktempfehlungen, 0 eigene Produkte',
+    seit: '2026-08-27',
+  },
+  {
+    handle: 'digital-goods-vat-tax',
+    ausSitemap: true,
+    grund:
+      'steuerliche Gruppierung für die Umsatzsteuer digitaler Güter, ' +
+      '0 eigene Produkte',
+    seit: '2026-08-27',
+  },
+];
+
+/**
+ * Sicht 1 — alle Kollektions-Handles, die ein `noindex` bekommen.
+ * Leser: `collections.$handle.jsx` und `collections.all.jsx`. Form und
+ * Semantik unverändert (string[]), damit kein Aufrufer nachgezogen werden
+ * muss.
+ * @type {string[]}
+ */
+export const NICHT_INDEXIERBARE_KOLLEKTIONEN =
+  NICHT_INDEXIERBARE_KOLLEKTIONEN_DEF.map((e) => e.handle);
+
+/**
+ * Sicht 2 — die TEILMENGE, die zusätzlich aus der Sitemap fliegt.
+ * Leser: die Sitemap-Route. Abgeleitet aus DERSELBEN einen Definition wie
+ * Sicht 1 — die beiden können also nicht auseinanderdriften.
+ *
+ * WARUM FUNKTION UND NICHT KONSTANTE, anders als beim Seiten-Zwilling
+ * `AUS_SITEMAP_ENTFERNTE_SEITEN`: dieses Modul wird von 36 Seiten gelesen,
+ * und der Render-Neutralitäts-Beweis von Gate 12 (homepage-bauer
+ * src/render_neutral.py, Teil 2) ist fail-closed gegenüber jeder NEUEN
+ * Top-Level-Deklaration, die beim Modul-Laden AUSGEFÜHRT wird — ein
+ * `const X = […].filter(…)` fällt darunter. Gemessen am 2026-09-08: mit
+ * einer solchen Konstante werden 0 von 36 Seiten befreit und der Deploy
+ * blockt an vorbestehender Bild-Schuld auf sechs fremden Produktseiten, die
+ * diese Änderung weder verursacht noch beheben kann. Als Pfeil-Funktion
+ * läuft beim Laden nichts, die Ableitung bleibt an genau EINER Stelle, und
+ * der Beweis geht durch. Der Seiten-Zwilling darf Konstante bleiben: er ist
+ * kein NEUER Name mehr.
+ *
+ * WARUM SIE HEUTE LEER IST, UND WARUM DAS DER RICHTIGE ZUSTAND IST
+ * (2026-09-08, Discovery-Kette Glied für Glied nachgemessen): für alle fünf
+ * Kollektionen ist die Sitemap der EINZIGE Weg, auf dem Google sie noch
+ * besucht. Ihr einziger eingehender Link kommt von `/pages/übersicht`, und
+ * die trägt selbst `noindex,nofollow` — Google folgt ihren Links also nicht.
+ * Der zweite Kandidat `/collections` ist zwar follow-bar, hat aber selbst
+ * keinen Sitemap-Eintrag und ebenfalls nur `/pages/übersicht` als Zugang;
+ * die Kette endet dort. Wer sie jetzt aus der Sitemap nimmt, sorgt dafür,
+ * dass das `noindex` NIE gelesen wird und die Seiten mit ihrem letzten Stand
+ * im Index bleiben.
+ *
+ * DIE ZAHL `links_rein` AUS EINEM CRAWL-ZENSUS TÄUSCHT HIER: sie meldet 1
+ * bis 2 eingehende Links und liest sich wie „es gibt einen Weg". Ein Link von
+ * einer `nofollow`-Seite ist keiner. Wer `links_rein > 0` als Discovery-Beleg
+ * nimmt, hält genau die Seiten für sicher entfernbar, bei denen das Gegenteil
+ * gilt.
+ *
+ * BIS HIERHER GAB ES DIESE SICHT GAR NICHT — `VERSTECKTE_HANDLES` in der
+ * Sitemap-Route kannte nur `products` und `pages`. Der Widerspruch „noindex
+ * UND in der Sitemap" konnte für Kollektionen deshalb baulich nie enden.
+ * Jetzt kann er es: ein Eintrag kippt auf `ausSitemap: true`, sobald das
+ * Signal nachweislich gewirkt hat. Wann das ist, entscheidet ein Mensch —
+ * die Frage stellt homepage-bauer/pruefungen/probe_übergangsstufe_ohne_ende.py
+ * (Adressat AI-CEO), und sie kippt bewusst nichts selbst.
+ * @returns {string[]}
+ */
+export const ausSitemapEntfernteKollektionen = () =>
+  NICHT_INDEXIERBARE_KOLLEKTIONEN_DEF.filter((e) => e.ausSitemap).map(
+    (e) => e.handle,
+  );
+
+/**
+ * Gehört dieser Kollektions-Handle aus dem Index?
+ * @param {string|undefined} handle
+ * @returns {boolean}
+ */
+export function istNichtIndexierbareKollektion(handle) {
+  return !!handle && NICHT_INDEXIERBARE_KOLLEKTIONEN.includes(handle);
+}

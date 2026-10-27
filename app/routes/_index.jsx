@@ -1,123 +1,48 @@
-import {useLoaderData} from 'react-router';
-import {ladeQiMaster, QI_MASTER_HANDLE} from '~/lib/qi-master-produkt';
-import {kaufwegUrl, internerPfad, trackingParameter} from '~/lib/kaufweg';
-import {Kaufknopf} from '~/components/qi-master/Kaufknopf';
-import {Wortlaut} from '~/components/qi-master/Wortlaut';
-import {BenefitList} from '~/components/qi-master/BenefitList';
-import {Studien} from '~/components/qi-master/Studien';
-import {ZweiFragen} from '~/components/qi-master/Faq';
-import {
-  MainFeatures,
-  Guetezeichen,
-  DiamantBilder,
-  Fertigung,
-} from '~/components/qi-master/Sektionen';
-import {fremdHtmlMitKopfsymbolen} from '~/lib/qi-master-kopfsymbole';
+import TheAlpha from '~/components/campaign/TheAlpha';
+import {canonicalLink} from '~/lib/seo';
+import theAlphaPremiumStyles from '~/styles/the-alpha-premium.css?url';
 
 /*
- * DIE FRONTSEITE VON qi-master.de IST DIE LANDINGPAGE (Christian, 19.09.2026: "dass wir eine
- * Frontseite haben, die dann auch die Landingpage ist"). Vorbild crystal-cacao.com: EINE Seite,
- * die verkauft -- kein Schaufenster mit Unterseiten.
+ * STARTSEITE VON qi-alpha.com = die Qi-Alpha-Landingpage.
  *
- * WORAN SIE GEMESSEN WIRD: am NAECHSTEN KLICK, nicht an der Bestellung (Trichter Ad ->
- * Landingpage -> Kaufseite -> Kasse; qi-brain, landingpage-trichter-und-messregel). Der eine
- * Weg dieser Seite fuehrt deshalb auf /products/qi-master, die Kaufseite. Wer schon weiss, was
- * er will, bekommt daneben den direkten Kaufweg -- der fuehrt in den Warenkorb von qiblanco.com,
- * denn qi-master.de wickelt nichts ab (app/lib/kaufweg.js).
+ * Elina, EL-20261027-beafe3d2: "Inhalt, Startseite und Kaufseite nach Qi Alpha (Vorlage
+ * qiblanco.com/pages/The-Alpha und /products/the-alpha, Quiet Luxury)". Die Seite ist
+ * DIESELBE wie qiblanco.com/pages/The-Alpha (Variante A, TheAlphaPremium): Bausteine,
+ * Texte, Bilder und Film kommen unveraendert aus qiblanco-storefront (Herkunft und
+ * Stand in app/qi-alpha/HERKUNFT.json). Einzige lokale Anpassung: der rote Knopf fuehrt
+ * auf die Kaufseite DIESES Ladens (/products/qi-alpha, the-alpha-daten.js).
  *
- * AUFBAU nach der Kaufueberzeugungs-Lehre des Hauses: Einstieg mit dem Stueck selbst und dem
- * Kundenwort (Neugier), dann die drei Saetze, die es ausmachen, die Zusagen, die zwei Fragen,
- * die Christian an Platz eins und zwei gesetzt hat, die Belege (Studien) -- und der Beweis
- * steht VOR dem Kaufknopf, nicht im Einstieg. Abschluss: Angebot, Rueckgabe, Finanzierung.
+ * Die alte Qi-Master-Frontseite (Komponenten unter components/qi-master/) ist nicht mehr
+ * geroutet. Sie bleibt im Repo, bis der Bestand-Aufloeser (rt qi-master-bestand-aufloeser)
+ * nach dem GO stillgelegt ist -- er baut und prueft gegen genau diese Dateien.
  *
- * JEDER TEXT KOMMT AUS DEM BESTAND: Shopify-Beschreibung (Kopfblock), Christians Fassungen der
- * Feature-Spalten, Guetezeichen, FAQ, Studien, Wortlaut -- nichts ist hier erfunden. Was auf
- * qiblanco.com gestrichen wurde, bleibt gestrichen.
+ * TRACKING: kein Pixel-Code hier (0-Pixel-Regel wie drueben).
  */
 
-/**
- * @type {Route.MetaFunction}
- */
-export const meta = ({data}) => {
-  const titel = data?.product?.seo?.title || `${data?.product?.title ?? 'Qi Master®'} | Qi Blanco`;
-  const beschreibung = data?.product?.seo?.description || data?.product?.description || '';
-  return [
-    {title: titel},
-    {name: 'description', content: beschreibung},
-    {property: 'og:type', content: 'product'},
-    {property: 'og:title', content: titel},
-    {property: 'og:description', content: beschreibung},
-    {property: 'og:locale', content: 'de_DE'},
-  ];
-};
-
-/**
- * @param {Route.LoaderArgs} args
- */
-export async function loader({context, request}) {
-  const geladen = await ladeQiMaster(context.storefront);
-  const mitreisend = trackingParameter(request).toString();
-  return {
-    ...geladen,
-    handle: QI_MASTER_HANDLE,
-    kaufwegHref: kaufwegUrl(geladen.variante?.id, request),
-    kaufseiteHref: internerPfad('/products/qi-master', request),
-    mitreisend: mitreisend ? `?${mitreisend}` : '',
-  };
+export function links() {
+  return [{rel: 'stylesheet', href: theAlphaPremiumStyles}];
 }
 
-export default function Frontseite() {
-  /** @type {LoaderReturnData} */
-  const {product, preisText, kaufwegHref, kaufseiteHref, mitreisend} = useLoaderData();
-  const kopf = fremdHtmlMitKopfsymbolen(product?.descriptionHtml ?? '');
-  return (
-    <div className="qm qm-lp" data-qb-seite="qi-master-frontseite">
-      <section className="qm-hero" data-section="qm-hero">
-        <div className="qm-hero__text">
-          <h1 className="qm-hero__titel">{product.title}</h1>
-          <div className="qm-beschreibung qm-hero__kopf" dangerouslySetInnerHTML={{__html: kopf}} />
-          <p className="qm-hero__preis">
-            <span className="qm-hero__betrag">{preisText}</span>
-            <span className="qm-steuerhinweis">inkl. 19 % MwSt.</span>
-          </p>
-          <div className="qm-hero__wege">
-            <a className="qm-btn qm-btn--primary" href={kaufseiteHref} data-qa="cta">
-              Zur Kaufseite
-            </a>
-            <a className="qm-btn qm-btn--sekundaer" href={kaufwegHref}>
-              Direkt in den Warenkorb
-            </a>
-          </div>
-          <p className="qm-hero__hinweis">
-            Kasse und Bestellung laufen über qiblanco.com — den Qi-Blanco-Shop.
-          </p>
-        </div>
-        <div className="qm-hero__bild">
-          <DiamantBilder mitTitel={false} klein />
-        </div>
-      </section>
+/** @type {Route.MetaFunction} */
+export const meta = () => [
+  {title: 'Qi Alpha®, Limited 1st. Edition 111/111'},
+  {
+    name: 'description',
+    content:
+      'Qi Alpha mit Diamant, Limited 1st. Edition: 111 Stück, jedes mit eigener Nummer der Alpha-Serie. Jetzt exklusiv reservieren.',
+  },
+  {property: 'og:site_name', content: 'Qi Alpha'},
+  {property: 'og:title', content: 'Qi Alpha®, Limited 1st. Edition 111/111'},
+  {
+    property: 'og:image',
+    content:
+      'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qi-alpha-01-front.jpg?v=1792849253',
+  },
+  canonicalLink('/'),
+];
 
-      <MainFeatures />
-      <Guetezeichen />
-      <ZweiFragen />
-      <Studien request={mitreisend} />
-      <Fertigung />
-
-      <section className="qm-abschluss" data-section="qm-abschluss">
-        <div className="qm-abschluss__inner">
-          <Wortlaut />
-          <BenefitList />
-          <div className="qm-abschluss__wege">
-            <a className="qm-btn qm-btn--primary" href={kaufseiteHref}>
-              Zur Kaufseite
-            </a>
-            <Kaufknopf href={kaufwegHref} kompakt text="Direkt in den Warenkorb" />
-          </div>
-        </div>
-      </section>
-    </div>
-  );
+export default function QiAlphaStartseite() {
+  return <TheAlpha />;
 }
 
 /** @typedef {import('./+types/_index').Route} Route */
-/** @typedef {ReturnType<typeof useLoaderData<typeof loader>>} LoaderReturnData */

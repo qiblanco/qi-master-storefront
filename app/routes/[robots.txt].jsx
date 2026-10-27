@@ -1,9 +1,17 @@
+import {QI_ALPHA_ORIGIN} from '~/lib/qi-alpha-domain';
+
 /**
  * @param {Route.LoaderArgs}
  */
 export function loader({request}) {
   const url = new URL(request.url);
-  const body = robotsTxtData({url: url.origin});
+  // qi-alpha.com (EL-20261027-beafe3d2): Sitemap immer auf der Hauptdomain. Jeder andere
+  // Host (Oxygen-Vorschau *.myshopify.dev, sslip-Vorschau, localhost) sperrt alles: eine
+  // Vorschau ist kein zweiter Laden im Index.
+  const body =
+    url.origin === QI_ALPHA_ORIGIN
+      ? robotsTxtData({url: QI_ALPHA_ORIGIN})
+      : 'User-agent: *\nDisallow: /\n';
 
   return new Response(body, {
     status: 200,

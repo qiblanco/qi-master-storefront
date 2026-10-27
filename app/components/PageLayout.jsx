@@ -1,18 +1,24 @@
+import {Suspense} from 'react';
+import {Await} from 'react-router';
 import {Aside} from '~/components/Aside';
+import {CartMain} from '~/components/CartMain';
 import {Footer} from '~/components/Footer';
 import {Header} from '~/components/Header';
 
 /*
- * Rahmen beider Seiten: Kopf, Inhalt, Fuss -- und der Aside.Provider des Geruests, weil die
- * bestehenden Geruest-Routen (cart, products.$handle) ihn ueber useAside() voraussetzen.
- * Die drei Seitenleisten des Geruests (Warenkorb, Suche, mobiles Menue) sind bewusst nicht
- * mehr eingehaengt: qi-master.de hat keinen Warenkorb und keine Suche, und eine unsichtbar
- * mitgerenderte Warenkorb-Leiste waere ein Overlay ohne Zweck (Overlay-Ordnung, web-soll v2).
+ * Rahmen von qi-alpha.com (EL-20261027-beafe3d2): Kopf, Seite, Fuss und die
+ * Warenkorb-Schublade. Die Schublade oeffnet der Kaufknopf der Kaufseite
+ * (TheAlphaShop: open('cart')) und der Warenkorb-Knopf im Kopf.
  */
-export function PageLayout({children = null}) {
+export function PageLayout({cart, children = null}) {
   return (
     <Aside.Provider>
-      <Header />
+      <Aside type="cart" heading="Warenkorb">
+        <Suspense fallback={<p>Warenkorb lädt …</p>}>
+          <Await resolve={cart}>{(c) => <CartMain cart={c} layout="aside" />}</Await>
+        </Suspense>
+      </Aside>
+      <Header cart={cart} />
       <main>{children}</main>
       <Footer />
     </Aside.Provider>

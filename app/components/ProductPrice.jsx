@@ -1,4 +1,4 @@
-import {Money} from '@shopify/hydrogen';
+import {Betrag} from '~/components/Betrag';
 
 /**
  * @param {{
@@ -11,13 +11,13 @@ export function ProductPrice({price, compareAtPrice}) {
     <div aria-label="Price" className="product-price" role="group">
       {compareAtPrice ? (
         <div className="product-price-on-sale">
-          {price ? <Money data={price} /> : null}
+          {price ? <Betrag data={price} /> : null}
           <s>
-            <Money data={compareAtPrice} />
+            <Betrag data={compareAtPrice} />
           </s>
         </div>
       ) : price ? (
-        <Money data={price} />
+        <Betrag data={price} />
       ) : (
         <span>&nbsp;</span>
       )}

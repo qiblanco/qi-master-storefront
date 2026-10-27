@@ -1,12 +1,16 @@
 import {useLoaderData, data} from 'react-router';
 import {CartForm} from '@shopify/hydrogen';
 import {CartMain} from '~/components/CartMain';
+import {bindeQiMasterAddons} from '~/lib/qi-master-addons.server';
 
 /**
  * @type {Route.MetaFunction}
  */
 export const meta = () => {
-  return [{title: `Hydrogen | Cart`}];
+  return [
+    {title: 'Warenkorb | Qi Alpha'},
+    {name: 'robots', content: 'noindex,nofollow'},
+  ];
 };
 
 /**
@@ -32,9 +36,19 @@ export async function action({request, context}) {
   let result;
 
   switch (action) {
-    case CartForm.ACTIONS.LinesAdd:
+    case CartForm.ACTIONS.LinesAdd: {
       result = await cart.addLines(inputs.lines);
+      // Wie qiblanco-storefront routes/cart.jsx: ein mitgegebener Code (AddToCartButton
+      // discountCode) wird nach dem Hinzufuegen gesetzt.
+      const discountCode =
+        typeof inputs.discountCode === 'string' ? inputs.discountCode.trim() : '';
+      if (discountCode && result?.cart?.totalQuantity > 0) {
+        result = await cart.updateDiscountCodes([discountCode]);
+      } else if (inputs.clearDiscountCodes === true && result?.cart?.totalQuantity > 0) {
+        result = await cart.updateDiscountCodes([]);
+      }
       break;
+    }
     case CartForm.ACTIONS.LinesUpdate:
       result = await cart.updateLines(inputs.lines);
       break;
@@ -75,6 +89,11 @@ export async function action({request, context}) {
     default:
       throw new Error(`${action} cart action is not defined`);
   }
+
+  // Qi-Alpha-Add-ons (Wunschnummer, Goldkette) haengen am Qi Alpha: ohne ihn fallen sie mit,
+  // eine Wunschnummer hoechstens einmal (Christian 2026-09-24). Derselbe Baustein wie drueben
+  // (lib/qi-master-addons.server.js), EL-20261027-beafe3d2.
+  result = await bindeQiMasterAddons({cart, action, result});
 
   const cartId = result?.cart?.id;
   const headers = cartId ? cart.setCartId(result.cart.id) : new Headers();

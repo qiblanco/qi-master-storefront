@@ -1,11 +1,15 @@
 import {useLoaderData, Link} from 'react-router';
 import {getPaginationVariables, Image} from '@shopify/hydrogen';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
+import {zuQiblanco} from '~/lib/qi-alpha-domain';
 
 /**
  * @param {Route.LoaderArgs} args
  */
 export async function loader(args) {
+  // qi-alpha.com zeigt nur Qi Alpha: diese Route gehoert zum DACH-Laden und geht per 301
+  // auf dieselbe Adresse unter qiblanco.com (lib/qi-alpha-domain.js, EL-20261027-beafe3d2).
+  throw zuQiblanco(args.request);
   // Start fetching non-critical data without blocking time to first byte
   const deferredData = loadDeferredData(args);
 

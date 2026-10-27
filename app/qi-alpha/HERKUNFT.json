@@ -1,0 +1,205 @@
+{
+ "_zweck": "qi-alpha.com: Qi-Alpha-Bausteine aus qiblanco-storefront (EL-20261027-beafe3d2). Nachziehen: pruefungen/alpha-nachziehen",
+ "upstream_repo": "qiblanco/qiblanco-storefront",
+ "upstream_commit": "4870e7ffa00ab671b9e0397c2640857aa3d2ed45",
+ "dateien": {
+  "app/components/AddToCartButton.jsx": {
+   "quelle": "app/components/AddToCartButton.jsx",
+   "sha256_quelle": "a9f260a131e09342512ccc31cdbfb71979619f79fa4f29a951b4df03be074691",
+   "sha256_hier": "a9f260a131e09342512ccc31cdbfb71979619f79fa4f29a951b4df03be074691"
+  },
+  "app/components/Aside.jsx": {
+   "quelle": "app/components/Aside.jsx",
+   "sha256_quelle": "be0a47de080a699dad5a14978f64cc9aa16fcab40d057be31fdaafca57b00348",
+   "sha256_hier": "be0a47de080a699dad5a14978f64cc9aa16fcab40d057be31fdaafca57b00348"
+  },
+  "app/components/EuGewaehrleistungsLabel.jsx": {
+   "quelle": "app/components/EuGewaehrleistungsLabel.jsx",
+   "sha256_quelle": "b258101bae3d447ceef416a33073def67be9849f2e02aad9460a75dd76fc6a36",
+   "sha256_hier": "b258101bae3d447ceef416a33073def67be9849f2e02aad9460a75dd76fc6a36"
+  },
+  "app/components/campaign/TheAlpha.jsx": {
+   "quelle": "app/components/campaign/TheAlpha.jsx",
+   "sha256_quelle": "f2d2162af8453edfc0974fd5cbc346e73cd0fb519d68f294086ab861c7abbf1b",
+   "sha256_hier": "f2d2162af8453edfc0974fd5cbc346e73cd0fb519d68f294086ab861c7abbf1b"
+  },
+  "app/components/campaign/TheAlphaFaq.jsx": {
+   "quelle": "app/components/campaign/TheAlphaFaq.jsx",
+   "sha256_quelle": "7c368c995618b74199d70a1dff4cd39c467cc7afcf24dfa9e6d9be74a33f40be",
+   "sha256_hier": "7c368c995618b74199d70a1dff4cd39c467cc7afcf24dfa9e6d9be74a33f40be"
+  },
+  "app/components/campaign/TheAlphaKauf.jsx": {
+   "quelle": "app/components/campaign/TheAlphaKauf.jsx",
+   "sha256_quelle": "3a46d5e572cc6ee19f066c5dafab792b35e0e2853c99424f68f8cb72e6b03de8",
+   "sha256_hier": "3a46d5e572cc6ee19f066c5dafab792b35e0e2853c99424f68f8cb72e6b03de8"
+  },
+  "app/components/campaign/TheAlphaNummernwahl.jsx": {
+   "quelle": "app/components/campaign/TheAlphaNummernwahl.jsx",
+   "sha256_quelle": "4095279f1d39407194bc4ed355ee60956d7d0f86385c1417a8db02982e3d1e66",
+   "sha256_hier": "4095279f1d39407194bc4ed355ee60956d7d0f86385c1417a8db02982e3d1e66"
+  },
+  "app/components/campaign/TheAlphaPremium.jsx": {
+   "quelle": "app/components/campaign/TheAlphaPremium.jsx",
+   "sha256_quelle": "1e9bf0e63a8bd5805ef28e10814fcb2316e73334dc6e494cd0be4761a0e2cb5e",
+   "sha256_hier": "1e9bf0e63a8bd5805ef28e10814fcb2316e73334dc6e494cd0be4761a0e2cb5e"
+  },
+  "app/components/campaign/TheAlphaShop.jsx": {
+   "quelle": "app/components/campaign/TheAlphaShop.jsx",
+   "sha256_quelle": "67eae639e9d92f3b868dca79f594cb7b5f20c7d289ee817d1cc89a99ef8bacc6",
+   "sha256_hier": "67eae639e9d92f3b868dca79f594cb7b5f20c7d289ee817d1cc89a99ef8bacc6"
+  },
+  "app/components/campaign/TheAlphaTon.jsx": {
+   "quelle": "app/components/campaign/TheAlphaTon.jsx",
+   "sha256_quelle": "0b16addfd1aa555aa5150d0492b0a133fde65c149438f2abef4002fd0e93d81d",
+   "sha256_hier": "0b16addfd1aa555aa5150d0492b0a133fde65c149438f2abef4002fd0e93d81d"
+  },
+  "app/components/campaign/the-alpha-daten-serie-vergeben.js": {
+   "quelle": "app/components/campaign/the-alpha-daten-serie-vergeben.js",
+   "sha256_quelle": "d2356418165fddb30a340175877185f6ad18d671234dfff062e8830abed6df20",
+   "sha256_hier": "d2356418165fddb30a340175877185f6ad18d671234dfff062e8830abed6df20"
+  },
+  "app/components/campaign/the-alpha-daten.js": {
+   "quelle": "app/components/campaign/the-alpha-daten.js",
+   "sha256_quelle": "217f203667c3d44e1a4c1dd2746bc9d3764be14450aebe40b019dbc82791f94c",
+   "sha256_hier": "52ab9bd3e5ab78d90554298fbfd223c5f1741f39a246b5028f2369140f8cebb6",
+   "lokale_anpassung": "THE_ALPHA_KAUF_ZIEL = '/products/qi-alpha'"
+  },
+  "app/components/campaign/the-alpha-faq-daten.js": {
+   "quelle": "app/components/campaign/the-alpha-faq-daten.js",
+   "sha256_quelle": "52d9025b9670492cfdf55730ecb8733d19c6a047f8cb3c7fcf82aa654a01a339",
+   "sha256_hier": "52d9025b9670492cfdf55730ecb8733d19c6a047f8cb3c7fcf82aa654a01a339"
+  },
+  "app/components/campaign/the-alpha-kauf-laden.js": {
+   "quelle": "app/components/campaign/the-alpha-kauf-laden.js",
+   "sha256_quelle": "9536b6c063096474d10989fe23be448a4177ee911b2a10ebf5599e9a91493e72",
+   "sha256_hier": "9536b6c063096474d10989fe23be448a4177ee911b2a10ebf5599e9a91493e72"
+  },
+  "app/components/campaign/the-alpha-shop-daten.js": {
+   "quelle": "app/components/campaign/the-alpha-shop-daten.js",
+   "sha256_quelle": "2576be591b8c8a51885c185f431dea40ea1d62eb6e5dd64379875d67ff72bbf8",
+   "sha256_hier": "2576be591b8c8a51885c185f431dea40ea1d62eb6e5dd64379875d67ff72bbf8"
+  },
+  "app/components/reusables/shopifyBildQuellen.js": {
+   "quelle": "app/components/reusables/shopifyBildQuellen.js",
+   "sha256_quelle": "e5cfd490bcc82c3149cd5b64904dc46bf69151de1159a9bc9fa5dc7713ccc5fc",
+   "sha256_hier": "e5cfd490bcc82c3149cd5b64904dc46bf69151de1159a9bc9fa5dc7713ccc5fc"
+  },
+  "app/components/the-alpha-shop/TheAlphaWissen.jsx": {
+   "quelle": "app/components/the-alpha-shop/TheAlphaWissen.jsx",
+   "sha256_quelle": "ed91c7d18368e7952807d59464d9bb9621a2edd81576ce77153b007c6a3780cc",
+   "sha256_hier": "ed91c7d18368e7952807d59464d9bb9621a2edd81576ce77153b007c6a3780cc"
+  },
+  "app/components/the-alpha-shop/the-alpha-wissen-daten.js": {
+   "quelle": "app/components/the-alpha-shop/the-alpha-wissen-daten.js",
+   "sha256_quelle": "9d3c2a8cd4e88ee534b00b3f0655c341c64272831b700d32306a51344dae8586",
+   "sha256_hier": "9d3c2a8cd4e88ee534b00b3f0655c341c64272831b700d32306a51344dae8586"
+  },
+  "app/data/qi-master-literaturbilder.js": {
+   "quelle": "app/data/qi-master-literaturbilder.js",
+   "sha256_quelle": "bc07a394d5cb7699a3dbeec4fe28c1cca4da8fd90d532eeb115d2905cce930ac",
+   "sha256_hier": "bc07a394d5cb7699a3dbeec4fe28c1cca4da8fd90d532eeb115d2905cce930ac"
+  },
+  "app/data/qi-master-texte.js": {
+   "quelle": "app/data/qi-master-texte.js",
+   "sha256_quelle": "d84a58ada96235bf0e9a7dbd122bd677f04640fbc13538cae98e784b14f97b1a",
+   "sha256_hier": "d84a58ada96235bf0e9a7dbd122bd677f04640fbc13538cae98e784b14f97b1a"
+  },
+  "app/lib/cart-display-pricing.js": {
+   "quelle": "app/lib/cart-display-pricing.js",
+   "sha256_quelle": "43742d2e61cda61259c8c2dbad98032fc9ba84382f1977b520d22f5a8707046a",
+   "sha256_hier": "43742d2e61cda61259c8c2dbad98032fc9ba84382f1977b520d22f5a8707046a"
+  },
+  "app/lib/entity-schema.js": {
+   "quelle": "app/lib/entity-schema.js",
+   "sha256_quelle": "ffd1d044f672b352d4cd9a78ee711cb62ee2be2cae2411c36ad915152ee50608",
+   "sha256_hier": "ffd1d044f672b352d4cd9a78ee711cb62ee2be2cae2411c36ad915152ee50608"
+  },
+  "app/lib/eu-gewaehrleistungslabel.js": {
+   "quelle": "app/lib/eu-gewaehrleistungslabel.js",
+   "sha256_quelle": "02be2cd404c6c0ffba71ddb73670a29e48279578b75483fc6fd2c5370f57baa0",
+   "sha256_hier": "02be2cd404c6c0ffba71ddb73670a29e48279578b75483fc6fd2c5370f57baa0"
+  },
+  "app/lib/markt-land.js": {
+   "quelle": "app/lib/markt-land.js",
+   "sha256_quelle": "fbd382c7b473f98880f591257e56ea3625258c40e82532e100add7b75e50b721",
+   "sha256_hier": "fbd382c7b473f98880f591257e56ea3625258c40e82532e100add7b75e50b721"
+  },
+  "app/lib/markt-pricing.js": {
+   "quelle": "app/lib/markt-pricing.js",
+   "sha256_quelle": "9d124178684b4c12392154eeb15f9dec51df594de20f5b9d126c19fb30d0c261",
+   "sha256_hier": "9d124178684b4c12392154eeb15f9dec51df594de20f5b9d126c19fb30d0c261"
+  },
+  "app/lib/preismodus.js": {
+   "quelle": "app/lib/preismodus.js",
+   "sha256_quelle": "f3e95e98088fd267963f3b3c7d2d69f3ef7e006044f18cd3c2d3219a34026afa",
+   "sha256_hier": "f3e95e98088fd267963f3b3c7d2d69f3ef7e006044f18cd3c2d3219a34026afa"
+  },
+  "app/lib/produkt-schema.js": {
+   "quelle": "app/lib/produkt-schema.js",
+   "sha256_quelle": "8751f713ea67be942d2eb1cedc4ddd5cebf6add31aba90c879ab87e14468614b",
+   "sha256_hier": "8751f713ea67be942d2eb1cedc4ddd5cebf6add31aba90c879ab87e14468614b"
+  },
+  "app/lib/produkt-seo.js": {
+   "quelle": "app/lib/produkt-seo.js",
+   "sha256_quelle": "05680af587031659dcd863c2183dca0ab2ef6b82d8e582b1849a748f0fd7c6bd",
+   "sha256_hier": "736d5e43190887a37ebd79db811d933685fdb5e53f76d80f767449366f422a93",
+   "lokale_anpassung": "Beschreibung unter '/products/qi-alpha', og:site_name 'Qi Alpha'"
+  },
+  "app/lib/qi-master-addons.js": {
+   "quelle": "app/lib/qi-master-addons.js",
+   "sha256_quelle": "dc123cc344f1e9ea4af712f429d61e5c8dea1cef4c52672679fb03df1635ddcc",
+   "sha256_hier": "dc123cc344f1e9ea4af712f429d61e5c8dea1cef4c52672679fb03df1635ddcc"
+  },
+  "app/lib/qi-master-addons.server.js": {
+   "quelle": "app/lib/qi-master-addons.server.js",
+   "sha256_quelle": "103dcdb657f5387711f76e0f0cb5597e8d77f417035a86faff69c50990a076d2",
+   "sha256_hier": "103dcdb657f5387711f76e0f0cb5597e8d77f417035a86faff69c50990a076d2"
+  },
+  "app/lib/qioneProductQuery.js": {
+   "quelle": "app/lib/qioneProductQuery.js",
+   "sha256_quelle": "16a1207a9a18b7151eecc8f78a57079e76c69f03f1e1ba3cc8b25ad7509133dd",
+   "sha256_hier": "16a1207a9a18b7151eecc8f78a57079e76c69f03f1e1ba3cc8b25ad7509133dd"
+  },
+  "app/lib/seo.js": {
+   "quelle": "app/lib/seo.js",
+   "sha256_quelle": "9d77ca091c507d0653783ac8ac989391b7acfd98d0858970f7b596fa556f0fee",
+   "sha256_hier": "1998b31116cc17b40d5282f2fb1ebfe0b102770dc677fc0274353f4fc14c84b8",
+   "lokale_anpassung": "CANONICAL_ORIGIN = https://qi-alpha.com"
+  },
+  "app/lib/vorbestellung.js": {
+   "quelle": "app/lib/vorbestellung.js",
+   "sha256_quelle": "da3101ae85548239c3bb14c09e598a19a5f220b4ac92f90604ee9f28b9e20785",
+   "sha256_hier": "da3101ae85548239c3bb14c09e598a19a5f220b4ac92f90604ee9f28b9e20785"
+  },
+  "app/lib/vorschau-noindex.js": {
+   "quelle": "app/lib/vorschau-noindex.js",
+   "sha256_quelle": "b046faef367a3b0f87a6ae2bae4bf0145fbe0ce557bc6e6cf94a0680cab89c5c",
+   "sha256_hier": "b046faef367a3b0f87a6ae2bae4bf0145fbe0ce557bc6e6cf94a0680cab89c5c"
+  },
+  "app/styles/eu-gewaehrleistung.css": {
+   "quelle": "app/styles/eu-gewaehrleistung.css",
+   "sha256_quelle": "55192ed38b6b96dd0b0aaf5e14b32ffbde0994c3346309f8a26b37ce49058dc5",
+   "sha256_hier": "55192ed38b6b96dd0b0aaf5e14b32ffbde0994c3346309f8a26b37ce49058dc5"
+  },
+  "app/styles/the-alpha-faq.css": {
+   "quelle": "app/styles/the-alpha-faq.css",
+   "sha256_quelle": "21e7429a20194806cdfdb4835a080ef8cd2b7cd147b2036d1df07b2ff3a8e83e",
+   "sha256_hier": "21e7429a20194806cdfdb4835a080ef8cd2b7cd147b2036d1df07b2ff3a8e83e"
+  },
+  "app/styles/the-alpha-premium.css": {
+   "quelle": "app/styles/the-alpha-premium.css",
+   "sha256_quelle": "eaa95a6a9acef292d180527e449d456325513a279e5727b1eac3c5ba3c52d8e8",
+   "sha256_hier": "eaa95a6a9acef292d180527e449d456325513a279e5727b1eac3c5ba3c52d8e8"
+  },
+  "app/styles/the-alpha-produkt.css": {
+   "quelle": "app/styles/the-alpha-produkt.css",
+   "sha256_quelle": "302d79411938023818df605f8c259be8c02aab6dd752c112f3b95135743c0b79",
+   "sha256_hier": "302d79411938023818df605f8c259be8c02aab6dd752c112f3b95135743c0b79"
+  },
+  "app/styles/the-alpha-shop.css": {
+   "quelle": "app/styles/the-alpha-shop.css",
+   "sha256_quelle": "6eda7ee7b34f832348b1cba1da4e16de3076b2e99d536cfeabdb356dcd30fde4",
+   "sha256_hier": "6eda7ee7b34f832348b1cba1da4e16de3076b2e99d536cfeabdb356dcd30fde4"
+  }
+ }
+}

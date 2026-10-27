@@ -1,0 +1,236 @@
+/*
+ * qi-alpha.com -- Rahmen: Kopf, Fuss, Warenkorb-Schublade (EL-20261027-beafe3d2).
+ *
+ * Die Seiten selbst tragen ihre eigene Token-Schicht (the-alpha-premium.css auf der
+ * Startseite, the-alpha-produkt.css auf der Kaufseite, beide unveraendert aus
+ * qiblanco-storefront). Diese Datei setzt nur den Rahmen darum, in derselben Sprache:
+ * Schwarz, Weiss, eine Serifen-Wortmarke, Qi-Alpha-Rot (#b92200, Christians Figma) nur
+ * auf Handlung. Quiet Luxury heisst hier: wenig Elemente, viel Luft, keine Farbe ohne Grund.
+ */
+
+/* Open Sans Variable wie auf qiblanco.com (@fontsource-variable/open-sans 5.2.7, OFL-1.1),
+   als Datei statt Paket: kein neuer npm-Baustein im Oxygen-Bau. */
+@font-face {
+  font-family: 'Open Sans Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 300 800;
+  src: url('../assets/schrift/open-sans-latin-ext-wght-normal.woff2') format('woff2-variations');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Open Sans Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 300 800;
+  src: url('../assets/schrift/open-sans-latin-wght-normal.woff2') format('woff2-variations');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+:root {
+  --qa-nacht: #000000;
+  --qa-weiss: #ffffff;
+  --qa-leise: rgba(255, 255, 255, 0.72);
+  --qa-linie: rgba(255, 255, 255, 0.14);
+  --qa-rot: #b92200;
+  --qa-serif: 'Times New Roman', Times, 'Liberation Serif', 'Noto Serif', Georgia, serif;
+  --qa-sans: 'Helvetica Neue', Helvetica, Arial, system-ui, -apple-system, sans-serif;
+  --qa-kopf: 64px;
+
+  /* Die Landingpage gleicht drueben den durchsichtigen Qi-Blanco-Kopf aus
+     (the-alpha-premium.css: margin-top aus --qb-kopf-hoehe/--header-height). Hier steht
+     ein eigener, fester Kopf UEBER der Seite; der Ausgleich ist deshalb 0. */
+  --qb-kopf-hoehe: 0px;
+  --header-height: var(--qa-kopf);
+}
+
+html {
+  background: var(--qa-nacht);
+  font-family: 'Open Sans Variable', var(--qa-sans);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--qa-weiss);
+  font-family: 'Open Sans Variable', var(--qa-sans);
+}
+
+/* Das Geruest (reset.css) gab main einen Rand von 1rem: die schwarzen Baender der
+   Landingpage und der Kaufseite standen dadurch mit weissen Streifen im Fenster. Die Seiten
+   bringen ihre eigenen Raender mit. */
+body > main {
+  display: block;
+  margin: 0;
+}
+
+/* Warenkorb-Schublade ueber dem festen Kopf (app.css: .overlay z-index 10, Kopf 20). */
+.overlay {
+  z-index: 40;
+}
+
+/* ---------- Kopf ---------- */
+
+.qa-kopf {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  height: var(--qa-kopf);
+  padding: 0 clamp(16px, 4vw, 48px);
+  background: var(--qa-nacht);
+  color: var(--qa-weiss);
+  border-bottom: 1px solid var(--qa-linie);
+}
+
+.qa-kopf a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.qa-kopf__marke {
+  font-family: var(--qa-serif);
+  font-size: 1.5625rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.qa-kopf__marke sup,
+.qa-fuss__marke sup,
+.qa-fuss__zeile sup {
+  font-size: 0.45em;
+  letter-spacing: 0;
+  vertical-align: super;
+}
+
+.qa-kopf__nav {
+  display: flex;
+  align-items: center;
+  gap: clamp(16px, 3vw, 32px);
+  font-size: 0.875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.qa-kopf__nav a {
+  color: var(--qa-leise);
+  transition: color 200ms ease;
+}
+
+.qa-kopf__nav a:hover,
+.qa-kopf__nav a:focus-visible,
+.qa-kopf__nav a.active {
+  color: var(--qa-weiss);
+}
+
+.qa-kopf__korb {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.qa-kopf__zahl {
+  display: inline-grid;
+  place-items: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 10px;
+  background: var(--qa-rot);
+  color: var(--qa-weiss);
+  font-size: 0.75rem;
+  letter-spacing: 0;
+}
+
+@media (max-width: 420px) {
+  .qa-kopf__marke {
+    font-size: 1.25rem;
+  }
+  .qa-kopf__nav {
+    font-size: 0.75rem;
+  }
+}
+
+/* ---------- Fuss ---------- */
+
+.qa-fuss {
+  background: var(--qa-nacht);
+  color: var(--qa-leise);
+  border-top: 1px solid var(--qa-linie);
+}
+
+.qa-fuss__inner {
+  max-width: 1152px;
+  margin: 0 auto;
+  padding: 64px clamp(16px, 4vw, 48px);
+  display: grid;
+  gap: 24px;
+  justify-items: center;
+  text-align: center;
+}
+
+.qa-fuss__marke {
+  margin: 0;
+  font-family: var(--qa-serif);
+  font-size: 1.25rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--qa-weiss);
+}
+
+.qa-fuss__nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 24px;
+  font-size: 0.875rem;
+}
+
+.qa-fuss a {
+  color: var(--qa-leise);
+  text-decoration: none;
+}
+
+.qa-fuss a:hover,
+.qa-fuss a:focus-visible {
+  color: var(--qa-weiss);
+  text-decoration: underline;
+}
+
+.qa-fuss__zeile {
+  margin: 0;
+  max-width: 60ch;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+}
+
+/* ---------- Warenkorb-Schublade (Geruest-Stile aus app.css, hier im Ton der Marke) ---------- */
+
+aside {
+  font-family: var(--qa-sans);
+}
+
+aside header h3 {
+  font-family: var(--qa-serif);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.cart-checkout-actions a {
+  display: block;
+  padding: 16px 24px;
+  border-radius: 8px;
+  background: var(--qa-rot);
+  color: var(--qa-weiss);
+  text-align: center;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.cart-checkout-actions a p {
+  margin: 0;
+}

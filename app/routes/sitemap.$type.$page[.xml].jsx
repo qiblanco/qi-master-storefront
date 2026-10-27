@@ -4,6 +4,9 @@ import {getSitemap} from '@shopify/hydrogen';
  * @param {Route.LoaderArgs}
  */
 export async function loader({request, params, context: {storefront}}) {
+  // qi-alpha.com hat genau EINE Sitemap mit zwei Adressen ([sitemap.xml].jsx). Die
+  // Shopify-Teilsitemaps listeten den ganzen gemeinsamen Shop (EL-20261027-beafe3d2).
+  throw new Response(null, {status: 404});
   const response = await getSitemap({
     storefront,
     request,

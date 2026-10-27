@@ -1,0 +1,65 @@
+#!/usr/bin/env python3
+"""alpha-nachziehen -- Qi-Alpha-Bausteine von qiblanco-storefront nach qi-alpha.com nachziehen.
+
+qi-alpha.com zeigt DIESELBE Landingpage und Kaufseite wie qiblanco.com (EL-20261027-beafe3d2).
+Die Dateien stehen mit Quelle und Pruefsumme in app/qi-alpha/HERKUNFT.json.
+
+  pruefungen/alpha-nachziehen               # nur melden: was hat sich drueben geaendert?
+  pruefungen/alpha-nachziehen --schreiben   # unveraenderte Kopien ersetzen, Manifest nachfuehren
+
+Lokal angepasste Dateien (Feld lokale_anpassung) werden NIE ueberschrieben, nur gemeldet:
+dort ist die Anpassung von Hand neu einzuspielen. Neue Abhaengigkeiten (Importe, die drueben
+dazukommen) erkennt dieses Werkzeug nicht -- nach dem Schreiben immer `npm run build`.
+
+Vorher im Klon drueben `git fetch origin` (QB_REPO, QB_REF wie bestand.py).
+Exit: 0 = synchron, 1 = Drift (gemeldet oder geschrieben), 4 = keine Aussage.
+"""
+import hashlib, json, os, subprocess, sys
+
+HIER = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(HIER)
+MANIFEST = os.path.join(ROOT, 'app', 'qi-alpha', 'HERKUNFT.json')
+QB_REPO = os.environ.get('QB_REPO', '/srv/openclaw/shared-state/homepage-bauer/werkbank/qiblanco-storefront')
+QB_REF = os.environ.get('QB_REF', 'origin/main')
+
+
+def show(rel):
+    r = subprocess.run(['git', '-C', QB_REPO, 'show', f'{QB_REF}:{rel}'], capture_output=True)
+    return r.stdout if r.returncode == 0 else None
+
+
+def main():
+    schreiben = '--schreiben' in sys.argv
+    try:
+        m = json.load(open(MANIFEST))
+        rev = subprocess.run(['git', '-C', QB_REPO, 'rev-parse', QB_REF], capture_output=True, text=True, check=True).stdout.strip()
+    except Exception as e:  # noqa: BLE001
+        print(f'KEINE AUSSAGE: {e}')
+        return 4
+    drift = 0
+    for rel, e in sorted(m['dateien'].items()):
+        neu = show(e['quelle'])
+        if neu is None:
+            print(f'FEHLT DRUEBEN: {e["quelle"]}')
+            drift += 1
+            continue
+        h = hashlib.sha256(neu).hexdigest()
+        if h == e['sha256_quelle']:
+            continue
+        drift += 1
+        if 'lokale_anpassung' in e:
+            print(f'ANGEPASST, VON HAND: {rel} ({e["lokale_anpassung"]})')
+            continue
+        print(f'GEAENDERT: {rel}')
+        if schreiben:
+            open(os.path.join(ROOT, rel), 'wb').write(neu)
+            e['sha256_quelle'] = e['sha256_hier'] = h
+    if schreiben and drift:
+        m['upstream_commit'] = rev
+        json.dump(m, open(MANIFEST, 'w'), indent=1, ensure_ascii=False)
+    print(f'{"SYNCHRON" if not drift else "DRIFT"}: {drift} Datei(en), drueben {rev[:10]}')
+    return 1 if drift else 0
+
+
+if __name__ == '__main__':
+    sys.exit(main())
